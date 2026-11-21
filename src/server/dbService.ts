@@ -112,6 +112,48 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
       })
     );
     await Promise.all(memberPromises);
+
+    // 4. Upsert AuctionParticipant rows for users with email
+    const participantPromises = Object.values(room.users)
+      .filter((u) => !!u.email && u.email.includes('@'))
+      .map(async (user) => {
+        const cleanEmail = user.email!.trim().toLowerCase();
+        // Ensure user exists
+        await client.user.upsert({
+          where: { email: cleanEmail },
+          update: { name: user.name },
+          create: {
+            email: cleanEmail,
+            name: user.name,
+            role: cleanEmail === (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase() ? 'SUPER_ADMIN' : 'USER',
+          },
+        }).catch(() => null);
+
+        return client.auctionParticipant.upsert({
+          where: {
+            roomCode_userEmail: {
+              roomCode: roomCode,
+              userEmail: cleanEmail,
+            },
+          },
+          update: {
+            userName: user.name,
+            franchiseCode: user.franchiseCode || null,
+            role: user.role || 'TEAM_MEMBER',
+            isCaptain: user.teamRole === 'CAPTAIN',
+          },
+          create: {
+            roomCode: roomCode,
+            roomId: dbRoom.id,
+            userEmail: cleanEmail,
+            userName: user.name,
+            franchiseCode: user.franchiseCode || null,
+            role: user.role || 'TEAM_MEMBER',
+            isCaptain: user.teamRole === 'CAPTAIN',
+          },
+        }).catch(() => null);
+      });
+    await Promise.all(participantPromises);
   }, undefined);
 }
 
@@ -490,6 +532,125 @@ export async function removeRoomMember(roomCode: string, userId: string): Promis
       },
     });
   }, undefined);
+}
+
+export async function upsertDbUser(name: string, email: string): Promise<{ id: string; name: string; email: string; role: string } | null> {
+  return await safeDbOperation(async (client) => {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
+    const isSuper = cleanEmail === (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase();
+    const defaultRole = isSuper ? 'SUPER_ADMIN' : 'USER';
+
+    const user = await client.user.upsert({
+      where: { email: cleanEmail },
+      update: {
+        name: cleanName,
+        ...(isSuper ? { role: 'SUPER_ADMIN' } : {}),
+      },
+      create: {
+        email: cleanEmail,
+        name: cleanName,
+        role: defaultRole,
+      },
+    });
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+  }, null);
+}
+
+export async function recordAuctionParticipant(params: {
+  userEmail: string;
+  userName: string;
+  roomCode: string;
+  franchiseCode?: string | null;
+  role?: string;
+  isCaptain?: boolean;
+}): Promise<void> {
+  await safeDbOperation(async (client) => {
+    const cleanEmail = params.userEmail.trim().toLowerCase();
+    const cleanRoomCode = params.roomCode.trim().toUpperCase();
+
+    // Ensure User exists
+    await client.user.upsert({
+      where: { email: cleanEmail },
+      update: { name: params.userName },
+      create: {
+        email: cleanEmail,
+        name: params.userName,
+        role: cleanEmail === (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase() ? 'SUPER_ADMIN' : 'USER',
+      },
+    });
+
+    // Ensure Room exists
+    const dbRoom = await client.room.findUnique({ where: { code: cleanRoomCode } });
+    if (!dbRoom) return;
+
+    await client.auctionParticipant.upsert({
+      where: {
+        roomCode_userEmail: {
+          roomCode: cleanRoomCode,
+          userEmail: cleanEmail,
+        },
+      },
+      update: {
+        userName: params.userName,
+        franchiseCode: params.franchiseCode || null,
+        role: params.role || 'TEAM_MEMBER',
+        isCaptain: params.isCaptain || false,
+      },
+      create: {
+        roomCode: cleanRoomCode,
+        roomId: dbRoom.id,
+        userEmail: cleanEmail,
+        userName: params.userName,
+        franchiseCode: params.franchiseCode || null,
+        role: params.role || 'TEAM_MEMBER',
+        isCaptain: params.isCaptain || false,
+      },
+    });
+  }, undefined);
+}
+
+export async function getUserSessions(email: string, isAdmin: boolean = false): Promise<any[]> {
+  return await safeDbOperation(async (client) => {
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (isAdmin) {
+      // Admins see all rooms
+      const allRooms = await client.room.findMany({
+        orderBy: { updatedAt: 'desc' },
+        take: 50,
+        include: {
+          squadPlayers: true,
+          poolPlayers: true,
+          participants: true,
+        },
+      });
+      return allRooms;
+    }
+
+    // Returning user: query participations and rooms hosted
+    const participations = await client.auctionParticipant.findMany({
+      where: { userEmail: cleanEmail },
+      include: {
+        room: {
+          include: {
+            squadPlayers: true,
+            poolPlayers: true,
+            participants: true,
+          },
+        },
+      },
+      orderBy: { updatedAt: 'desc' },
+    });
+
+    return participations.map((p) => p.room).filter(Boolean);
+  }, []);
 }
 
 export const restoreRoomState = rehydrateRoomFromDb;

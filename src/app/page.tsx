@@ -73,6 +73,22 @@ export default function HomePage() {
     if (session.userEmail) setUserEmail(session.userEmail);
     setIsSuperAdmin(session.isAdmin || session.userEmail?.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase());
 
+    if (session.userName && session.userEmail) {
+      // Verify role & privileges strictly server-side against PostgreSQL
+      fetch('/api/user/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: session.userName, email: session.userEmail }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.user) {
+            setIsSuperAdmin(!!data.user.isAdmin);
+          }
+        })
+        .catch((err) => console.warn('Could not sync user with server:', err));
+    }
+
     // Prompt login if name or email missing
     if (!session.userName || !session.userEmail) {
       setIsLoginOpen(true);
@@ -657,7 +673,7 @@ export default function HomePage() {
         {/* TAB: CONDUCTED AUCTIONS & MASTER REPORTS */}
         {activeTab === 'REPORTS' && (
           <div className="w-full">
-            <ConductedAuctionsReport initialRoomCode={activeRoomCode || undefined} />
+            <ConductedAuctionsReport />
           </div>
         )}
 

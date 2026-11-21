@@ -51,6 +51,7 @@ export default function AuctionArenaPage() {
     initSocket,
     claimRole,
     leaveAuction,
+    endAuction,
     unreadGlobalCount,
     unreadTeamCount,
   } = useAuctionStore();
@@ -84,6 +85,23 @@ export default function AuctionArenaPage() {
       router.push('/');
     }
   };
+
+  const handleConcludeAuction = async () => {
+    if (confirm('Conclude the live auction officially? This will finalize all squads in PostgreSQL and transition to Conducted Auctions.')) {
+      await endAuction();
+      await leaveAuction();
+      router.push('/?tab=REPORTS');
+    }
+  };
+
+  useEffect(() => {
+    if (room?.phase === 'COMPLETED') {
+      alert('The live auction has officially ended! Transitioning to Conducted Auctions & Final Squads.');
+      leaveAuction().then(() => {
+        router.push('/?tab=REPORTS');
+      });
+    }
+  }, [room?.phase, leaveAuction, router]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -315,14 +333,9 @@ export default function AuctionArenaPage() {
           {/* Conclude Auction Button (Auctioneer only) */}
           {isAuctioneerOrHost && (
             <button
-              onClick={() => {
-                if (confirm('Conclude the live auction and return to the main dashboard?')) {
-                  if (typeof window !== 'undefined') localStorage.removeItem('ipl_active_room_code');
-                  router.push('/');
-                }
-              }}
+              onClick={handleConcludeAuction}
               className="p-1.5 rounded-lg bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800 transition cursor-pointer"
-              title="Conclude live auction"
+              title="Conclude live auction and save final squads"
             >
               <PowerOff className="w-3.5 h-3.5" />
             </button>

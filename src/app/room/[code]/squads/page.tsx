@@ -21,18 +21,20 @@ import { useAuctionStore } from '@/store/auctionStore';
 import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { BoughtPlayer, FranchiseCode, PlayerRole, TeamState } from '@/types/auction';
 import { formatIndianCurrency } from '@/lib/utils';
+import { PlayingXIBuilderModal } from '@/components/arena/PlayingXIBuilderModal';
 
 export default function SquadsShowcasePage() {
   const params = useParams();
   const router = useRouter();
   const roomCode = (params.code as string)?.toUpperCase();
 
-  const { room, initSocket } = useAuctionStore();
+  const { room, initSocket, franchiseCode: userFranchise } = useAuctionStore();
 
   const [selectedFranchise, setSelectedFranchise] = useState<FranchiseCode | 'ALL'>('ALL');
   const [roleFilter, setRoleFilter] = useState<PlayerRole | 'ALL'>('ALL');
   const [acquisitionFilter, setAcquisitionFilter] = useState<'ALL' | 'RETAINED' | 'BOUGHT'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [playingXIFranchise, setPlayingXIFranchise] = useState<FranchiseCode | null>(null);
 
   useEffect(() => {
     if (roomCode) {
@@ -210,26 +212,41 @@ export default function SquadsShowcasePage() {
                 </div>
               </div>
 
-              {/* Metrics Grid */}
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Remaining Purse</span>
-                  <span className="text-base font-black text-emerald-400">
-                    {formatIndianCurrency(singleTeam.remainingPurse)}
-                  </span>
+              {/* Metrics Grid & Playing XI Button */}
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Remaining Purse</span>
+                    <span className="text-base font-black text-emerald-400">
+                      {formatIndianCurrency(singleTeam.remainingPurse)}
+                    </span>
+                  </div>
+                  <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Squad Capacity</span>
+                    <span className="text-base font-black text-white">
+                      {singleTeam.squad.length} / {room?.settings.maxSquadSize || 25}
+                    </span>
+                  </div>
+                  <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Overseas</span>
+                    <span className="text-base font-black text-amber-400">
+                      {singleTeam.overseasCount} / {room?.settings.maxOverseas || 8}
+                    </span>
+                  </div>
                 </div>
-                <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Squad Capacity</span>
-                  <span className="text-base font-black text-white">
-                    {singleTeam.squad.length} / {room?.settings.maxSquadSize || 25}
-                  </span>
-                </div>
-                <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Overseas</span>
-                  <span className="text-base font-black text-amber-400">
-                    {singleTeam.overseasCount} / {room?.settings.maxOverseas || 8}
-                  </span>
-                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setPlayingXIFranchise(singleFranchise.code)}
+                  className={`px-4 py-3 rounded-xl font-black text-xs flex items-center gap-2 shadow-lg transition cursor-pointer whitespace-nowrap ${
+                    userFranchise === singleFranchise.code
+                      ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/20'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                  }`}
+                >
+                  <Users className="w-4 h-4" />
+                  <span>{userFranchise === singleFranchise.code ? 'Form Playing XI' : 'View Playing XI'}</span>
+                </button>
               </div>
             </div>
 
@@ -472,6 +489,18 @@ export default function SquadsShowcasePage() {
           </div>
         )}
       </main>
+
+      {/* Playing XI Builder Modal */}
+      {playingXIFranchise && teams[playingXIFranchise] && (
+        <PlayingXIBuilderModal
+          franchiseCode={playingXIFranchise}
+          squad={teams[playingXIFranchise].squad}
+          onClose={() => setPlayingXIFranchise(null)}
+          roomCode={roomCode}
+          isReadOnly={userFranchise !== playingXIFranchise}
+          userAssignedFranchise={userFranchise}
+        />
+      )}
     </div>
   );
 }

@@ -23,6 +23,7 @@ model Room {
   squadPlayers  SquadPlayer[]
   poolPlayers   AuctionPoolPlayer[]
   messages      ChatMessage[]
+  participants  AuctionParticipant[]
 
   @@index([code])
 }
@@ -111,4 +112,35 @@ model ChatMessage {
   room          Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@index([roomId, channel])
+}
+
+model User {
+  id             String               @id @default(uuid())
+  email          String               @unique
+  name           String
+  role           String               @default("USER") // SUPER_ADMIN | USER
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  participations AuctionParticipant[]
+}
+
+model AuctionParticipant {
+  id            String   @id @default(uuid())
+  userId        String?
+  userEmail     String
+  userName      String
+  roomId        String
+  roomCode      String
+  franchiseCode String?
+  role          String   @default("TEAM_MEMBER") // AUCTIONEER | TEAM_MEMBER | SPECTATOR | HOST
+  isCaptain     Boolean  @default(false)
+  joinedAt      DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User?    @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomCode, userEmail])
+  @@index([userEmail])
+  @@index([roomCode])
 }

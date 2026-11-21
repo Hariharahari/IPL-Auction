@@ -255,6 +255,10 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
       socket.off('room:participant_camera');
       socket.off('user:hand_raised');
       socket.off('user:removed');
+      socket.off('lobby:state_updated');
+      socket.off('room:participants_updated');
+      socket.off('user:joined');
+      socket.off('user:left');
 
       socket.on(
         'room:participant_camera',
@@ -354,6 +358,72 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
           teamRole: myUser ? myUser.teamRole : get().teamRole,
           isHost: !!isHost,
           isHandRaised: myUser ? !!myUser.handRaised : false,
+        });
+      });
+
+      // Authoritative real-time lobby and participant sync without manual page refresh
+      socket.on('lobby:state_updated', (data: { room?: AuctionRoomState; user?: RoomUser }) => {
+        if (data?.room) {
+          const currentUserId = get().userId;
+          const myUser = data.room.users[currentUserId];
+          const isAuctioneer = data.room.auctioneerId === currentUserId || (myUser && myUser.role === 'AUCTIONEER');
+          const isHost = data.room.hostId === currentUserId || (myUser && myUser.isHost);
+
+          set({
+            room: data.room,
+            role: isAuctioneer ? 'AUCTIONEER' : myUser ? myUser.role : get().role,
+            franchiseCode: myUser ? (myUser.franchiseCode ?? null) : get().franchiseCode,
+            teamRole: myUser ? myUser.teamRole : get().teamRole,
+            isHost: !!isHost,
+          });
+        }
+      });
+
+      socket.on('room:participants_updated', (data: { users?: Record<string, RoomUser>; room?: AuctionRoomState }) => {
+        if (data?.room) {
+          set({ room: data.room });
+        } else if (data?.users) {
+          set((state) => {
+            if (!state.room) return {};
+            return {
+              room: {
+                ...state.room,
+                users: data.users!,
+              },
+            };
+          });
+        }
+      });
+
+      socket.on('user:joined', (user: RoomUser) => {
+        set((state) => {
+          if (!state.room) return {};
+          return {
+            room: {
+              ...state.room,
+              users: {
+                ...state.room.users,
+                [user.id]: user,
+              },
+            },
+          };
+        });
+      });
+
+      socket.on('user:left', (data: { userId: string; userName: string }) => {
+        set((state) => {
+          if (!state.room || !state.room.users[data.userId]) return {};
+          const updatedUsers = { ...state.room.users };
+          updatedUsers[data.userId] = {
+            ...updatedUsers[data.userId],
+            isOnline: false,
+          };
+          return {
+            room: {
+              ...state.room,
+              users: updatedUsers,
+            },
+          };
         });
       });
 

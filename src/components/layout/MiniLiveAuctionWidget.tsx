@@ -27,6 +27,8 @@ export const MiniLiveAuctionWidget: React.FC = () => {
     franchiseCode,
     placeBid,
     initSocket,
+    endAuction,
+    leaveAuction,
   } = useAuctionStore();
 
   const [isMinimized, setIsMinimized] = useState(false);
@@ -52,8 +54,8 @@ export const MiniLiveAuctionWidget: React.FC = () => {
   const code = storeRoomCode || activeCode;
   const isArena = pathname ? pathname.includes(`/room/${code}/arena`) : false;
 
-  // Don't render on the main Live Arena page itself or if dismissed/no active room code
-  if (!code || isArena || isDismissed) {
+  // Don't render on the main Live Arena page itself or if dismissed/no active room code or completed auction
+  if (!code || isArena || isDismissed || room?.phase === 'COMPLETED') {
     return null;
   }
 
@@ -75,13 +77,19 @@ export const MiniLiveAuctionWidget: React.FC = () => {
   const currentUser = getStoredUser();
   const isSuperAdmin = currentUser.isAdmin || currentUser.userEmail?.toLowerCase() === 'hariharan12403@gmail.com';
 
-  const handleEndAuction = () => {
-    if (!confirm(`Are you sure you want to END the Live Auction for room ${code}?`)) return;
+  const handleEndAuction = async () => {
+    if (!confirm(`Are you sure you want to officially END the Live Auction for room ${code}?`)) return;
+    try {
+      await endAuction();
+      await leaveAuction();
+    } catch (e) {
+      console.warn('Error ending auction:', e);
+    }
     if (typeof window !== 'undefined') {
       localStorage.removeItem('ipl_active_room_code');
     }
     setIsDismissed(true);
-    router.push('/');
+    router.push('/?tab=REPORTS');
   };
 
   return (

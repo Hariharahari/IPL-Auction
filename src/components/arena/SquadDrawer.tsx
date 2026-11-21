@@ -174,6 +174,7 @@ export const SquadDrawer: React.FC<SquadDrawerProps> = ({
           onClose={() => setShowPlayingXI(false)}
           roomCode={room?.roomCode}
           isReadOnly={!canFormXI}
+          userAssignedFranchise={userFranchise}
         />
       )}
     </div>

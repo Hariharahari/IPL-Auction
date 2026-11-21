@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Gavel,
   Pause,
@@ -36,6 +37,7 @@ import { formatIndianCurrency } from '@/lib/utils';
 import { FRANCHISE_LIST, FRANCHISES } from '@/data/franchises';
 
 export const AuctioneerDeck: React.FC = () => {
+  const router = useRouter();
   const {
     role,
     room,
@@ -43,6 +45,7 @@ export const AuctioneerDeck: React.FC = () => {
     isHost,
     claimRole,
     endAuction,
+    leaveAuction,
     nominatePlayer,
     nominateNext,
     skipPlayer,
@@ -164,6 +167,8 @@ export const AuctioneerDeck: React.FC = () => {
     try {
       await endAuction();
       setIsEndAuctionModalOpen(false);
+      await leaveAuction();
+      router.push('/?tab=REPORTS');
     } finally {
       setIsEnding(false);
     }

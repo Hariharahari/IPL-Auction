@@ -71,6 +71,11 @@ export function setupSocketHandler(io: SocketIOServer) {
         // Direct state sync to ensure client immediately hydrates without delay
         socket.emit('state:sync', result.room);
 
+        // Immediate authoritative lobby synchronization to ALL connected peers in the room
+        io.to(`room_${roomCode}`).emit('lobby:state_updated', { room: result.room, user: result.user });
+        io.to(`room_${roomCode}`).emit('room:participants_updated', { users: result.room.users, room: result.room });
+        io.to(`room_${roomCode}`).emit('state:sync', result.room);
+
         if (callback) {
           callback({
             success: true,
@@ -122,6 +127,15 @@ export function setupSocketHandler(io: SocketIOServer) {
 
         if (res.success && data.role === 'TEAM_MEMBER' && data.franchiseCode) {
           socket.join(`room_${roomCode}_team_${data.franchiseCode}`);
+        }
+
+        if (res.success) {
+          const updatedRoom = engine.getRoomState(roomCode);
+          if (updatedRoom) {
+            io.to(`room_${roomCode}`).emit('lobby:state_updated', { room: updatedRoom });
+            io.to(`room_${roomCode}`).emit('room:participants_updated', { users: updatedRoom.users, room: updatedRoom });
+            io.to(`room_${roomCode}`).emit('state:sync', updatedRoom);
+          }
         }
 
         if (callback) callback(res);

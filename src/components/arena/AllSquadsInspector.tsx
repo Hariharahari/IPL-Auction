@@ -15,6 +15,8 @@ import Link from 'next/link';
 import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { FranchiseCode, PlayerRole } from '@/types/auction';
 import { formatIndianCurrency } from '@/lib/utils';
+import { PlayingXIBuilderModal } from './PlayingXIBuilderModal';
+import { useAuctionStore } from '@/store/auctionStore';
 
 interface MasterPlayer {
   id: string;
@@ -44,6 +46,7 @@ interface AllSquadsInspectorProps {
 }
 
 export const AllSquadsInspector: React.FC<AllSquadsInspectorProps> = ({ activeRoomCode }) => {
+  const { franchiseCode: userFranchise } = useAuctionStore();
   const [allSquadPlayers, setAllSquadPlayers] = useState<MasterPlayer[]>([]);
   const [teamPurses, setTeamPurses] = useState<Record<string, TeamPurseSummary>>({});
   const [selectedFranchise, setSelectedFranchise] = useState<FranchiseCode | 'ALL'>('ALL');
@@ -51,6 +54,7 @@ export const AllSquadsInspector: React.FC<AllSquadsInspectorProps> = ({ activeRo
   const [acquisitionFilter, setAcquisitionFilter] = useState<'ALL' | 'RETAINED' | 'BOUGHT'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [playingXIFranchise, setPlayingXIFranchise] = useState<FranchiseCode | null>(null);
 
   const fetchSquads = async () => {
     setIsLoading(true);
@@ -244,28 +248,43 @@ export const AllSquadsInspector: React.FC<AllSquadsInspectorProps> = ({ activeRo
               </div>
             </div>
 
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Remaining Purse</span>
-                <span className="text-base font-black text-emerald-400">
-                  {singleTeamPurses
-                    ? formatIndianCurrency(singleTeamPurses.remainingPurse)
-                    : '₹18.00 Cr'}
-                </span>
+            {/* Metrics Grid & Playing XI Button */}
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Remaining Purse</span>
+                  <span className="text-base font-black text-emerald-400">
+                    {singleTeamPurses
+                      ? formatIndianCurrency(singleTeamPurses.remainingPurse)
+                      : '₹18.00 Cr'}
+                  </span>
+                </div>
+                <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Squad Capacity</span>
+                  <span className="text-base font-black text-white">
+                    {allSquadPlayers.filter((p) => p.teamCode === singleFranchise.code).length} / 25
+                  </span>
+                </div>
+                <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Overseas</span>
+                  <span className="text-base font-black text-amber-400">
+                    {allSquadPlayers.filter((p) => p.teamCode === singleFranchise.code && p.isOverseas).length} / 8
+                  </span>
+                </div>
               </div>
-              <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Squad Capacity</span>
-                <span className="text-base font-black text-white">
-                  {allSquadPlayers.filter((p) => p.teamCode === singleFranchise.code).length} / 25
-                </span>
-              </div>
-              <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Overseas</span>
-                <span className="text-base font-black text-amber-400">
-                  {allSquadPlayers.filter((p) => p.teamCode === singleFranchise.code && p.isOverseas).length} / 8
-                </span>
-              </div>
+
+              <button
+                type="button"
+                onClick={() => setPlayingXIFranchise(singleFranchise.code)}
+                className={`px-4 py-3 rounded-xl font-black text-xs flex items-center gap-2 shadow-lg transition cursor-pointer whitespace-nowrap ${
+                  userFranchise === singleFranchise.code
+                    ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/20'
+                    : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                <span>{userFranchise === singleFranchise.code ? 'Form Playing XI' : 'View Playing XI'}</span>
+              </button>
             </div>
           </div>
 
@@ -506,6 +525,34 @@ export const AllSquadsInspector: React.FC<AllSquadsInspectorProps> = ({ activeRo
             );
           })}
         </div>
+      )}
+      {/* Playing XI Builder Modal */}
+      {playingXIFranchise && (
+        <PlayingXIBuilderModal
+          franchiseCode={playingXIFranchise}
+          squad={allSquadPlayers
+            .filter((p) => p.teamCode === playingXIFranchise)
+            .map((p) => ({
+              id: p.id,
+              name: p.name,
+              role: p.role,
+              country: p.country,
+              isOverseas: p.isOverseas,
+              basePrice: p.soldAmount || 20,
+              statsSummary: p.statsSummary || `Official squad member of ${p.teamCode}`,
+              set: 'Accelerated' as const,
+              previousTeam: null,
+              status: 'SOLD' as const,
+              soldTo: p.teamCode,
+              soldAmount: p.soldAmount,
+              isRetained: p.isRetained,
+              imageUrl: p.imageUrl,
+            }))}
+          onClose={() => setPlayingXIFranchise(null)}
+          roomCode={activeRoomCode || 'GLOBAL'}
+          isReadOnly={userFranchise !== playingXIFranchise}
+          userAssignedFranchise={userFranchise}
+        />
       )}
     </div>
   );

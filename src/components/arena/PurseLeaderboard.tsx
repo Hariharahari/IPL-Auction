@@ -150,6 +150,7 @@ export const PurseLeaderboard: React.FC = () => {
           onClose={() => setPlayingXIFranchise(null)}
           roomCode={room.roomCode}
           isReadOnly={isAuctioneer || userFranchise !== playingXIFranchise}
+          userAssignedFranchise={userFranchise}
         />
       )}
 

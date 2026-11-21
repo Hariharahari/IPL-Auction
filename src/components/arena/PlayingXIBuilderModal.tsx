@@ -26,6 +26,7 @@ interface PlayingXIBuilderModalProps {
   onClose: () => void;
   roomCode?: string;
   isReadOnly?: boolean;
+  userAssignedFranchise?: FranchiseCode | null;
 }
 
 export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
@@ -34,6 +35,7 @@ export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
   onClose,
   roomCode = 'LIVE',
   isReadOnly = false,
+  userAssignedFranchise,
 }) => {
   const franchise = FRANCHISES[franchiseCode];
   const storageKey = `ipl_playing_xi_${roomCode}_${franchiseCode}`;
@@ -209,11 +211,11 @@ export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
                 </span>
                 {isReadOnly ? (
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300">
-                    View Only
+                    View Only — Assigned to {userAssignedFranchise ? (FRANCHISES[userAssignedFranchise]?.shortName || userAssignedFranchise) : 'Other Franchise'}
                   </span>
                 ) : (
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300">
-                    Active Editor
+                    Active Editor • {franchise.code} Member
                   </span>
                 )}
               </div>
