@@ -19,6 +19,7 @@ import {
 import { FRANCHISES } from '@/data/franchises';
 import { BoughtPlayer, FranchiseCode, PlayerRole } from '@/types/auction';
 import { formatIndianCurrency } from '@/lib/utils';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
 interface PlayingXIBuilderModalProps {
   franchiseCode: FranchiseCode;
@@ -197,12 +198,7 @@ export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
           }}
         >
           <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg shadow-md"
-              style={{ backgroundColor: franchise.primaryColor, color: franchise.textColor }}
-            >
-              {franchise.code}
-            </div>
+            <FranchiseLogo code={franchise.code} size="md" className="shadow-md" />
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-black text-base sm:text-lg">{franchise.name} Playing XI</h3>

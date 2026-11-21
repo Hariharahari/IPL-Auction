@@ -33,6 +33,7 @@ import { ShareTeamCodesModal } from '@/components/arena/ShareTeamCodesModal';
 import { TempAuctioneerModal } from '@/components/arena/TempAuctioneerModal';
 import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { FranchiseCode } from '@/types/auction';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 import { livekitClient } from '@/lib/livekitClient';
 
 export default function AuctionArenaPage() {
@@ -311,7 +312,11 @@ export default function AuctionArenaPage() {
             className="hidden sm:flex items-center gap-1.5 bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-lg text-xs"
             suppressHydrationWarning
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            {franchise ? (
+              <FranchiseLogo code={franchise.code} size="xs" />
+            ) : (
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            )}
             <span className="font-bold text-slate-200" suppressHydrationWarning>
               {isMounted ? userName || 'Connecting...' : 'Connecting...'}
             </span>
@@ -456,15 +461,7 @@ export default function AuctionArenaPage() {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center font-black text-sm text-white shadow"
-                        style={{
-                          backgroundColor: team.primaryColor,
-                          color: team.textColor,
-                        }}
-                      >
-                        {team.code}
-                      </div>
+                      <FranchiseLogo code={team.code} size="md" className="shadow" />
                       <div>
                         <span className="font-bold text-sm text-white block">
                           {team.name}

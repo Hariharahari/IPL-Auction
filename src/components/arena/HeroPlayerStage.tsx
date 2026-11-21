@@ -17,6 +17,7 @@ import { useAuctionStore } from '@/store/auctionStore';
 import { FRANCHISES } from '@/data/franchises';
 import { formatIndianCurrency } from '@/lib/utils';
 import { PlayerSet } from '@/types/auction';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
 interface HeroPlayerStageProps {
   onOpenCatalog?: () => void;
@@ -210,10 +211,7 @@ export const HeroPlayerStage: React.FC<HeroPlayerStageProps> = ({
                     color: highestTeam.primaryColor,
                   }}
                 >
-                  <span
-                    className="w-2.5 h-2.5 rounded-full animate-ping"
-                    style={{ backgroundColor: highestTeam.primaryColor }}
-                  />
+                  <FranchiseLogo code={highestTeam.code} size="xs" />
                   <span>Leader: {highestTeam.name} ({highestTeam.code})</span>
                 </div>
               ) : (

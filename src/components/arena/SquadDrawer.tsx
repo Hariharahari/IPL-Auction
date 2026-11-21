@@ -7,6 +7,7 @@ import { BoughtPlayer, FranchiseCode, PlayerRole } from '@/types/auction';
 import { formatIndianCurrency } from '@/lib/utils';
 import { PlayingXIBuilderModal } from './PlayingXIBuilderModal';
 import { useAuctionStore } from '@/store/auctionStore';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
 interface SquadDrawerProps {
   franchiseCode: FranchiseCode | null;
@@ -62,9 +63,7 @@ export const SquadDrawer: React.FC<SquadDrawerProps> = ({
           }}
         >
           <div className="flex items-center gap-3 z-10">
-            <div className="w-12 h-12 rounded-xl bg-slate-950/40 border border-white/20 flex items-center justify-center font-black text-xl tracking-wider">
-              {franchise.code}
-            </div>
+            <FranchiseLogo code={franchise.code} size="lg" className="border-white/30 shadow-lg" />
             <div>
               <h2 className="text-xl font-black drop-shadow-md">{franchise.name}</h2>
               <p className="text-xs text-white/80 font-medium">Official Squad & Roster Sheet</p>

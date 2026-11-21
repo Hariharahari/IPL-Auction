@@ -57,6 +57,7 @@ export interface Franchise {
   secondaryColor: string;
   textColor: string;
   crestUrl?: string;
+  logoUrl?: string;
 }
 
 export type UserRole = 'HOST' | 'AUCTIONEER' | 'TEAM_MEMBER' | 'SPECTATOR';

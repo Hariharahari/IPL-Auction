@@ -18,6 +18,7 @@ import {
 import { useAuctionStore } from '@/store/auctionStore';
 import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { FranchiseCode } from '@/types/auction';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
 interface HuddleDrawerProps {
   isOpen: boolean;
@@ -82,15 +83,13 @@ export const HuddleDrawer: React.FC<HuddleDrawerProps> = ({
         {/* Header */}
         <div className="h-14 border-b border-slate-800 px-4 flex items-center justify-between shrink-0 bg-slate-950/80">
           <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs shadow"
-              style={{
-                backgroundColor: franchise ? franchise.primaryColor : '#3B82F6',
-                color: franchise ? franchise.textColor : '#FFFFFF',
-              }}
-            >
-              {franchise ? franchise.code : <Users className="w-4 h-4" />}
-            </div>
+            {franchise ? (
+              <FranchiseLogo code={franchise.code} size="sm" className="shadow" />
+            ) : (
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs shadow bg-blue-600 text-white">
+                <Users className="w-4 h-4" />
+              </div>
+            )}
             <div>
               <h2 className="font-black text-sm text-white flex items-center gap-1.5">
                 <span>{franchise ? `${franchise.name} Huddle` : 'Private Team Huddle'}</span>

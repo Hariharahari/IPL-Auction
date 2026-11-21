@@ -22,6 +22,7 @@ import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { BoughtPlayer, FranchiseCode, PlayerRole, TeamState } from '@/types/auction';
 import { formatIndianCurrency } from '@/lib/utils';
 import { PlayingXIBuilderModal } from '@/components/arena/PlayingXIBuilderModal';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
 export default function SquadsShowcasePage() {
   const params = useParams();
@@ -168,15 +169,7 @@ export default function SquadsShowcasePage() {
                   color: isSelected ? '#FFFFFF' : undefined,
                 }}
               >
-                <div
-                  className="w-5 h-5 rounded-md flex items-center justify-center font-black text-[10px]"
-                  style={{
-                    backgroundColor: f.primaryColor,
-                    color: f.textColor,
-                  }}
-                >
-                  {f.code}
-                </div>
+                <FranchiseLogo code={f.code} size="xs" />
                 <span>{f.shortName}</span>
                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-950/80 font-mono text-slate-300">
                   {squadCount}
@@ -197,15 +190,7 @@ export default function SquadsShowcasePage() {
           >
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
               <div className="flex items-center gap-3.5">
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-xl"
-                  style={{
-                    backgroundColor: singleFranchise.primaryColor,
-                    color: singleFranchise.textColor,
-                  }}
-                >
-                  {singleFranchise.code}
-                </div>
+                <FranchiseLogo code={singleFranchise.code} size="lg" className="shadow-xl" />
                 <div>
                   <h2 className="text-2xl font-black text-white">{singleFranchise.name}</h2>
                   <p className="text-xs text-slate-400 font-medium">{singleFranchise.city} • Official IPL Franchise</p>

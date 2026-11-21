@@ -8,6 +8,7 @@ import { FranchiseCode, TeamState } from '@/types/auction';
 import { formatIndianCurrency } from '@/lib/utils';
 import { SquadDrawer } from './SquadDrawer';
 import { PlayingXIBuilderModal } from './PlayingXIBuilderModal';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
 export const PurseLeaderboard: React.FC = () => {
   const { room, role, isHost, franchiseCode: userFranchise, userId } = useAuctionStore();
@@ -67,15 +68,7 @@ export const PurseLeaderboard: React.FC = () => {
                 <div className="pl-2 flex items-center justify-between">
                   {/* Left: Code, Name, Online presence */}
                   <div className="flex items-center gap-2.5">
-                    <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs text-white shadow"
-                      style={{
-                        backgroundColor: franchise.primaryColor,
-                        color: franchise.textColor,
-                      }}
-                    >
-                      {franchise.code}
-                    </div>
+                    <FranchiseLogo code={team.code} size="sm" />
 
                     <div>
                       <div className="flex items-center gap-1.5">

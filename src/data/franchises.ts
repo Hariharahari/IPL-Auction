@@ -9,6 +9,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#FDB913',
     secondaryColor: '#005FA2',
     textColor: '#1A1A1A',
+    logoUrl: '/logos/csk.svg',
+    crestUrl: '/logos/csk.svg',
   },
   MI: {
     code: 'MI',
@@ -18,6 +20,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#004BA0',
     secondaryColor: '#D1AB3E',
     textColor: '#FFFFFF',
+    logoUrl: '/logos/mi.png',
+    crestUrl: '/logos/mi.png',
   },
   RCB: {
     code: 'RCB',
@@ -27,6 +31,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#EC1C24',
     secondaryColor: '#D1AB3E',
     textColor: '#FFFFFF',
+    logoUrl: '/logos/rcb.png',
+    crestUrl: '/logos/rcb.png',
   },
   KKR: {
     code: 'KKR',
@@ -36,6 +42,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#3A225D',
     secondaryColor: '#F7D54E',
     textColor: '#FFFFFF',
+    logoUrl: '/logos/kkr.svg',
+    crestUrl: '/logos/kkr.svg',
   },
   SRH: {
     code: 'SRH',
@@ -45,6 +53,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#F26522',
     secondaryColor: '#1A1A1A',
     textColor: '#FFFFFF',
+    logoUrl: '/logos/srh.png',
+    crestUrl: '/logos/srh.png',
   },
   RR: {
     code: 'RR',
@@ -54,6 +64,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#EA1B85',
     secondaryColor: '#004BA0',
     textColor: '#FFFFFF',
+    logoUrl: '/logos/rr.png',
+    crestUrl: '/logos/rr.png',
   },
   DC: {
     code: 'DC',
@@ -63,6 +75,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#0078BC',
     secondaryColor: '#D71920',
     textColor: '#FFFFFF',
+    logoUrl: '/logos/dc.png',
+    crestUrl: '/logos/dc.png',
   },
   PBKS: {
     code: 'PBKS',
@@ -72,6 +86,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#DD1F2D',
     secondaryColor: '#C5A566',
     textColor: '#FFFFFF',
+    logoUrl: '/logos/pbks.png',
+    crestUrl: '/logos/pbks.png',
   },
   GT: {
     code: 'GT',
@@ -81,6 +97,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#1B2133',
     secondaryColor: '#E0A93B',
     textColor: '#FFFFFF',
+    logoUrl: '/logos/gt.svg',
+    crestUrl: '/logos/gt.svg',
   },
   LSG: {
     code: 'LSG',
@@ -90,6 +108,8 @@ export const FRANCHISES: Record<FranchiseCode, Franchise> = {
     primaryColor: '#0057E7',
     secondaryColor: '#F83434',
     textColor: '#FFFFFF',
+    logoUrl: '/logos/lsg.svg',
+    crestUrl: '/logos/lsg.svg',
   },
 };
 

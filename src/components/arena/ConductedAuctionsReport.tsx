@@ -29,6 +29,7 @@ import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { AuctionRoomState, BoughtPlayer, FranchiseCode, Player } from '@/types/auction';
 import { formatIndianCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
 interface ConductedAuctionsReportProps {
   initialRoomCode?: string;
@@ -476,23 +477,10 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
                       Participating Franchises ({s.participatingTeams.length})
                     </span>
-                    <div className="flex flex-wrap gap-1">
-                      {s.participatingTeams.slice(0, 8).map((code) => {
-                        const f = FRANCHISES[code as FranchiseCode];
-                        return (
-                          <span
-                            key={code}
-                            className="text-[9px] font-black px-1.5 py-0.5 rounded font-mono border"
-                            style={{
-                              backgroundColor: f ? `${f.primaryColor}25` : '#1e293b',
-                              borderColor: f ? `${f.primaryColor}50` : '#334155',
-                              color: f ? '#FFFFFF' : '#94a3b8',
-                            }}
-                          >
-                            {code}
-                          </span>
-                        );
-                      })}
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      {s.participatingTeams.slice(0, 8).map((code) => (
+                        <FranchiseLogo key={code} code={code} size="xs" />
+                      ))}
                       {s.participatingTeams.length > 8 && (
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
                           +{s.participatingTeams.length - 8}
@@ -758,15 +746,7 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
                       <div className="flex items-center gap-3">
                         {log.status === 'SOLD' && franchise ? (
                           <div className="flex items-center gap-2">
-                            <div
-                              className="px-2 py-0.5 rounded font-black text-[10px] uppercase font-mono shadow"
-                              style={{
-                                backgroundColor: franchise.primaryColor,
-                                color: franchise.textColor,
-                              }}
-                            >
-                              {franchise.code}
-                            </div>
+                            <FranchiseLogo code={franchise.code} size="xs" />
                             <span className="font-mono font-black text-sm text-emerald-400">
                               ₹{((log.soldAmount || 0) / 100).toFixed(2)} Cr
                             </span>
@@ -824,15 +804,7 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-white text-sm">{p.name}</span>
                           {franchise && (
-                            <span
-                              className="px-2 py-0.5 rounded text-[10px] font-black uppercase font-mono"
-                              style={{
-                                backgroundColor: franchise.primaryColor,
-                                color: franchise.textColor,
-                              }}
-                            >
-                              {franchise.code}
-                            </span>
+                            <FranchiseLogo code={franchise.code} size="xs" />
                           )}
                         </div>
                         <div className="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
@@ -963,15 +935,7 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
                   {/* Team Header */}
                   <div className="pl-2 flex items-center justify-between border-b border-slate-800 pb-3">
                     <div className="flex items-center gap-2.5">
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shadow"
-                        style={{
-                          backgroundColor: f.primaryColor,
-                          color: f.textColor,
-                        }}
-                      >
-                        {f.code}
-                      </div>
+                      <FranchiseLogo code={f.code} size="md" className="shadow" />
                       <div>
                         <h3 className="font-black text-sm text-white">{f.name}</h3>
                         <div className="flex items-center gap-2 text-[10px] text-slate-400">

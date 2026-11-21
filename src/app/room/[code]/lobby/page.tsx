@@ -23,6 +23,7 @@ import { FRANCHISE_LIST, FRANCHISES } from '@/data/franchises';
 import { FranchiseCode } from '@/types/auction';
 import { formatIndianCurrency } from '@/lib/utils';
 import { PlayerPoolUploader, UploadTarget } from '@/components/arena/PlayerPoolUploader';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
 export default function RoomLobbyPage() {
   const params = useParams();
@@ -424,15 +425,7 @@ export default function RoomLobbyPage() {
                   <div>
                     {/* Header Row */}
                     <div className="flex items-center justify-between mb-3">
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shadow-md"
-                        style={{
-                          backgroundColor: team.primaryColor,
-                          color: team.textColor,
-                        }}
-                      >
-                        {team.code}
-                      </div>
+                      <FranchiseLogo code={team.code} size="md" className="shadow-md" />
 
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
                         {teamMembers.length} Members
