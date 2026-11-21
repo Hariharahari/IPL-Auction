@@ -31,6 +31,7 @@ import { SoldPlayerCelebrationModal } from '@/components/arena/SoldPlayerCelebra
 import { ShareTeamCodesModal } from '@/components/arena/ShareTeamCodesModal';
 import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { FranchiseCode } from '@/types/auction';
+import { livekitClient } from '@/lib/livekitClient';
 
 export default function AuctionArenaPage() {
   const params = useParams();
@@ -77,6 +78,22 @@ export default function AuctionArenaPage() {
       initSocket(roomCode);
     }
   }, [roomCode, initSocket]);
+
+  // Connect Broadcast-Grade LiveKit WebRTC for Audio & Video Transmission
+  useEffect(() => {
+    if (roomCode && userId && userName) {
+      livekitClient.connect({
+        roomCode,
+        userId,
+        userName,
+        role: isAuctioneerOrHost ? 'AUCTIONEER' : role,
+        franchiseCode: isAuctioneerOrHost ? null : franchiseCode,
+      });
+    }
+    return () => {
+      livekitClient.disconnect();
+    };
+  }, [roomCode, userId, userName, role, isAuctioneerOrHost, franchiseCode]);
 
   // If user joins mid-auction as spectator with no franchise, prompt team picker modal once
   useEffect(() => {

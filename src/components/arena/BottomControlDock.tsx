@@ -30,6 +30,7 @@ import {
   startVirtualCamStream,
   stopMediaStream,
 } from '@/lib/mediaStream';
+import { livekitClient } from '@/lib/livekitClient';
 
 interface BottomControlDockProps {
   isTeamsDrawerOpen: boolean;
@@ -137,24 +138,33 @@ export const BottomControlDock: React.FC<BottomControlDockProps> = ({
     if (isCameraActive) {
       stopMediaStream();
       setIsCameraActive(false);
+      await livekitClient.unpublishVideoTrack();
     } else {
       setCameraLoading(true);
       try {
         await startWebcamStream();
         setIsCameraActive(true);
+        await livekitClient.publishCurrentStream();
       } catch (err) {
         console.warn('Camera failed, switching to virtual cam:', err);
         startVirtualCamStream(userName || 'Broadcaster');
         setIsCameraActive(true);
+        await livekitClient.publishCurrentStream();
       } finally {
         setCameraLoading(false);
       }
     }
   };
 
-  const handleVirtualCam = () => {
+  const handleVirtualCam = async () => {
     startVirtualCamStream(userName || 'Broadcaster');
     setIsCameraActive(true);
+    await livekitClient.publishCurrentStream();
+  };
+
+  const handleMicRoute = async (target: 'MUTED' | 'TEAM' | 'MAIN') => {
+    setMicRoute(target);
+    await livekitClient.setMicRoute(target);
   };
 
   const totalUnread = (unreadGlobalCount || 0) + (unreadTeamCount || 0);
@@ -166,7 +176,7 @@ export const BottomControlDock: React.FC<BottomControlDockProps> = ({
         {/* Mic Routing Toggle */}
         <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800" suppressHydrationWarning>
           <button
-            onClick={() => setMicRoute('MUTED')}
+            onClick={() => handleMicRoute('MUTED')}
             className={`p-2 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
               micRoute === 'MUTED'
                 ? 'bg-rose-600 text-white shadow'
@@ -180,7 +190,7 @@ export const BottomControlDock: React.FC<BottomControlDockProps> = ({
 
           {!isAuctioneerOrHost && role === 'TEAM_MEMBER' && franchiseCode && (
             <button
-              onClick={() => setMicRoute('TEAM')}
+              onClick={() => handleMicRoute('TEAM')}
               className={`p-2 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
                 micRoute === 'TEAM'
                   ? 'bg-blue-600 text-white shadow ring-1 ring-blue-400'
@@ -194,7 +204,7 @@ export const BottomControlDock: React.FC<BottomControlDockProps> = ({
           )}
 
           <button
-            onClick={() => setMicRoute('MAIN')}
+            onClick={() => handleMicRoute('MAIN')}
             className={`p-2 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
               micRoute === 'MAIN'
                 ? 'bg-amber-500 text-slate-950 font-black shadow animate-pulse'

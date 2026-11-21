@@ -13,6 +13,7 @@ import {
 } from '@/types/auction';
 import { getSocket } from '@/lib/socketClient';
 import { getStoredUser } from '@/lib/utils';
+import { livekitClient } from '@/lib/livekitClient';
 
 export type MicRouting = 'MUTED' | 'TEAM' | 'MAIN';
 
@@ -209,6 +210,7 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
 
     setMicRoute: (route: MicRouting) => {
       set({ micRoute: route });
+      livekitClient.setMicRoute(route);
     },
 
     setIsTeammateSpeaking: (speaking: boolean) => {

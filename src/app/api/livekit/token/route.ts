@@ -38,36 +38,48 @@ export async function POST(req: NextRequest) {
 
     // 1. Mint Token for Main Auction Hall (Public Room)
     const mainRoomName = `ipl_${roomCode.toUpperCase()}_main`;
-    const canPublishMain = role === 'AUCTIONEER' || role === 'TEAM_MEMBER' || role === 'HOST';
 
     const mainTokenObj = new AccessToken(apiKey, apiSecret, {
       identity: userId,
       name: userName,
+      metadata: JSON.stringify({
+        role: role || 'SPECTATOR',
+        franchiseCode: franchiseCode || null,
+        userName,
+      }),
     });
     mainTokenObj.addGrant({
       room: mainRoomName,
       roomJoin: true,
-      canPublish: canPublishMain,
+      canPublish: true,
       canSubscribe: true,
+      canPublishData: true,
     });
     const mainToken = await mainTokenObj.toJwt();
 
     // 2. Mint Token for Private Franchise Huddle Room
-    // STRICT ISOLATION: Auctioneer and Spectators NEVER receive a teamToken for huddle rooms
+    // STRICT ISOLATION: Auctioneer, Host, and Spectators NEVER receive a teamToken for franchise private huddles
     let teamToken: string | null = null;
-    const isAuctioneerOrSpectator = role === 'AUCTIONEER' || role === 'SPECTATOR' || role === 'HOST';
+    const isAuctioneerOrSpectator =
+      role === 'AUCTIONEER' || role === 'SPECTATOR' || role === 'HOST';
 
     if (!isAuctioneerOrSpectator && role === 'TEAM_MEMBER' && franchiseCode) {
       const teamRoomName = `ipl_${roomCode.toUpperCase()}_team_${franchiseCode}`;
       const teamTokenObj = new AccessToken(apiKey, apiSecret, {
         identity: userId,
         name: userName,
+        metadata: JSON.stringify({
+          role: 'TEAM_MEMBER',
+          franchiseCode,
+          userName,
+        }),
       });
       teamTokenObj.addGrant({
         room: teamRoomName,
         roomJoin: true,
         canPublish: true,
         canSubscribe: true,
+        canPublishData: true,
       });
       teamToken = await teamTokenObj.toJwt();
     }
@@ -84,6 +96,9 @@ export async function POST(req: NextRequest) {
       {
         demoMode: true,
         error: error instanceof Error ? error.message : 'Internal Server Error',
+        mainToken: null,
+        teamToken: null,
+        serverUrl: null,
       },
       { status: 200 }
     );
