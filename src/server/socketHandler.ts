@@ -140,6 +140,43 @@ export function setupSocketHandler(io: SocketIOServer) {
       }
     );
 
+    // 4b. Appoint Temporary Deputy Auctioneer
+    socket.on(
+      'auction:appointTempAuctioneer',
+      (
+        data: { roomCode: string; requesterId: string; targetUserId: string },
+        callback?: (res: { success: boolean; error?: string }) => void
+      ) => {
+        const res = engine.appointTempAuctioneer(data.roomCode, data.requesterId, data.targetUserId);
+        if (callback) callback(res);
+      }
+    );
+
+    // 4c. Transfer Auctioneer Gavel
+    socket.on(
+      'auction:transferGavel',
+      (
+        data: { roomCode: string; requesterId: string; targetUserId: string },
+        callback?: (res: { success: boolean; error?: string }) => void
+      ) => {
+        const res = engine.transferAuctioneerGavel(data.roomCode, data.requesterId, data.targetUserId);
+        if (callback) callback(res);
+      }
+    );
+
+    // 4d. Leave Room Explicitly
+    socket.on(
+      'room:leave',
+      (
+        data: { roomCode: string; userId: string },
+        callback?: (res: { success: boolean }) => void
+      ) => {
+        const res = engine.leaveRoom(data.roomCode, data.userId);
+        socket.leave(`room_${data.roomCode.toUpperCase()}`);
+        if (callback) callback(res);
+      }
+    );
+
     // 5. Start Auction
     socket.on(
       'auction:start',

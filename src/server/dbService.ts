@@ -27,6 +27,11 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
           highestBidderUserId: room.highestBidderUserId,
           activePlayer: room.activePlayer,
           lastActionMessage: room.lastActionMessage,
+          soldHistory: room.soldHistory || [],
+          unsoldHistory: room.unsoldHistory || [],
+          bidHistory: room.bidHistory || [],
+          isAuctionPaused: room.isAuctionPaused || false,
+          tempAuctioneerId: room.tempAuctioneerId || null,
         }),
       },
       create: {
@@ -45,6 +50,11 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
           highestBidderUserId: room.highestBidderUserId,
           activePlayer: room.activePlayer,
           lastActionMessage: room.lastActionMessage,
+          soldHistory: room.soldHistory || [],
+          unsoldHistory: room.unsoldHistory || [],
+          bidHistory: room.bidHistory || [],
+          isAuctionPaused: room.isAuctionPaused || false,
+          tempAuctioneerId: room.tempAuctioneerId || null,
         }),
       },
     });
@@ -415,12 +425,51 @@ export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoom
       currentBid: liveState.currentBid || 0,
       highestBidderTeam: liveState.highestBidderTeam || null,
       highestBidderUserId: liveState.highestBidderUserId || null,
+      tempAuctioneerId: liveState.tempAuctioneerId || null,
       timerEndsAt: null,
       isTimerPaused: false,
+      isAuctionPaused: liveState.isAuctionPaused || false,
       rtmState: null,
-      bidHistory: [],
-      soldHistory: [],
-      unsoldHistory: [],
+      bidHistory: liveState.bidHistory || [],
+      soldHistory: liveState.soldHistory && liveState.soldHistory.length > 0
+        ? liveState.soldHistory
+        : dbRoom.squadPlayers
+            .filter((sp) => !sp.isRetained)
+            .map((sp) => ({
+              id: sp.id,
+              name: sp.name,
+              role: sp.role as any,
+              country: sp.country,
+              isOverseas: sp.isOverseas,
+              basePrice: sp.price,
+              previousTeam: (sp.franchiseCode as FranchiseCode) || null,
+              statsSummary: `Bought by ${sp.franchiseCode}`,
+              set: 'Accelerated' as any,
+              status: 'SOLD' as const,
+              soldTo: sp.franchiseCode as FranchiseCode,
+              soldAmount: sp.price,
+              isRetained: false,
+              imageUrl: sp.imageUrl || undefined,
+            })),
+      unsoldHistory: liveState.unsoldHistory && liveState.unsoldHistory.length > 0
+        ? liveState.unsoldHistory
+        : dbRoom.poolPlayers
+            .filter((pp) => pp.status === 'UNSOLD')
+            .map((pp) => ({
+              id: pp.id,
+              name: pp.name,
+              role: pp.role as any,
+              country: pp.country,
+              isOverseas: pp.isOverseas,
+              basePrice: pp.basePrice,
+              previousTeam: (pp.previousTeam as FranchiseCode) || null,
+              statsSummary: `Base Price ₹${(pp.basePrice / 100).toFixed(2)} Cr`,
+              set: pp.set as any,
+              status: 'UNSOLD' as const,
+              soldTo: null,
+              soldAmount: null,
+              imageUrl: pp.imageUrl || undefined,
+            })),
       allPlayers,
       lastActionMessage: liveState.lastActionMessage || 'Room loaded from PostgreSQL database.',
     };

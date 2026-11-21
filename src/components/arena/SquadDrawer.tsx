@@ -6,6 +6,7 @@ import { FRANCHISES } from '@/data/franchises';
 import { BoughtPlayer, FranchiseCode, PlayerRole } from '@/types/auction';
 import { formatIndianCurrency } from '@/lib/utils';
 import { PlayingXIBuilderModal } from './PlayingXIBuilderModal';
+import { useAuctionStore } from '@/store/auctionStore';
 
 interface SquadDrawerProps {
   franchiseCode: FranchiseCode | null;
@@ -30,6 +31,10 @@ export const SquadDrawer: React.FC<SquadDrawerProps> = ({
   onClose,
 }) => {
   const [showPlayingXI, setShowPlayingXI] = useState(false);
+  const { role, isHost, franchiseCode: userFranchise, userId, room } = useAuctionStore();
+  const isAuctioneer = role === 'AUCTIONEER' || isHost || room?.auctioneerId === userId;
+  const canFormXI = !isAuctioneer && userFranchise === franchiseCode;
+
   if (!franchiseCode) return null;
 
   const franchise = FRANCHISES[franchiseCode];
@@ -70,7 +75,7 @@ export const SquadDrawer: React.FC<SquadDrawerProps> = ({
               onClick={() => setShowPlayingXI(true)}
               className="bg-slate-950/70 hover:bg-slate-950 text-amber-300 border border-white/20 text-xs font-black px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow transition cursor-pointer"
             >
-              <span>Form Playing XI</span>
+              <span>{canFormXI ? 'Form Playing XI' : 'View Playing XI'}</span>
             </button>
             <button
               onClick={onClose}
@@ -167,6 +172,8 @@ export const SquadDrawer: React.FC<SquadDrawerProps> = ({
           franchiseCode={franchiseCode}
           squad={squad}
           onClose={() => setShowPlayingXI(false)}
+          roomCode={room?.roomCode}
+          isReadOnly={!canFormXI}
         />
       )}
     </div>

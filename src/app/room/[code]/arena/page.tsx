@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ExternalLink,
   Key,
+  LogOut,
 } from 'lucide-react';
 import { useAuctionStore } from '@/store/auctionStore';
 import { VideoCallStrip } from '@/components/arena/VideoCallStrip';
@@ -29,6 +30,7 @@ import { CustomPlayerModal } from '@/components/arena/CustomPlayerModal';
 import { AuctioneerAwardModal } from '@/components/arena/AuctioneerAwardModal';
 import { SoldPlayerCelebrationModal } from '@/components/arena/SoldPlayerCelebrationModal';
 import { ShareTeamCodesModal } from '@/components/arena/ShareTeamCodesModal';
+import { TempAuctioneerModal } from '@/components/arena/TempAuctioneerModal';
 import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { FranchiseCode } from '@/types/auction';
 import { livekitClient } from '@/lib/livekitClient';
@@ -48,6 +50,7 @@ export default function AuctionArenaPage() {
     teamRole,
     initSocket,
     claimRole,
+    leaveAuction,
     unreadGlobalCount,
     unreadTeamCount,
   } = useAuctionStore();
@@ -65,9 +68,22 @@ export default function AuctionArenaPage() {
   const [isCustomOpen, setIsCustomOpen] = useState(false);
   const [isAwardModalOpen, setIsAwardModalOpen] = useState(false);
   const [isShareCodesOpen, setIsShareCodesOpen] = useState(false);
+  const [isTempAuctioneerOpen, setIsTempAuctioneerOpen] = useState(false);
   const [showFranchiseModal, setShowFranchiseModal] = useState(false);
   const [hasPromptedModal, setHasPromptedModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+
+  const handleLeaveAuction = async () => {
+    const isAuctioneer = role === 'AUCTIONEER' || room?.auctioneerId === userId;
+    const confirmMsg = isAuctioneer
+      ? 'Leave the auction room? The designated Deputy Auctioneer will take over the gavel, and you will return to the dashboard.'
+      : 'Are you sure you want to leave this live auction session and return to the dashboard?';
+
+    if (confirm(confirmMsg)) {
+      await leaveAuction();
+      router.push('/');
+    }
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -104,6 +120,11 @@ export default function AuctionArenaPage() {
   }, [room, franchiseCode, role, hasPromptedModal]);
 
   const handleSelectFranchise = async (code: FranchiseCode) => {
+    if (franchiseCode && franchiseCode !== code) {
+      alert(`You are permanently locked to ${franchiseCode}. You cannot switch teams.`);
+      setShowFranchiseModal(false);
+      return;
+    }
     await claimRole('TEAM_MEMBER', code);
     setShowFranchiseModal(false);
   };
@@ -174,6 +195,21 @@ export default function AuctionArenaPage() {
             >
               <Key className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Team PINs</span>
+            </button>
+          )}
+
+          {/* Appoint Temp / Deputy Auctioneer (Auctioneer / Host only) */}
+          {isAuctioneerOrHost && (
+            <button
+              onClick={() => setIsTempAuctioneerOpen(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition cursor-pointer"
+              title="Appoint a Temporary Deputy Auctioneer or Transfer Gavel"
+            >
+              <Gavel className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">Deputy</span>
+              {room?.tempAuctioneerId && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              )}
             </button>
           )}
 
@@ -266,6 +302,16 @@ export default function AuctionArenaPage() {
             </span>
           </div>
 
+          {/* Leave Auction Button (All participants) */}
+          <button
+            onClick={handleLeaveAuction}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-950/70 hover:bg-rose-900 text-rose-300 border border-rose-800 transition cursor-pointer"
+            title="Leave this auction room and return to dashboard"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Leave</span>
+          </button>
+
           {/* Conclude Auction Button (Auctioneer only) */}
           {isAuctioneerOrHost && (
             <button
@@ -327,7 +373,7 @@ export default function AuctionArenaPage() {
         isOpen={isHuddleDrawerOpen}
         onClose={() => setIsHuddleDrawerOpen(false)}
         onOpenTeamChat={() => setIsChatDrawerOpen(true)}
-        onSwitchTeam={() => setShowFranchiseModal(true)}
+        onSwitchTeam={!franchiseCode ? () => setShowFranchiseModal(true) : undefined}
       />
 
       {/* 5. MODALS */}
@@ -435,6 +481,14 @@ export default function AuctionArenaPage() {
         <ShareTeamCodesModal
           isOpen={isShareCodesOpen}
           onClose={() => setIsShareCodesOpen(false)}
+        />
+      )}
+
+      {/* Appoint Deputy & Temporary Auctioneer Modal */}
+      {isAuctioneerOrHost && (
+        <TempAuctioneerModal
+          isOpen={isTempAuctioneerOpen}
+          onClose={() => setIsTempAuctioneerOpen(false)}
         />
       )}
     </div>

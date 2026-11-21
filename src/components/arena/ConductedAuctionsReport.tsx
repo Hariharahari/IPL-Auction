@@ -43,6 +43,35 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
   const [activeTab, setActiveTab] = useState<'SQUADS' | 'SOLD' | 'UNSOLD'>('SQUADS');
   const [selectedFranchise, setSelectedFranchise] = useState<FranchiseCode | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sessions, setSessions] = useState<Array<{
+    roomCode: string;
+    status: string;
+    phase: string;
+    soldCount: number;
+    unsoldCount: number;
+    totalSpentLakhs: number;
+    totalPlayers: number;
+    lastActionMessage: string;
+    updatedAt: number;
+    createdAt: number;
+  }>>([]);
+  const [showSessionsDirectory, setShowSessionsDirectory] = useState(false);
+
+  const fetchSessionsList = async () => {
+    try {
+      const res = await fetch('/api/rooms');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.sessions)) {
+        setSessions(data.sessions);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch rooms list', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchSessionsList();
+  }, []);
 
   const fetchRoomReport = async (code: string) => {
     setIsLoading(true);
@@ -231,6 +260,19 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
 
         {/* Room Search & Actions */}
         <div className="flex items-center gap-2.5 flex-wrap">
+          <button
+            type="button"
+            onClick={() => setShowSessionsDirectory(!showSessionsDirectory)}
+            className={`text-xs font-black px-3.5 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer ${
+              showSessionsDirectory
+                ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20'
+                : 'bg-slate-950 hover:bg-slate-800 text-amber-400 border-amber-500/40'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>All Sessions ({sessions.length})</span>
+          </button>
+
           <form onSubmit={handleSearchRoom} className="flex items-center gap-1.5">
             <input
               type="text"
@@ -288,6 +330,95 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
           </Link>
         </div>
       </div>
+
+      {/* SESSIONS DIRECTORY BROWSER */}
+      {showSessionsDirectory && (
+        <div className="bg-slate-900 border border-amber-500/30 rounded-2xl p-5 shadow-2xl animate-in fade-in space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h3 className="text-base font-black text-white flex items-center gap-2">
+                <Users className="w-4 h-4 text-amber-400" />
+                <span>All Auction Sessions Directory</span>
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Click any session below to view its complete auction summary, sold stars, unsold pool, and franchise squads.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowSessionsDirectory(false)}
+              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer"
+            >
+              Close Directory
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {sessions.length === 0 ? (
+              <div className="col-span-full p-6 text-center text-slate-500 italic bg-slate-950/60 rounded-xl">
+                No past sessions recorded yet. Create or conduct an auction to see it listed here!
+              </div>
+            ) : (
+              sessions.map((s) => {
+                const isCurrent = s.roomCode === roomCode;
+                return (
+                  <div
+                    key={s.roomCode}
+                    onClick={() => {
+                      fetchRoomReport(s.roomCode);
+                      setShowSessionsDirectory(false);
+                    }}
+                    className={`p-4 rounded-xl border transition flex flex-col justify-between gap-3 cursor-pointer group ${
+                      isCurrent
+                        ? 'bg-amber-500/10 border-amber-500 ring-2 ring-amber-500/30'
+                        : 'bg-slate-950/80 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
+                        <span className="font-mono text-base font-black text-amber-400 tracking-wider">
+                          {s.roomCode}
+                        </span>
+                      </div>
+                      <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase ${
+                        s.status === 'COMPLETED'
+                          ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                          : 'bg-blue-950 text-blue-400 border border-blue-800'
+                      }`}>
+                        {s.status}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 py-1 text-center bg-slate-900/60 rounded-lg p-2 border border-slate-800/80">
+                      <div>
+                        <span className="text-[9px] uppercase font-bold text-slate-400 block">Sold</span>
+                        <span className="text-xs font-black text-emerald-400">{s.soldCount}</span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] uppercase font-bold text-slate-400 block">Unsold</span>
+                        <span className="text-xs font-black text-rose-400">{s.unsoldCount}</span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] uppercase font-bold text-slate-400 block">Spent</span>
+                        <span className="text-xs font-black text-white font-mono">
+                          ₹{(s.totalSpentLakhs / 100).toFixed(1)} Cr
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+                      <span className="truncate max-w-[180px]">{s.lastActionMessage}</span>
+                      <span className="text-amber-400 group-hover:underline font-bold shrink-0">
+                        Inspect →
+                      </span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
 
       {errorMsg && (
         <div className="p-4 rounded-xl bg-rose-950/70 border border-rose-800 text-rose-300 text-xs font-bold text-center">

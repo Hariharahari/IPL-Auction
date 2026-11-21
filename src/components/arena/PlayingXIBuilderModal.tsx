@@ -25,6 +25,7 @@ interface PlayingXIBuilderModalProps {
   squad: BoughtPlayer[];
   onClose: () => void;
   roomCode?: string;
+  isReadOnly?: boolean;
 }
 
 export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
@@ -32,6 +33,7 @@ export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
   squad,
   onClose,
   roomCode = 'LIVE',
+  isReadOnly = false,
 }) => {
   const franchise = FRANCHISES[franchiseCode];
   const storageKey = `ipl_playing_xi_${roomCode}_${franchiseCode}`;
@@ -80,9 +82,9 @@ export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
     if (initial[0]) setCaptainId(initial[0]);
   }, [storageKey, squad]);
 
-  // Persist whenever state changes
+  // Persist whenever state changes (only in edit mode)
   useEffect(() => {
-    if (typeof window !== 'undefined' && selectedIds.length > 0) {
+    if (typeof window !== 'undefined' && selectedIds.length > 0 && !isReadOnly) {
       try {
         localStorage.setItem(
           storageKey,
@@ -98,7 +100,7 @@ export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
         console.warn('Error saving Playing XI', e);
       }
     }
-  }, [selectedIds, captainId, wicketKeeperId, impactPlayerId, storageKey]);
+  }, [selectedIds, captainId, wicketKeeperId, impactPlayerId, storageKey, isReadOnly]);
 
   // Compute stats
   const selectedPlayers = useMemo(() => {
@@ -112,6 +114,10 @@ export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
   const impactPlayer = squad.find((p) => p.id === impactPlayerId);
 
   const togglePlayer = (p: BoughtPlayer) => {
+    if (isReadOnly) {
+      setWarningMsg(`View Only: Only ${franchise.name} members can form this Playing XI.`);
+      return;
+    }
     setWarningMsg(null);
     if (selectedIds.includes(p.id)) {
       // Remove
@@ -137,6 +143,10 @@ export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
   };
 
   const setAsImpactSub = (p: BoughtPlayer) => {
+    if (isReadOnly) {
+      setWarningMsg(`View Only: Only ${franchise.name} members can select the Impact Player.`);
+      return;
+    }
     setWarningMsg(null);
     if (impactPlayerId === p.id) {
       setImpactPlayerId(null);
@@ -197,9 +207,20 @@ export const PlayingXIBuilderModal: React.FC<PlayingXIBuilderModalProps> = ({
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-amber-400">
                   IPL 2027
                 </span>
+                {isReadOnly ? (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300">
+                    View Only
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300">
+                    Active Editor
+                  </span>
+                )}
               </div>
               <p className="text-xs text-slate-300">
-                Form and strategize your active matchday eleven live during the auction.
+                {isReadOnly
+                  ? `Viewing ${franchise.name}'s Playing XI formation (Only ${franchise.name} table members can edit).`
+                  : 'Form and strategize your active matchday eleven live during the auction.'}
               </p>
             </div>
           </div>

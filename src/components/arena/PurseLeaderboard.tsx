@@ -10,7 +10,8 @@ import { SquadDrawer } from './SquadDrawer';
 import { PlayingXIBuilderModal } from './PlayingXIBuilderModal';
 
 export const PurseLeaderboard: React.FC = () => {
-  const { room } = useAuctionStore();
+  const { room, role, isHost, franchiseCode: userFranchise, userId } = useAuctionStore();
+  const isAuctioneer = role === 'AUCTIONEER' || isHost || room?.auctioneerId === userId;
   const highestBidderTeam = room?.highestBidderTeam;
   const [selectedFranchise, setSelectedFranchise] = useState<FranchiseCode | null>(null);
   const [playingXIFranchise, setPlayingXIFranchise] = useState<FranchiseCode | null>(null);
@@ -107,17 +108,32 @@ export const PurseLeaderboard: React.FC = () => {
                     <p className="text-xs font-black text-emerald-400 tabular-nums">
                       {formatIndianCurrency(team.remainingPurse)}
                     </p>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setPlayingXIFranchise(team.code);
-                      }}
-                      className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-black px-2 py-0.5 rounded mt-1 transition cursor-pointer flex items-center gap-1 shadow-sm"
-                      title="Form Playing XI for this franchise"
-                    >
-                      <span>Form XI</span>
-                    </button>
+                    {/* Role-based Playing XI: Only matching franchise member can Form XI; Auctioneer and other teams can only View XI */}
+                    {!isAuctioneer && userFranchise === team.code ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPlayingXIFranchise(team.code);
+                        }}
+                        className="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/50 text-[9px] font-black px-2 py-0.5 rounded mt-1 transition cursor-pointer flex items-center gap-1 shadow-sm"
+                        title="Form and edit Playing XI for your franchise"
+                      >
+                        <span>Form XI</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPlayingXIFranchise(team.code);
+                        }}
+                        className="bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700 text-[9px] font-bold px-2 py-0.5 rounded mt-1 transition cursor-pointer flex items-center gap-1"
+                        title={isAuctioneer ? `Auctioneer: View ${team.name} Playing XI` : `View ${team.name} Playing XI`}
+                      >
+                        <span>View XI</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -133,6 +149,7 @@ export const PurseLeaderboard: React.FC = () => {
           squad={room.teams[playingXIFranchise].squad}
           onClose={() => setPlayingXIFranchise(null)}
           roomCode={room.roomCode}
+          isReadOnly={isAuctioneer || userFranchise !== playingXIFranchise}
         />
       )}
 

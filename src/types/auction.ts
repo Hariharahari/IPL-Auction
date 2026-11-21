@@ -75,6 +75,7 @@ export interface RoomUser {
   joinedAt: number;
   isOnline: boolean;
   handRaised?: boolean;
+  isTempAuctioneer?: boolean;
 }
 
 export type AuctionPhase =
@@ -140,6 +141,7 @@ export interface AuctionRoomState {
   code?: string;
   hostId: string;
   auctioneerId?: string | null;
+  tempAuctioneerId?: string | null;
   phase: AuctionPhase;
   settings: RoomSettings;
   teams: Record<FranchiseCode, TeamState>;

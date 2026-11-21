@@ -444,9 +444,163 @@ export class AuctionEngine {
         if (user.socketId === socketId) {
           user.isOnline = false;
           this.notify(roomCode, 'user:left', { userId: user.id, userName: user.name });
+          if (user.id === room.auctioneerId) {
+            this.handleAuctioneerDeparture(room, user.id);
+          }
+          persistRoomState(room).catch(console.warn);
         }
       });
     });
+  }
+
+  public leaveRoom(roomCode: string, userId: string): { success: boolean } {
+    const code = roomCode.toUpperCase();
+    const room = rooms.get(code);
+    if (!room) return { success: false };
+
+    const user = room.users[userId];
+    if (user) {
+      user.isOnline = false;
+      this.notify(code, 'user:left', { userId: user.id, userName: user.name });
+
+      if (room.auctioneerId === userId) {
+        this.handleAuctioneerDeparture(room, userId);
+      }
+      persistRoomState(room).catch(console.warn);
+      this.notify(code, 'state:sync', room);
+    }
+    return { success: true };
+  }
+
+  public appointTempAuctioneer(
+    roomCode: string,
+    requesterId: string,
+    targetUserId: string
+  ): { success: boolean; error?: string } {
+    const code = roomCode.toUpperCase();
+    const room = rooms.get(code);
+    if (!room) return { success: false, error: 'Room not found' };
+
+    const requester = room.users[requesterId];
+    if (!requester || (room.auctioneerId !== requesterId && room.hostId !== requesterId)) {
+      return { success: false, error: 'Only the active Auctioneer or Host can appoint a Temporary Auctioneer' };
+    }
+
+    const targetUser = room.users[targetUserId];
+    if (!targetUser) return { success: false, error: 'Target user not found in this room' };
+    if (!targetUser.isOnline) return { success: false, error: 'Target user is currently offline' };
+
+    // Reset previous temp auctioneer flag
+    Object.values(room.users).forEach((u) => {
+      if (u.isTempAuctioneer) u.isTempAuctioneer = false;
+    });
+
+    room.tempAuctioneerId = targetUserId;
+    targetUser.isTempAuctioneer = true;
+    room.lastActionMessage = `${targetUser.name} has been appointed as Temporary Deputy Auctioneer by ${requester.name}!`;
+
+    persistRoomState(room).catch(console.warn);
+    this.notify(code, 'state:sync', room);
+    this.notify(code, 'auctioneer:temp_appointed', {
+      targetUserId,
+      targetUserName: targetUser.name,
+      appointedBy: requester.name,
+    });
+
+    return { success: true };
+  }
+
+  public transferAuctioneerGavel(
+    roomCode: string,
+    requesterId: string,
+    targetUserId: string
+  ): { success: boolean; error?: string } {
+    const code = roomCode.toUpperCase();
+    const room = rooms.get(code);
+    if (!room) return { success: false, error: 'Room not found' };
+
+    const requester = room.users[requesterId];
+    if (!requester || (room.auctioneerId !== requesterId && room.hostId !== requesterId)) {
+      return { success: false, error: 'Only the active Auctioneer or Host can transfer the gavel' };
+    }
+
+    const targetUser = room.users[targetUserId];
+    if (!targetUser) return { success: false, error: 'Target user not found in this room' };
+    if (!targetUser.isOnline) return { success: false, error: 'Target user is currently offline' };
+
+    if (requester.id === room.auctioneerId) {
+      requester.role = requester.franchiseCode ? 'TEAM_MEMBER' : 'SPECTATOR';
+    }
+    targetUser.role = 'AUCTIONEER';
+    targetUser.isTempAuctioneer = false;
+    room.auctioneerId = targetUser.id;
+    room.lastActionMessage = `Gavel handed over: ${targetUser.name} is now the active Auctioneer!`;
+
+    persistRoomState(room).catch(console.warn);
+    this.notify(code, 'state:sync', room);
+    this.notify(code, 'auctioneer:transferred', {
+      previousAuctioneerId: requesterId,
+      newAuctioneerId: targetUserId,
+      newAuctioneerName: targetUser.name,
+      isTemporary: false,
+    });
+
+    return { success: true };
+  }
+
+  private handleAuctioneerDeparture(room: AuctionRoomState, departedUserId: string) {
+    const code = room.roomCode || room.code || '';
+    // 1. Check if designated temporary auctioneer is online
+    if (room.tempAuctioneerId && room.tempAuctioneerId !== departedUserId) {
+      const deputy = room.users[room.tempAuctioneerId];
+      if (deputy && deputy.isOnline) {
+        deputy.role = 'AUCTIONEER';
+        deputy.isTempAuctioneer = false;
+        room.auctioneerId = deputy.id;
+        room.lastActionMessage = `Auctioneer left. ${deputy.name} has taken over as Temporary Auctioneer!`;
+        this.notify(code, 'auctioneer:transferred', {
+          previousAuctioneerId: departedUserId,
+          newAuctioneerId: deputy.id,
+          newAuctioneerName: deputy.name,
+          isTemporary: true,
+        });
+        this.notify(code, 'state:sync', room);
+        return;
+      }
+    }
+
+    // 2. Check if room host is online and not departed
+    if (room.hostId && room.hostId !== departedUserId) {
+      const hostUser = room.users[room.hostId];
+      if (hostUser && hostUser.isOnline) {
+        hostUser.role = 'AUCTIONEER';
+        room.auctioneerId = hostUser.id;
+        room.lastActionMessage = `Auctioneer left. Room Host ${hostUser.name} has assumed the Auctioneer gavel!`;
+        this.notify(code, 'auctioneer:transferred', {
+          previousAuctioneerId: departedUserId,
+          newAuctioneerId: hostUser.id,
+          newAuctioneerName: hostUser.name,
+          isTemporary: true,
+        });
+        this.notify(code, 'state:sync', room);
+        return;
+      }
+    }
+
+    // 3. Promote any other online user as fallback temporary auctioneer
+    const nextCandidate = Object.values(room.users).find((u) => u.id !== departedUserId && u.isOnline);
+    if (nextCandidate) {
+      nextCandidate.role = 'AUCTIONEER';
+      room.auctioneerId = nextCandidate.id;
+      room.lastActionMessage = `Auctioneer left. ${nextCandidate.name} has stepped in as Temporary Auctioneer!`;
+      this.notify(code, 'auctioneer:transferred', {
+        previousAuctioneerId: departedUserId,
+        newAuctioneerId: nextCandidate.id,
+        newAuctioneerName: nextCandidate.name,
+        isTemporary: true,
+      });
+      this.notify(code, 'state:sync', room);
+    }
   }
 
   public assignRole(
@@ -559,6 +713,10 @@ export class AuctionEngine {
 
   public getRoomState(roomCode: string): AuctionRoomState | undefined {
     return rooms.get(roomCode.toUpperCase());
+  }
+
+  public getAllRooms(): AuctionRoomState[] {
+    return Array.from(rooms.values());
   }
 
   public setTeamCaptain(

@@ -286,18 +286,13 @@ export const HuddleDrawer: React.FC<HuddleDrawerProps> = ({
                   </button>
                 )}
 
-                {onSwitchTeam && (
-                  <button
-                    onClick={() => {
-                      onClose();
-                      onSwitchTeam();
-                    }}
-                    className="w-full bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Switch to Another Franchise Table</span>
-                  </button>
-                )}
+                {/* Permanent Franchise Lock Indicator */}
+                <div className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-slate-400 flex items-center justify-center gap-2 font-medium">
+                  <Shield className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>
+                    Locked to <strong className="text-white font-bold">{franchise.name} ({franchise.code})</strong>
+                  </span>
+                </div>
               </div>
             </>
           ) : (

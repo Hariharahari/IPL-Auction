@@ -86,6 +86,9 @@ interface AuctionStoreState {
     role: 'AUCTIONEER' | 'SPECTATOR' | 'TEAM_MEMBER',
     franchiseCode?: FranchiseCode | null
   ) => Promise<{ success: boolean; error?: string }>;
+  appointTempAuctioneer: (targetUserId: string) => Promise<{ success: boolean; error?: string }>;
+  transferGavel: (targetUserId: string) => Promise<{ success: boolean; error?: string }>;
+  leaveAuction: () => Promise<{ success: boolean }>;
   setCaptain: (targetUserId: string) => Promise<{ success: boolean; error?: string }>;
   startAuction: (options?: {
     autoNominate?: boolean;
@@ -557,8 +560,13 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
 
     claimRole: async (role: 'AUCTIONEER' | 'SPECTATOR' | 'TEAM_MEMBER', franchiseCode?: FranchiseCode | null) => {
       const socket = getSocket();
-      const { roomCode, userId } = get();
+      const { roomCode, userId, franchiseCode: currentFranchise } = get();
       if (!roomCode) return { success: false, error: 'No active room' };
+
+      // STRICT PERMANENT LOCK:
+      if (currentFranchise && role === 'TEAM_MEMBER' && franchiseCode && currentFranchise !== franchiseCode) {
+        return { success: false, error: `You are permanently locked to ${currentFranchise}. Team switching is disabled.` };
+      }
 
       return new Promise((resolve) => {
         socket.emit(
@@ -575,6 +583,57 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
           }
         );
       });
+    },
+
+    appointTempAuctioneer: async (targetUserId: string) => {
+      const socket = getSocket();
+      const { roomCode, userId } = get();
+      if (!roomCode) return { success: false, error: 'No active room' };
+
+      return new Promise((resolve) => {
+        socket.emit(
+          'auction:appointTempAuctioneer',
+          { roomCode, requesterId: userId, targetUserId },
+          (res: { success: boolean; error?: string }) => {
+            resolve(res);
+          }
+        );
+      });
+    },
+
+    transferGavel: async (targetUserId: string) => {
+      const socket = getSocket();
+      const { roomCode, userId } = get();
+      if (!roomCode) return { success: false, error: 'No active room' };
+
+      return new Promise((resolve) => {
+        socket.emit(
+          'auction:transferGavel',
+          { roomCode, requesterId: userId, targetUserId },
+          (res: { success: boolean; error?: string }) => {
+            resolve(res);
+          }
+        );
+      });
+    },
+
+    leaveAuction: async () => {
+      const socket = getSocket();
+      const { roomCode, userId } = get();
+      if (roomCode && userId) {
+        socket.emit('room:leave', { roomCode, userId });
+      }
+      livekitClient.disconnect();
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('ipl_active_room_code');
+      }
+      set({
+        roomCode: null,
+        room: null,
+        isCameraActive: false,
+        micRoute: 'MUTED',
+      });
+      return { success: true };
     },
 
     setCaptain: async (targetUserId: string) => {
