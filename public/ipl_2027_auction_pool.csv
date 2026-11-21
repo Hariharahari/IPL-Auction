@@ -1,0 +1,88 @@
+Name,Role,Country,IsOverseas,BasePrice,Set,PreviousTeam
+Travis Head,BAT,Australia,Yes,200,Marquee,SRH
+Mitchell Starc,BOWL,Australia,Yes,200,Marquee,DC
+Trent Boult,BOWL,New Zealand,Yes,200,Marquee,MI
+Matheesha Pathirana,BOWL,Sri Lanka,Yes,200,Marquee,KKR
+Shimron Hetmyer,BAT,West Indies,Yes,150,Marquee,RR
+Deepak Chahar,BOWL,India,No,150,Fast Bowlers,MI
+Avesh Khan,BOWL,India,No,150,Fast Bowlers,LSG
+Wanindu Hasaranga,AR,Sri Lanka,Yes,150,All-Rounders,LSG
+Rachin Ravindra,AR,New Zealand,Yes,150,All-Rounders,KKR
+Lockie Ferguson,BOWL,New Zealand,Yes,150,Fast Bowlers,PBKS
+Mustafizur Rahman,BOWL,Bangladesh,Yes,150,Fast Bowlers,KKR
+Gerald Coetzee,BOWL,South Africa,Yes,150,Fast Bowlers,SRH
+Anrich Nortje,BOWL,South Africa,Yes,150,Fast Bowlers,LSG
+Pathum Nissanka,BAT,Sri Lanka,Yes,100,Batters,DC
+Nitish Rana,BAT,India,No,100,Batters,DC
+Tushar Deshpande,BOWL,India,No,100,Fast Bowlers,RR
+Akash Deep,BOWL,India,No,100,Fast Bowlers,KKR
+Dushmantha Chameera,BOWL,Sri Lanka,Yes,100,Fast Bowlers,DC
+Rehan Ahmed,AR,England,Yes,100,All-Rounders,DC
+Adam Milne,BOWL,New Zealand,Yes,100,Fast Bowlers,RR
+Luke Wood,BOWL,England,Yes,100,Fast Bowlers,GT
+Spencer Johnson,BOWL,Australia,Yes,100,Fast Bowlers,CSK
+Matt Henry,BOWL,New Zealand,Yes,100,Fast Bowlers,CSK
+Matthew Short,AR,Australia,Yes,100,All-Rounders,CSK
+Allah Ghazanfar,BOWL,Afghanistan,Yes,100,Spinners,MI
+Keshav Maharaj,BOWL,South Africa,Yes,100,Spinners,MI
+Jacob Bethell,AR,England,Yes,100,All-Rounders,RCB
+Nehal Wadhera,BAT,India,No,75,Batters,PBKS
+Abishek Porel,WK,India,No,75,Wicketkeepers,DC
+Shahrukh Khan,BAT,India,No,75,Batters,GT
+Ishant Sharma,BOWL,India,No,75,Fast Bowlers,GT
+Umran Malik,BOWL,India,No,75,Fast Bowlers,KKR
+Jaydev Unadkat,BOWL,India,No,75,Fast Bowlers,SRH
+Kamindu Mendis,AR,Sri Lanka,Yes,75,All-Rounders,SRH
+Kwena Maphaka,BOWL,South Africa,Yes,75,Fast Bowlers,RR
+Akash Madhwal,BOWL,India,No,75,Fast Bowlers,CSK
+Rahul Tripathi,BAT,India,No,75,Batters,KKR
+Blessing Muzarabani,BOWL,Zimbabwe,Yes,75,Fast Bowlers,KKR
+Mitchell Owen,AR,Australia,Yes,75,All-Rounders,PBKS
+George Linde,AR,South Africa,Yes,75,All-Rounders,LSG
+Matthew Breetzke,BAT,South Africa,Yes,75,Batters,LSG
+David Payne,BOWL,England,Yes,75,Fast Bowlers,SRH
+Dilshan Madushanka,BOWL,Sri Lanka,Yes,75,Fast Bowlers,SRH
+Richard Gleeson,BOWL,England,Yes,75,Fast Bowlers,RCB
+Zak Foulkes,AR,New Zealand,Yes,75,All-Rounders,CSK
+Connor Esterhuizen,WK,South Africa,Yes,50,Wicketkeepers,GT
+Mayank Markande,BOWL,India,No,50,Spinners,MI
+Mahipal Lomror,AR,India,No,50,All-Rounders,MI
+Swapnil Singh,AR,India,No,50,All-Rounders,RCB
+Shivam Mavi,BOWL,India,No,50,Fast Bowlers,SRH
+Navdeep Saini,BOWL,India,No,50,Fast Bowlers,KKR
+Karun Nair,BAT,India,No,50,Batters,DC
+Kuldeep Sen,BOWL,India,No,50,Fast Bowlers,RR
+Robin Minz,WK,India,No,50,Wicketkeepers,MI
+Praveen Dubey,BOWL,India,No,50,Spinners,PBKS
+Yudhvir Singh Charak,AR,India,No,30,Uncapped All-Rounders,RR
+Vignesh Puthur,BOWL,India,No,30,Uncapped Bowlers,RR
+Prashant Veer,AR,India,No,30,Uncapped All-Rounders,CSK
+Aman Khan,AR,India,No,30,Uncapped All-Rounders,CSK
+Dian Forrester,AR,South Africa,Yes,30,All-Rounders,CSK
+Kuldip Yadav,BOWL,India,No,30,Uncapped Bowlers,CSK
+Macneil Noronha,AR,India,No,30,Uncapped All-Rounders,CSK
+Ajay Mandal,AR,India,No,30,Uncapped All-Rounders,DC
+Sahil Parakh,BAT,India,No,30,Uncapped Batters,DC
+Kulwant Khejroliya,BOWL,India,No,30,Uncapped Bowlers,GT
+Prithviraj Yarra,BOWL,India,No,30,Uncapped Bowlers,GT
+Daksh Kamra,AR,India,No,30,Uncapped All-Rounders,KKR
+Luvnith Sisodia,WK,India,No,30,Uncapped Wicketkeepers,KKR
+Tejasvi Singh,WK,India,No,30,Uncapped Wicketkeepers,KKR
+Himmat Singh,BAT,India,No,30,Uncapped Batters,LSG
+Naman Tiwari,BOWL,India,No,30,Uncapped Bowlers,LSG
+Atharva Ankolekar,AR,India,No,30,Uncapped All-Rounders,MI
+Danish Malewar,BAT,India,No,30,Uncapped Batters,MI
+Krish Bhagat,BOWL,India,No,30,Uncapped Bowlers,MI
+Mayank Rawat,AR,India,No,30,Uncapped All-Rounders,MI
+Mohammed Izhar,BOWL,India,No,30,Uncapped Bowlers,MI
+Ruchit Ahir,WK,India,No,30,Uncapped Wicketkeepers,MI
+Pyla Avinash,BAT,India,No,30,Uncapped Batters,PBKS
+Vishal Nishad,BOWL,India,No,30,Uncapped Bowlers,PBKS
+Emanjot Singh Chahal,BOWL,India,No,30,Uncapped Bowlers,RR
+Ravi Singh,WK,India,No,30,Uncapped Wicketkeepers,RR
+Mangesh Yadav,BOWL,India,No,30,Uncapped Bowlers,RCB
+Satvik Deswal,AR,India,No,30,Uncapped All-Rounders,RCB
+Vihaan Malhotra,BAT,India,No,30,Uncapped Batters,RCB
+Amit Kumar,BOWL,India,No,30,Uncapped Bowlers,SRH
+Onkar Tarmale,BOWL,India,No,30,Uncapped Bowlers,SRH
+RS Ambrish,AR,India,No,30,Uncapped All-Rounders,SRH

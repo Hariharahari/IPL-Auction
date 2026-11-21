@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id            String             @id @default(uuid())
+  code          String             @unique
+  hostId        String
+  auctioneerId  String?
+  status        String             @default("LOBBY") // LOBBY | ACTIVE | PAUSED | COMPLETED
+  configJson    String             @default("{}")
+  liveStateJson String             @default("{}")
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  members       RoomMember[]
+  teams         FranchiseTeam[]
+  squadPlayers  SquadPlayer[]
+  poolPlayers   AuctionPoolPlayer[]
+  messages      ChatMessage[]
+
+  @@index([code])
+}
+
+model RoomMember {
+  id            String    @id @default(uuid())
+  roomId        String
+  userId        String
+  name          String
+  role          String    @default("SPECTATOR") // AUCTIONEER | TEAM_MEMBER | SPECTATOR
+  franchiseCode String?
+  isCaptain     Boolean   @default(false)
+  isOnline      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+
+  room          Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@index([roomId])
+}
+
+model FranchiseTeam {
+  id             String        @id @default(uuid())
+  roomId         String
+  franchiseCode  String
+  remainingPurse Float         // In Lakhs (e.g. 4745 = 47.45 Cr)
+  maxSquadSize   Int           @default(25)
+  maxOverseas    Int           @default(8)
+
+  room           Room          @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  squad          SquadPlayer[]
+
+  @@unique([roomId, franchiseCode])
+  @@index([roomId])
+}
+
+model SquadPlayer {
+  id            String         @id @default(uuid())
+  roomId        String
+  franchiseCode String
+  name          String
+  role          String         // BAT | BOWL | AR | WK
+  country       String         @default("India")
+  isOverseas    Boolean        @default(false)
+  price         Float          @default(0) // In Lakhs
+  isRetained    Boolean        @default(false)
+  imageUrl      String?
+  acquiredAt    DateTime       @default(now())
+
+  room          Room           @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  team          FranchiseTeam? @relation(fields: [roomId, franchiseCode], references: [roomId, franchiseCode], onDelete: Cascade)
+
+  @@index([roomId, franchiseCode])
+}
+
+model AuctionPoolPlayer {
+  id              String    @id @default(uuid())
+  roomId          String
+  name            String
+  role            String    // BAT | BOWL | AR | WK
+  country         String    @default("India")
+  isOverseas      Boolean   @default(false)
+  basePrice       Float     @default(20) // In Lakhs
+  set             String    @default("Accelerated")
+  previousTeam    String?
+  imageUrl        String?
+  status          String    @default("PENDING") // PENDING | ON_BLOCK | SOLD | UNSOLD
+  soldToTeam      String?
+  soldPrice       Float?
+  nominationOrder Int?
+
+  room            Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, status])
+}
+
+model ChatMessage {
+  id            String    @id @default(uuid())
+  roomId        String
+  channel       String    // GLOBAL or FranchiseCode
+  franchiseCode String?
+  senderName    String
+  text          String
+  createdAt     DateTime  @default(now())
+
+  room          Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, channel])
+}

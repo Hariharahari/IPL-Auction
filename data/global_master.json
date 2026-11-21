@@ -1,0 +1,2528 @@
+{
+  "retainedSquads": [
+    {
+      "name": "Ruturaj Gaikwad",
+      "team": "CSK",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1800,
+      "priceCr": 18
+    },
+    {
+      "name": "Sanju Samson",
+      "team": "CSK",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1800,
+      "priceCr": 18
+    },
+    {
+      "name": "Kartik Sharma",
+      "team": "CSK",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1420,
+      "priceCr": 14.2
+    },
+    {
+      "name": "Shivam Dube",
+      "team": "CSK",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1200,
+      "priceCr": 12
+    },
+    {
+      "name": "Noor Ahmad",
+      "team": "CSK",
+      "role": "BOWL",
+      "country": "Afghanistan",
+      "isOverseas": true,
+      "price": 1000,
+      "priceCr": 10
+    },
+    {
+      "name": "Liam Livingstone",
+      "team": "CSK",
+      "role": "AR",
+      "country": "England",
+      "isOverseas": true,
+      "price": 800,
+      "priceCr": 8
+    },
+    {
+      "name": "Rahul Chahar",
+      "team": "CSK",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 520,
+      "priceCr": 5.2
+    },
+    {
+      "name": "Anshul Kamboj",
+      "team": "CSK",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 340,
+      "priceCr": 3.4
+    },
+    {
+      "name": "Jack Edwards",
+      "team": "CSK",
+      "role": "AR",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 300,
+      "priceCr": 3
+    },
+    {
+      "name": "Dewald Brevis",
+      "team": "CSK",
+      "role": "BAT",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 220,
+      "priceCr": 2.2
+    },
+    {
+      "name": "Gurjapneet Singh",
+      "team": "CSK",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 220,
+      "priceCr": 2.2
+    },
+    {
+      "name": "Akeal Hosein",
+      "team": "CSK",
+      "role": "BOWL",
+      "country": "West Indies",
+      "isOverseas": true,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Jamie Overton",
+      "team": "CSK",
+      "role": "AR",
+      "country": "England",
+      "isOverseas": true,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Sarfaraz Khan",
+      "team": "CSK",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 75,
+      "priceCr": 0.75
+    },
+    {
+      "name": "Ayush Mhatre",
+      "team": "CSK",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Mukesh Choudhary",
+      "team": "CSK",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Ramakrishna Ghosh",
+      "team": "CSK",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Shreyas Gopal",
+      "team": "CSK",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Urvil Patel",
+      "team": "CSK",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Jasprit Bumrah",
+      "team": "MI",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1800,
+      "priceCr": 18
+    },
+    {
+      "name": "Arshdeep Singh",
+      "team": "MI",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1800,
+      "priceCr": 18
+    },
+    {
+      "name": "Suryakumar Yadav",
+      "team": "MI",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1635,
+      "priceCr": 16.35
+    },
+    {
+      "name": "Rohit Sharma",
+      "team": "MI",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1630,
+      "priceCr": 16.3
+    },
+    {
+      "name": "Tilak Varma",
+      "team": "MI",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 800,
+      "priceCr": 8
+    },
+    {
+      "name": "Will Jacks",
+      "team": "MI",
+      "role": "AR",
+      "country": "England",
+      "isOverseas": true,
+      "price": 525,
+      "priceCr": 5.25
+    },
+    {
+      "name": "Naman Dhir",
+      "team": "MI",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 525,
+      "priceCr": 5.25
+    },
+    {
+      "name": "Quinton de Kock",
+      "team": "MI",
+      "role": "WK",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Mitchell Santner",
+      "team": "MI",
+      "role": "AR",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Shardul Thakur",
+      "team": "MI",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Sherfane Rutherford",
+      "team": "MI",
+      "role": "BAT",
+      "country": "West Indies",
+      "isOverseas": true,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Ryan Rickelton",
+      "team": "MI",
+      "role": "WK",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 100,
+      "priceCr": 1
+    },
+    {
+      "name": "Corbin Bosch",
+      "team": "MI",
+      "role": "AR",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 85,
+      "priceCr": 0.85
+    },
+    {
+      "name": "Ashwani Kumar",
+      "team": "MI",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Raghu Sharma",
+      "team": "MI",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Raj Angad Bawa",
+      "team": "MI",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Virat Kohli",
+      "team": "RCB",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 2100,
+      "priceCr": 21
+    },
+    {
+      "name": "Josh Hazlewood",
+      "team": "RCB",
+      "role": "BOWL",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 1250,
+      "priceCr": 12.5
+    },
+    {
+      "name": "Phil Salt",
+      "team": "RCB",
+      "role": "WK",
+      "country": "England",
+      "isOverseas": true,
+      "price": 1150,
+      "priceCr": 11.5
+    },
+    {
+      "name": "Rajat Patidar",
+      "team": "RCB",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1100,
+      "priceCr": 11
+    },
+    {
+      "name": "Jitesh Sharma",
+      "team": "RCB",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1100,
+      "priceCr": 11
+    },
+    {
+      "name": "Bhuvneshwar Kumar",
+      "team": "RCB",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1075,
+      "priceCr": 10.75
+    },
+    {
+      "name": "Venkatesh Iyer",
+      "team": "RCB",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 700,
+      "priceCr": 7
+    },
+    {
+      "name": "Rasikh Dar",
+      "team": "RCB",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 600,
+      "priceCr": 6
+    },
+    {
+      "name": "Krunal Pandya",
+      "team": "RCB",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 575,
+      "priceCr": 5.75
+    },
+    {
+      "name": "Yash Dayal",
+      "team": "RCB",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 500,
+      "priceCr": 5
+    },
+    {
+      "name": "Tim David",
+      "team": "RCB",
+      "role": "BAT",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 300,
+      "priceCr": 3
+    },
+    {
+      "name": "Suyash Sharma",
+      "team": "RCB",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 260,
+      "priceCr": 2.6
+    },
+    {
+      "name": "Devdutt Padikkal",
+      "team": "RCB",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Nuwan Thushara",
+      "team": "RCB",
+      "role": "BOWL",
+      "country": "Sri Lanka",
+      "isOverseas": true,
+      "price": 160,
+      "priceCr": 1.6
+    },
+    {
+      "name": "Romario Shepherd",
+      "team": "RCB",
+      "role": "AR",
+      "country": "West Indies",
+      "isOverseas": true,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Jacob Duffy",
+      "team": "RCB",
+      "role": "BOWL",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Jordan Cox",
+      "team": "RCB",
+      "role": "WK",
+      "country": "England",
+      "isOverseas": true,
+      "price": 125,
+      "priceCr": 1.25
+    },
+    {
+      "name": "Abhinandan Singh",
+      "team": "RCB",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Kanishk Chouhan",
+      "team": "RCB",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Vicky Ostwal",
+      "team": "RCB",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Cameron Green",
+      "team": "KKR",
+      "role": "AR",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 2520,
+      "priceCr": 25.2
+    },
+    {
+      "name": "Rinku Singh",
+      "team": "KKR",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1300,
+      "priceCr": 13
+    },
+    {
+      "name": "Sunil Narine",
+      "team": "KKR",
+      "role": "AR",
+      "country": "West Indies",
+      "isOverseas": true,
+      "price": 1200,
+      "priceCr": 12
+    },
+    {
+      "name": "Varun Chakaravarthy",
+      "team": "KKR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1200,
+      "priceCr": 12
+    },
+    {
+      "name": "Harshit Rana",
+      "team": "KKR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 400,
+      "priceCr": 4
+    },
+    {
+      "name": "Ramandeep Singh",
+      "team": "KKR",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 400,
+      "priceCr": 4
+    },
+    {
+      "name": "Angkrish Raghuvanshi",
+      "team": "KKR",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 300,
+      "priceCr": 3
+    },
+    {
+      "name": "Finn Allen",
+      "team": "KKR",
+      "role": "WK",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "price": 300,
+      "priceCr": 3
+    },
+    {
+      "name": "Tim Seifert",
+      "team": "KKR",
+      "role": "WK",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "price": 250,
+      "priceCr": 2.5
+    },
+    {
+      "name": "Rovman Powell",
+      "team": "KKR",
+      "role": "BAT",
+      "country": "West Indies",
+      "isOverseas": true,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Vaibhav Arora",
+      "team": "KKR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Kartik Tyagi",
+      "team": "KKR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Manish Pandey",
+      "team": "KKR",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Anukul Roy",
+      "team": "KKR",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 125,
+      "priceCr": 1.25
+    },
+    {
+      "name": "Prashant Solanki",
+      "team": "KKR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Sarthak Ranjan",
+      "team": "KKR",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Saurabh Dubey",
+      "team": "KKR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Heinrich Klaasen",
+      "team": "SRH",
+      "role": "WK",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 2300,
+      "priceCr": 23
+    },
+    {
+      "name": "Pat Cummins",
+      "team": "SRH",
+      "role": "BOWL",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 1800,
+      "priceCr": 18
+    },
+    {
+      "name": "Abhishek Sharma",
+      "team": "SRH",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1400,
+      "priceCr": 14
+    },
+    {
+      "name": "Ishan Kishan",
+      "team": "SRH",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1125,
+      "priceCr": 11.25
+    },
+    {
+      "name": "Nitish Kumar Reddy",
+      "team": "SRH",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 600,
+      "priceCr": 6
+    },
+    {
+      "name": "T Natarajan",
+      "team": "SRH",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 500,
+      "priceCr": 5
+    },
+    {
+      "name": "Khaleel Ahmed",
+      "team": "SRH",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 480,
+      "priceCr": 4.8
+    },
+    {
+      "name": "Nathan Ellis",
+      "team": "SRH",
+      "role": "BOWL",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Brydon Carse",
+      "team": "SRH",
+      "role": "AR",
+      "country": "England",
+      "isOverseas": true,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Eshan Malinga",
+      "team": "SRH",
+      "role": "BOWL",
+      "country": "Sri Lanka",
+      "isOverseas": true,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Salil Arora",
+      "team": "SRH",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 70,
+      "priceCr": 0.7
+    },
+    {
+      "name": "Aniket Verma",
+      "team": "SRH",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Harsh Dubey",
+      "team": "SRH",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Krains Fuletra",
+      "team": "SRH",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Praful Hinge",
+      "team": "SRH",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Sakib Hussain",
+      "team": "SRH",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Shivang Kumar",
+      "team": "SRH",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Smaran Ravichandran",
+      "team": "SRH",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Yashasvi Jaiswal",
+      "team": "RR",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1800,
+      "priceCr": 18
+    },
+    {
+      "name": "Ravindra Jadeja",
+      "team": "RR",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1400,
+      "priceCr": 14
+    },
+    {
+      "name": "Riyan Parag",
+      "team": "RR",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1400,
+      "priceCr": 14
+    },
+    {
+      "name": "Dhruv Jurel",
+      "team": "RR",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1400,
+      "priceCr": 14
+    },
+    {
+      "name": "Jofra Archer",
+      "team": "RR",
+      "role": "BOWL",
+      "country": "England",
+      "isOverseas": true,
+      "price": 1250,
+      "priceCr": 12.5
+    },
+    {
+      "name": "Ravi Bishnoi",
+      "team": "RR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1100,
+      "priceCr": 11
+    },
+    {
+      "name": "Mohammed Shami",
+      "team": "RR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 500,
+      "priceCr": 5
+    },
+    {
+      "name": "Sandeep Sharma",
+      "team": "RR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 400,
+      "priceCr": 4
+    },
+    {
+      "name": "Nandre Burger",
+      "team": "RR",
+      "role": "BOWL",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 300,
+      "priceCr": 3
+    },
+    {
+      "name": "Vaibhav Sooryavanshi",
+      "team": "RR",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 110,
+      "priceCr": 1.1
+    },
+    {
+      "name": "Dasun Shanaka",
+      "team": "RR",
+      "role": "AR",
+      "country": "Sri Lanka",
+      "isOverseas": true,
+      "price": 125,
+      "priceCr": 1.25
+    },
+    {
+      "name": "Donovan Ferreira",
+      "team": "RR",
+      "role": "WK",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 125,
+      "priceCr": 1.25
+    },
+    {
+      "name": "Shubham Dubey",
+      "team": "RR",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 80,
+      "priceCr": 0.8
+    },
+    {
+      "name": "Manimaran Siddharth",
+      "team": "RR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 75,
+      "priceCr": 0.75
+    },
+    {
+      "name": "Lhuan-dre Pretorius",
+      "team": "RR",
+      "role": "WK",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 75,
+      "priceCr": 0.75
+    },
+    {
+      "name": "Aman Rao Perala",
+      "team": "RR",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 50,
+      "priceCr": 0.5
+    },
+    {
+      "name": "Brijesh Sharma",
+      "team": "RR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 35,
+      "priceCr": 0.35
+    },
+    {
+      "name": "Sushant Mishra",
+      "team": "RR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 35,
+      "priceCr": 0.35
+    },
+    {
+      "name": "Yash Raj Punja",
+      "team": "RR",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 35,
+      "priceCr": 0.35
+    },
+    {
+      "name": "Axar Patel",
+      "team": "DC",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1650,
+      "priceCr": 16.5
+    },
+    {
+      "name": "Rishabh Pant",
+      "team": "DC",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1500,
+      "priceCr": 15
+    },
+    {
+      "name": "KL Rahul",
+      "team": "DC",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1400,
+      "priceCr": 14
+    },
+    {
+      "name": "Tristan Stubbs",
+      "team": "DC",
+      "role": "BAT",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 1000,
+      "priceCr": 10
+    },
+    {
+      "name": "Auqib Dar",
+      "team": "DC",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 840,
+      "priceCr": 8.4
+    },
+    {
+      "name": "Mukesh Kumar",
+      "team": "DC",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 800,
+      "priceCr": 8
+    },
+    {
+      "name": "David Miller",
+      "team": "DC",
+      "role": "BAT",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 750,
+      "priceCr": 7.5
+    },
+    {
+      "name": "Ashutosh Sharma",
+      "team": "DC",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 380,
+      "priceCr": 3.8
+    },
+    {
+      "name": "Kyle Jamieson",
+      "team": "DC",
+      "role": "BOWL",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Lungi Ngidi",
+      "team": "DC",
+      "role": "BOWL",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Sameer Rizvi",
+      "team": "DC",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 125,
+      "priceCr": 1.25
+    },
+    {
+      "name": "Prithvi Shaw",
+      "team": "DC",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 100,
+      "priceCr": 1
+    },
+    {
+      "name": "Vipraj Nigam",
+      "team": "DC",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 50,
+      "priceCr": 0.5
+    },
+    {
+      "name": "Madhav Tiwari",
+      "team": "DC",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 40,
+      "priceCr": 0.4
+    },
+    {
+      "name": "Zeeshan Ansari",
+      "team": "DC",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 35,
+      "priceCr": 0.35
+    },
+    {
+      "name": "Tripurana Vijay",
+      "team": "DC",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Shreyas Iyer",
+      "team": "PBKS",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 2675,
+      "priceCr": 26.75
+    },
+    {
+      "name": "Hardik Pandya",
+      "team": "PBKS",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1800,
+      "priceCr": 18
+    },
+    {
+      "name": "Yuzvendra Chahal",
+      "team": "PBKS",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1800,
+      "priceCr": 18
+    },
+    {
+      "name": "Marcus Stoinis",
+      "team": "PBKS",
+      "role": "AR",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 1100,
+      "priceCr": 11
+    },
+    {
+      "name": "Marco Jansen",
+      "team": "PBKS",
+      "role": "AR",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 700,
+      "priceCr": 7
+    },
+    {
+      "name": "Shashank Singh",
+      "team": "PBKS",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 550,
+      "priceCr": 5.5
+    },
+    {
+      "name": "Ben Dwarshuis",
+      "team": "PBKS",
+      "role": "BOWL",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 440,
+      "priceCr": 4.4
+    },
+    {
+      "name": "Prabhsimran Singh",
+      "team": "PBKS",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 400,
+      "priceCr": 4
+    },
+    {
+      "name": "Priyansh Arya",
+      "team": "PBKS",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 380,
+      "priceCr": 3.8
+    },
+    {
+      "name": "Cooper Connolly",
+      "team": "PBKS",
+      "role": "AR",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 300,
+      "priceCr": 3
+    },
+    {
+      "name": "Azmatullah Omarzai",
+      "team": "PBKS",
+      "role": "AR",
+      "country": "Afghanistan",
+      "isOverseas": true,
+      "price": 240,
+      "priceCr": 2.4
+    },
+    {
+      "name": "Vyshak Vijaykumar",
+      "team": "PBKS",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 180,
+      "priceCr": 1.8
+    },
+    {
+      "name": "Yash Thakur",
+      "team": "PBKS",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 160,
+      "priceCr": 1.6
+    },
+    {
+      "name": "Harpreet Brar",
+      "team": "PBKS",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Vishnu Vinod",
+      "team": "PBKS",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 95,
+      "priceCr": 0.95
+    },
+    {
+      "name": "Xavier Bartlett",
+      "team": "PBKS",
+      "role": "BOWL",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 80,
+      "priceCr": 0.8
+    },
+    {
+      "name": "Harnoor Pannu",
+      "team": "PBKS",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Musheer Khan",
+      "team": "PBKS",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Suryansh Shedge",
+      "team": "PBKS",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Rashid Khan",
+      "team": "GT",
+      "role": "BOWL",
+      "country": "Afghanistan",
+      "isOverseas": true,
+      "price": 1800,
+      "priceCr": 18
+    },
+    {
+      "name": "Shubman Gill",
+      "team": "GT",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1650,
+      "priceCr": 16.5
+    },
+    {
+      "name": "Jos Buttler",
+      "team": "GT",
+      "role": "WK",
+      "country": "England",
+      "isOverseas": true,
+      "price": 1575,
+      "priceCr": 15.75
+    },
+    {
+      "name": "Mohammed Siraj",
+      "team": "GT",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1225,
+      "priceCr": 12.25
+    },
+    {
+      "name": "Kagiso Rabada",
+      "team": "GT",
+      "role": "BOWL",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 1075,
+      "priceCr": 10.75
+    },
+    {
+      "name": "Prasidh Krishna",
+      "team": "GT",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 950,
+      "priceCr": 9.5
+    },
+    {
+      "name": "Sai Sudharsan",
+      "team": "GT",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 850,
+      "priceCr": 8.5
+    },
+    {
+      "name": "Harshal Patel",
+      "team": "GT",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 550,
+      "priceCr": 5.5
+    },
+    {
+      "name": "Rahul Tewatia",
+      "team": "GT",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 400,
+      "priceCr": 4
+    },
+    {
+      "name": "Washington Sundar",
+      "team": "GT",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 400,
+      "priceCr": 4
+    },
+    {
+      "name": "Glenn Phillips",
+      "team": "GT",
+      "role": "AR",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "price": 300,
+      "priceCr": 3
+    },
+    {
+      "name": "Jason Holder",
+      "team": "GT",
+      "role": "AR",
+      "country": "West Indies",
+      "isOverseas": true,
+      "price": 300,
+      "priceCr": 3
+    },
+    {
+      "name": "Sai Kishore",
+      "team": "GT",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 250,
+      "priceCr": 2.5
+    },
+    {
+      "name": "Tom Banton",
+      "team": "GT",
+      "role": "WK",
+      "country": "England",
+      "isOverseas": true,
+      "price": 200,
+      "priceCr": 2
+    },
+    {
+      "name": "Gurnoor Singh Brar",
+      "team": "GT",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Mohd. Arshad Khan",
+      "team": "GT",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 150,
+      "priceCr": 1.5
+    },
+    {
+      "name": "Jayant Yadav",
+      "team": "GT",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 100,
+      "priceCr": 1
+    },
+    {
+      "name": "Kumar Kushagra",
+      "team": "GT",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 80,
+      "priceCr": 0.8
+    },
+    {
+      "name": "Anuj Rawat",
+      "team": "GT",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Ashok Sharma",
+      "team": "GT",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Manav Suthar",
+      "team": "GT",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Nishant Sindhu",
+      "team": "GT",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Nicholas Pooran",
+      "team": "LSG",
+      "role": "WK",
+      "country": "West Indies",
+      "isOverseas": true,
+      "price": 2100,
+      "priceCr": 21
+    },
+    {
+      "name": "Kuldeep Yadav",
+      "team": "LSG",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1350,
+      "priceCr": 13.5
+    },
+    {
+      "name": "Mayank Yadav",
+      "team": "LSG",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 1100,
+      "priceCr": 11
+    },
+    {
+      "name": "Josh Inglis",
+      "team": "LSG",
+      "role": "WK",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 860,
+      "priceCr": 8.6
+    },
+    {
+      "name": "Abdul Samad",
+      "team": "LSG",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 420,
+      "priceCr": 4.2
+    },
+    {
+      "name": "Ayush Badoni",
+      "team": "LSG",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 400,
+      "priceCr": 4
+    },
+    {
+      "name": "Mohsin Khan",
+      "team": "LSG",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 400,
+      "priceCr": 4
+    },
+    {
+      "name": "Mitchell Marsh",
+      "team": "LSG",
+      "role": "AR",
+      "country": "Australia",
+      "isOverseas": true,
+      "price": 340,
+      "priceCr": 3.4
+    },
+    {
+      "name": "Sam Curran",
+      "team": "LSG",
+      "role": "AR",
+      "country": "England",
+      "isOverseas": true,
+      "price": 340,
+      "priceCr": 3.4
+    },
+    {
+      "name": "Shahbaz Ahmed",
+      "team": "LSG",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 335,
+      "priceCr": 3.35
+    },
+    {
+      "name": "Aiden Markram",
+      "team": "LSG",
+      "role": "BAT",
+      "country": "South Africa",
+      "isOverseas": true,
+      "price": 400,
+      "priceCr": 4
+    },
+    {
+      "name": "Akash Singh",
+      "team": "LSG",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Akshat Raghuwanshi",
+      "team": "LSG",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Arjun Tendulkar",
+      "team": "LSG",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Arshin Kulkarni",
+      "team": "LSG",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Digvesh Rathi",
+      "team": "LSG",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Mukul Choudhary",
+      "team": "LSG",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    },
+    {
+      "name": "Prince Yadav",
+      "team": "LSG",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "price": 30,
+      "priceCr": 0.3
+    }
+  ],
+  "auctionPool": [
+    {
+      "name": "Travis Head",
+      "role": "BAT",
+      "country": "Australia",
+      "isOverseas": true,
+      "basePrice": 200,
+      "set": "Marquee",
+      "previousTeam": "SRH"
+    },
+    {
+      "name": "Mitchell Starc",
+      "role": "BOWL",
+      "country": "Australia",
+      "isOverseas": true,
+      "basePrice": 200,
+      "set": "Marquee",
+      "previousTeam": "DC"
+    },
+    {
+      "name": "Trent Boult",
+      "role": "BOWL",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "basePrice": 200,
+      "set": "Marquee",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Matheesha Pathirana",
+      "role": "BOWL",
+      "country": "Sri Lanka",
+      "isOverseas": true,
+      "basePrice": 200,
+      "set": "Marquee",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Shimron Hetmyer",
+      "role": "BAT",
+      "country": "West Indies",
+      "isOverseas": true,
+      "basePrice": 150,
+      "set": "Marquee",
+      "previousTeam": "RR"
+    },
+    {
+      "name": "Deepak Chahar",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 150,
+      "set": "Fast Bowlers",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Avesh Khan",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 150,
+      "set": "Fast Bowlers",
+      "previousTeam": "LSG"
+    },
+    {
+      "name": "Wanindu Hasaranga",
+      "role": "AR",
+      "country": "Sri Lanka",
+      "isOverseas": true,
+      "basePrice": 150,
+      "set": "All-Rounders",
+      "previousTeam": "LSG"
+    },
+    {
+      "name": "Rachin Ravindra",
+      "role": "AR",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "basePrice": 150,
+      "set": "All-Rounders",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Lockie Ferguson",
+      "role": "BOWL",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "basePrice": 150,
+      "set": "Fast Bowlers",
+      "previousTeam": "PBKS"
+    },
+    {
+      "name": "Mustafizur Rahman",
+      "role": "BOWL",
+      "country": "Bangladesh",
+      "isOverseas": true,
+      "basePrice": 150,
+      "set": "Fast Bowlers",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Gerald Coetzee",
+      "role": "BOWL",
+      "country": "South Africa",
+      "isOverseas": true,
+      "basePrice": 150,
+      "set": "Fast Bowlers",
+      "previousTeam": "SRH"
+    },
+    {
+      "name": "Anrich Nortje",
+      "role": "BOWL",
+      "country": "South Africa",
+      "isOverseas": true,
+      "basePrice": 150,
+      "set": "Fast Bowlers",
+      "previousTeam": "LSG"
+    },
+    {
+      "name": "Pathum Nissanka",
+      "role": "BAT",
+      "country": "Sri Lanka",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "Batters",
+      "previousTeam": "DC"
+    },
+    {
+      "name": "Nitish Rana",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 100,
+      "set": "Batters",
+      "previousTeam": "DC"
+    },
+    {
+      "name": "Tushar Deshpande",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 100,
+      "set": "Fast Bowlers",
+      "previousTeam": "RR"
+    },
+    {
+      "name": "Akash Deep",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 100,
+      "set": "Fast Bowlers",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Dushmantha Chameera",
+      "role": "BOWL",
+      "country": "Sri Lanka",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "Fast Bowlers",
+      "previousTeam": "DC"
+    },
+    {
+      "name": "Rehan Ahmed",
+      "role": "AR",
+      "country": "England",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "All-Rounders",
+      "previousTeam": "DC"
+    },
+    {
+      "name": "Adam Milne",
+      "role": "BOWL",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "Fast Bowlers",
+      "previousTeam": "RR"
+    },
+    {
+      "name": "Luke Wood",
+      "role": "BOWL",
+      "country": "England",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "Fast Bowlers",
+      "previousTeam": "GT"
+    },
+    {
+      "name": "Spencer Johnson",
+      "role": "BOWL",
+      "country": "Australia",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "Fast Bowlers",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Matt Henry",
+      "role": "BOWL",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "Fast Bowlers",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Matthew Short",
+      "role": "AR",
+      "country": "Australia",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "All-Rounders",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Allah Ghazanfar",
+      "role": "BOWL",
+      "country": "Afghanistan",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "Spinners",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Keshav Maharaj",
+      "role": "BOWL",
+      "country": "South Africa",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "Spinners",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Jacob Bethell",
+      "role": "AR",
+      "country": "England",
+      "isOverseas": true,
+      "basePrice": 100,
+      "set": "All-Rounders",
+      "previousTeam": "RCB"
+    },
+    {
+      "name": "Nehal Wadhera",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 75,
+      "set": "Batters",
+      "previousTeam": "PBKS"
+    },
+    {
+      "name": "Abishek Porel",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 75,
+      "set": "Wicketkeepers",
+      "previousTeam": "DC"
+    },
+    {
+      "name": "Shahrukh Khan",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 75,
+      "set": "Batters",
+      "previousTeam": "GT"
+    },
+    {
+      "name": "Ishant Sharma",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 75,
+      "set": "Fast Bowlers",
+      "previousTeam": "GT"
+    },
+    {
+      "name": "Umran Malik",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 75,
+      "set": "Fast Bowlers",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Jaydev Unadkat",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 75,
+      "set": "Fast Bowlers",
+      "previousTeam": "SRH"
+    },
+    {
+      "name": "Kamindu Mendis",
+      "role": "AR",
+      "country": "Sri Lanka",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "All-Rounders",
+      "previousTeam": "SRH"
+    },
+    {
+      "name": "Kwena Maphaka",
+      "role": "BOWL",
+      "country": "South Africa",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "Fast Bowlers",
+      "previousTeam": "RR"
+    },
+    {
+      "name": "Akash Madhwal",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 75,
+      "set": "Fast Bowlers",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Rahul Tripathi",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 75,
+      "set": "Batters",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Blessing Muzarabani",
+      "role": "BOWL",
+      "country": "Zimbabwe",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "Fast Bowlers",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Mitchell Owen",
+      "role": "AR",
+      "country": "Australia",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "All-Rounders",
+      "previousTeam": "PBKS"
+    },
+    {
+      "name": "George Linde",
+      "role": "AR",
+      "country": "South Africa",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "All-Rounders",
+      "previousTeam": "LSG"
+    },
+    {
+      "name": "Matthew Breetzke",
+      "role": "BAT",
+      "country": "South Africa",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "Batters",
+      "previousTeam": "LSG"
+    },
+    {
+      "name": "David Payne",
+      "role": "BOWL",
+      "country": "England",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "Fast Bowlers",
+      "previousTeam": "SRH"
+    },
+    {
+      "name": "Dilshan Madushanka",
+      "role": "BOWL",
+      "country": "Sri Lanka",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "Fast Bowlers",
+      "previousTeam": "SRH"
+    },
+    {
+      "name": "Richard Gleeson",
+      "role": "BOWL",
+      "country": "England",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "Fast Bowlers",
+      "previousTeam": "RCB"
+    },
+    {
+      "name": "Zak Foulkes",
+      "role": "AR",
+      "country": "New Zealand",
+      "isOverseas": true,
+      "basePrice": 75,
+      "set": "All-Rounders",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Connor Esterhuizen",
+      "role": "WK",
+      "country": "South Africa",
+      "isOverseas": true,
+      "basePrice": 50,
+      "set": "Wicketkeepers",
+      "previousTeam": "GT"
+    },
+    {
+      "name": "Mayank Markande",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 50,
+      "set": "Spinners",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Mahipal Lomror",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 50,
+      "set": "All-Rounders",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Swapnil Singh",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 50,
+      "set": "All-Rounders",
+      "previousTeam": "RCB"
+    },
+    {
+      "name": "Shivam Mavi",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 50,
+      "set": "Fast Bowlers",
+      "previousTeam": "SRH"
+    },
+    {
+      "name": "Navdeep Saini",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 50,
+      "set": "Fast Bowlers",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Karun Nair",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 50,
+      "set": "Batters",
+      "previousTeam": "DC"
+    },
+    {
+      "name": "Kuldeep Sen",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 50,
+      "set": "Fast Bowlers",
+      "previousTeam": "RR"
+    },
+    {
+      "name": "Robin Minz",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 50,
+      "set": "Wicketkeepers",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Praveen Dubey",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 50,
+      "set": "Spinners",
+      "previousTeam": "PBKS"
+    },
+    {
+      "name": "Yudhvir Singh Charak",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "RR"
+    },
+    {
+      "name": "Vignesh Puthur",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "RR"
+    },
+    {
+      "name": "Prashant Veer",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Aman Khan",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Dian Forrester",
+      "role": "AR",
+      "country": "South Africa",
+      "isOverseas": true,
+      "basePrice": 30,
+      "set": "All-Rounders",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Kuldip Yadav",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Macneil Noronha",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "CSK"
+    },
+    {
+      "name": "Ajay Mandal",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "DC"
+    },
+    {
+      "name": "Sahil Parakh",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Batters",
+      "previousTeam": "DC"
+    },
+    {
+      "name": "Kulwant Khejroliya",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "GT"
+    },
+    {
+      "name": "Prithviraj Yarra",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "GT"
+    },
+    {
+      "name": "Daksh Kamra",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Luvnith Sisodia",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Wicketkeepers",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Tejasvi Singh",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Wicketkeepers",
+      "previousTeam": "KKR"
+    },
+    {
+      "name": "Himmat Singh",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Batters",
+      "previousTeam": "LSG"
+    },
+    {
+      "name": "Naman Tiwari",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "LSG"
+    },
+    {
+      "name": "Atharva Ankolekar",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Danish Malewar",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Batters",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Krish Bhagat",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Mayank Rawat",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Mohammed Izhar",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Ruchit Ahir",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Wicketkeepers",
+      "previousTeam": "MI"
+    },
+    {
+      "name": "Pyla Avinash",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Batters",
+      "previousTeam": "PBKS"
+    },
+    {
+      "name": "Vishal Nishad",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "PBKS"
+    },
+    {
+      "name": "Emanjot Singh Chahal",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "RR"
+    },
+    {
+      "name": "Ravi Singh",
+      "role": "WK",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Wicketkeepers",
+      "previousTeam": "RR"
+    },
+    {
+      "name": "Mangesh Yadav",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "RCB"
+    },
+    {
+      "name": "Satvik Deswal",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "RCB"
+    },
+    {
+      "name": "Vihaan Malhotra",
+      "role": "BAT",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Batters",
+      "previousTeam": "RCB"
+    },
+    {
+      "name": "Amit Kumar",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "SRH"
+    },
+    {
+      "name": "Onkar Tarmale",
+      "role": "BOWL",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped Bowlers",
+      "previousTeam": "SRH"
+    },
+    {
+      "name": "RS Ambrish",
+      "role": "AR",
+      "country": "India",
+      "isOverseas": false,
+      "basePrice": 30,
+      "set": "Uncapped All-Rounders",
+      "previousTeam": "SRH"
+    }
+  ],
+  "teamPurses": {
+    "CSK": {
+      "remainingPurse": 2805,
+      "spentLakhs": 10195,
+      "retainedCount": 19,
+      "overseasCount": 6,
+      "vacantSlots": 6,
+      "maxOverseasSlots": 2
+    },
+    "MI": {
+      "remainingPurse": 3260,
+      "spentLakhs": 9740,
+      "retainedCount": 16,
+      "overseasCount": 6,
+      "vacantSlots": 9,
+      "maxOverseasSlots": 2
+    },
+    "RCB": {
+      "remainingPurse": 1415,
+      "spentLakhs": 11585,
+      "retainedCount": 20,
+      "overseasCount": 7,
+      "vacantSlots": 5,
+      "maxOverseasSlots": 1
+    },
+    "KKR": {
+      "remainingPurse": 4165,
+      "spentLakhs": 8835,
+      "retainedCount": 17,
+      "overseasCount": 5,
+      "vacantSlots": 8,
+      "maxOverseasSlots": 3
+    },
+    "SRH": {
+      "remainingPurse": 4015,
+      "spentLakhs": 8985,
+      "retainedCount": 18,
+      "overseasCount": 5,
+      "vacantSlots": 7,
+      "maxOverseasSlots": 3
+    },
+    "RR": {
+      "remainingPurse": 2705,
+      "spentLakhs": 10295,
+      "retainedCount": 19,
+      "overseasCount": 5,
+      "vacantSlots": 6,
+      "maxOverseasSlots": 3
+    },
+    "DC": {
+      "remainingPurse": 3950,
+      "spentLakhs": 9050,
+      "retainedCount": 16,
+      "overseasCount": 4,
+      "vacantSlots": 9,
+      "maxOverseasSlots": 4
+    },
+    "PBKS": {
+      "remainingPurse": 1860,
+      "spentLakhs": 11140,
+      "retainedCount": 19,
+      "overseasCount": 6,
+      "vacantSlots": 6,
+      "maxOverseasSlots": 2
+    },
+    "GT": {
+      "remainingPurse": 875,
+      "spentLakhs": 12125,
+      "retainedCount": 22,
+      "overseasCount": 6,
+      "vacantSlots": 3,
+      "maxOverseasSlots": 2
+    },
+    "LSG": {
+      "remainingPurse": 4745,
+      "spentLakhs": 8255,
+      "retainedCount": 18,
+      "overseasCount": 5,
+      "vacantSlots": 7,
+      "maxOverseasSlots": 3
+    }
+  },
+  "lastUpdated": "2026-11-19T20:40:04.985Z"
+}

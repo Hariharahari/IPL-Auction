@@ -1,0 +1,185 @@
+Name,Team,Role,Country,IsOverseas,Price,Price_Cr
+Ruturaj Gaikwad,CSK,BAT,India,No,1800,18
+Sanju Samson,CSK,WK,India,No,1800,18
+Kartik Sharma,CSK,WK,India,No,1420,14.2
+Shivam Dube,CSK,AR,India,No,1200,12
+Noor Ahmad,CSK,BOWL,Afghanistan,Yes,1000,10
+Liam Livingstone,CSK,AR,England,Yes,800,8
+Rahul Chahar,CSK,BOWL,India,No,520,5.2
+Anshul Kamboj,CSK,AR,India,No,340,3.4
+Jack Edwards,CSK,AR,Australia,Yes,300,3
+Dewald Brevis,CSK,BAT,South Africa,Yes,220,2.2
+Gurjapneet Singh,CSK,BOWL,India,No,220,2.2
+Akeal Hosein,CSK,BOWL,West Indies,Yes,200,2
+Jamie Overton,CSK,AR,England,Yes,150,1.5
+Sarfaraz Khan,CSK,BAT,India,No,75,0.75
+Ayush Mhatre,CSK,BAT,India,No,30,0.3
+Mukesh Choudhary,CSK,BOWL,India,No,30,0.3
+Ramakrishna Ghosh,CSK,AR,India,No,30,0.3
+Shreyas Gopal,CSK,BOWL,India,No,30,0.3
+Urvil Patel,CSK,WK,India,No,30,0.3
+Jasprit Bumrah,MI,BOWL,India,No,1800,18
+Arshdeep Singh,MI,BOWL,India,No,1800,18
+Suryakumar Yadav,MI,BAT,India,No,1635,16.35
+Rohit Sharma,MI,BAT,India,No,1630,16.3
+Tilak Varma,MI,BAT,India,No,800,8
+Will Jacks,MI,AR,England,Yes,525,5.25
+Naman Dhir,MI,AR,India,No,525,5.25
+Quinton de Kock,MI,WK,South Africa,Yes,200,2
+Mitchell Santner,MI,AR,New Zealand,Yes,200,2
+Shardul Thakur,MI,AR,India,No,200,2
+Sherfane Rutherford,MI,BAT,West Indies,Yes,150,1.5
+Ryan Rickelton,MI,WK,South Africa,Yes,100,1
+Corbin Bosch,MI,AR,South Africa,Yes,85,0.85
+Ashwani Kumar,MI,BOWL,India,No,30,0.3
+Raghu Sharma,MI,BOWL,India,No,30,0.3
+Raj Angad Bawa,MI,AR,India,No,30,0.3
+Virat Kohli,RCB,BAT,India,No,2100,21
+Josh Hazlewood,RCB,BOWL,Australia,Yes,1250,12.5
+Phil Salt,RCB,WK,England,Yes,1150,11.5
+Rajat Patidar,RCB,BAT,India,No,1100,11
+Jitesh Sharma,RCB,WK,India,No,1100,11
+Bhuvneshwar Kumar,RCB,BOWL,India,No,1075,10.75
+Venkatesh Iyer,RCB,AR,India,No,700,7
+Rasikh Dar,RCB,BOWL,India,No,600,6
+Krunal Pandya,RCB,AR,India,No,575,5.75
+Yash Dayal,RCB,BOWL,India,No,500,5
+Tim David,RCB,BAT,Australia,Yes,300,3
+Suyash Sharma,RCB,BOWL,India,No,260,2.6
+Devdutt Padikkal,RCB,BAT,India,No,200,2
+Nuwan Thushara,RCB,BOWL,Sri Lanka,Yes,160,1.6
+Romario Shepherd,RCB,AR,West Indies,Yes,150,1.5
+Jacob Duffy,RCB,BOWL,New Zealand,Yes,150,1.5
+Jordan Cox,RCB,WK,England,Yes,125,1.25
+Abhinandan Singh,RCB,BOWL,India,No,30,0.3
+Kanishk Chouhan,RCB,AR,India,No,30,0.3
+Vicky Ostwal,RCB,BOWL,India,No,30,0.3
+Cameron Green,KKR,AR,Australia,Yes,2520,25.2
+Rinku Singh,KKR,BAT,India,No,1300,13
+Sunil Narine,KKR,AR,West Indies,Yes,1200,12
+Varun Chakaravarthy,KKR,BOWL,India,No,1200,12
+Harshit Rana,KKR,BOWL,India,No,400,4
+Ramandeep Singh,KKR,AR,India,No,400,4
+Angkrish Raghuvanshi,KKR,BAT,India,No,300,3
+Finn Allen,KKR,WK,New Zealand,Yes,300,3
+Tim Seifert,KKR,WK,New Zealand,Yes,250,2.5
+Rovman Powell,KKR,BAT,West Indies,Yes,200,2
+Vaibhav Arora,KKR,BOWL,India,No,200,2
+Kartik Tyagi,KKR,BOWL,India,No,200,2
+Manish Pandey,KKR,BAT,India,No,150,1.5
+Anukul Roy,KKR,AR,India,No,125,1.25
+Prashant Solanki,KKR,BOWL,India,No,30,0.3
+Sarthak Ranjan,KKR,BAT,India,No,30,0.3
+Saurabh Dubey,KKR,BOWL,India,No,30,0.3
+Heinrich Klaasen,SRH,WK,South Africa,Yes,2300,23
+Pat Cummins,SRH,BOWL,Australia,Yes,1800,18
+Abhishek Sharma,SRH,AR,India,No,1400,14
+Ishan Kishan,SRH,WK,India,No,1125,11.25
+Nitish Kumar Reddy,SRH,AR,India,No,600,6
+T Natarajan,SRH,BOWL,India,No,500,5
+Khaleel Ahmed,SRH,BOWL,India,No,480,4.8
+Nathan Ellis,SRH,BOWL,Australia,Yes,200,2
+Brydon Carse,SRH,AR,England,Yes,150,1.5
+Eshan Malinga,SRH,BOWL,Sri Lanka,Yes,150,1.5
+Salil Arora,SRH,WK,India,No,70,0.7
+Aniket Verma,SRH,BAT,India,No,30,0.3
+Harsh Dubey,SRH,AR,India,No,30,0.3
+Krains Fuletra,SRH,BOWL,India,No,30,0.3
+Praful Hinge,SRH,BOWL,India,No,30,0.3
+Sakib Hussain,SRH,BOWL,India,No,30,0.3
+Shivang Kumar,SRH,AR,India,No,30,0.3
+Smaran Ravichandran,SRH,BAT,India,No,30,0.3
+Yashasvi Jaiswal,RR,BAT,India,No,1800,18
+Ravindra Jadeja,RR,AR,India,No,1400,14
+Riyan Parag,RR,AR,India,No,1400,14
+Dhruv Jurel,RR,WK,India,No,1400,14
+Jofra Archer,RR,BOWL,England,Yes,1250,12.5
+Ravi Bishnoi,RR,BOWL,India,No,1100,11
+Mohammed Shami,RR,BOWL,India,No,500,5
+Sandeep Sharma,RR,BOWL,India,No,400,4
+Nandre Burger,RR,BOWL,South Africa,Yes,300,3
+Vaibhav Sooryavanshi,RR,BAT,India,No,110,1.1
+Dasun Shanaka,RR,AR,Sri Lanka,Yes,125,1.25
+Donovan Ferreira,RR,WK,South Africa,Yes,125,1.25
+Shubham Dubey,RR,BAT,India,No,80,0.8
+Manimaran Siddharth,RR,BOWL,India,No,75,0.75
+Lhuan-dre Pretorius,RR,WK,South Africa,Yes,75,0.75
+Aman Rao Perala,RR,BAT,India,No,50,0.5
+Brijesh Sharma,RR,BOWL,India,No,35,0.35
+Sushant Mishra,RR,BOWL,India,No,35,0.35
+Yash Raj Punja,RR,BOWL,India,No,35,0.35
+Axar Patel,DC,AR,India,No,1650,16.5
+Rishabh Pant,DC,WK,India,No,1500,15
+KL Rahul,DC,WK,India,No,1400,14
+Tristan Stubbs,DC,BAT,South Africa,Yes,1000,10
+Auqib Dar,DC,BOWL,India,No,840,8.4
+Mukesh Kumar,DC,BOWL,India,No,800,8
+David Miller,DC,BAT,South Africa,Yes,750,7.5
+Ashutosh Sharma,DC,BAT,India,No,380,3.8
+Kyle Jamieson,DC,BOWL,New Zealand,Yes,200,2
+Lungi Ngidi,DC,BOWL,South Africa,Yes,150,1.5
+Sameer Rizvi,DC,BAT,India,No,125,1.25
+Prithvi Shaw,DC,BAT,India,No,100,1
+Vipraj Nigam,DC,AR,India,No,50,0.5
+Madhav Tiwari,DC,AR,India,No,40,0.4
+Zeeshan Ansari,DC,BOWL,India,No,35,0.35
+Tripurana Vijay,DC,AR,India,No,30,0.3
+Shreyas Iyer,PBKS,BAT,India,No,2675,26.75
+Hardik Pandya,PBKS,AR,India,No,1800,18
+Yuzvendra Chahal,PBKS,BOWL,India,No,1800,18
+Marcus Stoinis,PBKS,AR,Australia,Yes,1100,11
+Marco Jansen,PBKS,AR,South Africa,Yes,700,7
+Shashank Singh,PBKS,BAT,India,No,550,5.5
+Ben Dwarshuis,PBKS,BOWL,Australia,Yes,440,4.4
+Prabhsimran Singh,PBKS,WK,India,No,400,4
+Priyansh Arya,PBKS,BAT,India,No,380,3.8
+Cooper Connolly,PBKS,AR,Australia,Yes,300,3
+Azmatullah Omarzai,PBKS,AR,Afghanistan,Yes,240,2.4
+Vyshak Vijaykumar,PBKS,BOWL,India,No,180,1.8
+Yash Thakur,PBKS,BOWL,India,No,160,1.6
+Harpreet Brar,PBKS,AR,India,No,150,1.5
+Vishnu Vinod,PBKS,WK,India,No,95,0.95
+Xavier Bartlett,PBKS,BOWL,Australia,Yes,80,0.8
+Harnoor Pannu,PBKS,BAT,India,No,30,0.3
+Musheer Khan,PBKS,AR,India,No,30,0.3
+Suryansh Shedge,PBKS,AR,India,No,30,0.3
+Rashid Khan,GT,BOWL,Afghanistan,Yes,1800,18
+Shubman Gill,GT,BAT,India,No,1650,16.5
+Jos Buttler,GT,WK,England,Yes,1575,15.75
+Mohammed Siraj,GT,BOWL,India,No,1225,12.25
+Kagiso Rabada,GT,BOWL,South Africa,Yes,1075,10.75
+Prasidh Krishna,GT,BOWL,India,No,950,9.5
+Sai Sudharsan,GT,BAT,India,No,850,8.5
+Harshal Patel,GT,BOWL,India,No,550,5.5
+Rahul Tewatia,GT,AR,India,No,400,4
+Washington Sundar,GT,AR,India,No,400,4
+Glenn Phillips,GT,AR,New Zealand,Yes,300,3
+Jason Holder,GT,AR,West Indies,Yes,300,3
+Sai Kishore,GT,BOWL,India,No,250,2.5
+Tom Banton,GT,WK,England,Yes,200,2
+Gurnoor Singh Brar,GT,BOWL,India,No,150,1.5
+Mohd. Arshad Khan,GT,AR,India,No,150,1.5
+Jayant Yadav,GT,AR,India,No,100,1
+Kumar Kushagra,GT,WK,India,No,80,0.8
+Anuj Rawat,GT,WK,India,No,30,0.3
+Ashok Sharma,GT,BOWL,India,No,30,0.3
+Manav Suthar,GT,BOWL,India,No,30,0.3
+Nishant Sindhu,GT,AR,India,No,30,0.3
+Nicholas Pooran,LSG,WK,West Indies,Yes,2100,21
+Kuldeep Yadav,LSG,BOWL,India,No,1350,13.5
+Mayank Yadav,LSG,BOWL,India,No,1100,11
+Josh Inglis,LSG,WK,Australia,Yes,860,8.6
+Abdul Samad,LSG,BAT,India,No,420,4.2
+Ayush Badoni,LSG,BAT,India,No,400,4
+Mohsin Khan,LSG,BOWL,India,No,400,4
+Mitchell Marsh,LSG,AR,Australia,Yes,340,3.4
+Sam Curran,LSG,AR,England,Yes,340,3.4
+Shahbaz Ahmed,LSG,AR,India,No,335,3.35
+Aiden Markram,LSG,BAT,South Africa,Yes,400,4
+Akash Singh,LSG,BOWL,India,No,30,0.3
+Akshat Raghuwanshi,LSG,BAT,India,No,30,0.3
+Arjun Tendulkar,LSG,AR,India,No,30,0.3
+Arshin Kulkarni,LSG,AR,India,No,30,0.3
+Digvesh Rathi,LSG,BOWL,India,No,30,0.3
+Mukul Choudhary,LSG,WK,India,No,30,0.3
+Prince Yadav,LSG,BOWL,India,No,30,0.3

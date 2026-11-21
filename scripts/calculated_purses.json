@@ -1,0 +1,92 @@
+{
+  "CSK": {
+    "retainedCount": 19,
+    "overseasCount": 6,
+    "spentLakhs": 10195,
+    "remainingPurseLakhs": 2805,
+    "remainingPurseCr": "28.05",
+    "vacantSlots": 6,
+    "maxOverseasSlots": 2
+  },
+  "MI": {
+    "retainedCount": 16,
+    "overseasCount": 6,
+    "spentLakhs": 9740,
+    "remainingPurseLakhs": 3260,
+    "remainingPurseCr": "32.60",
+    "vacantSlots": 9,
+    "maxOverseasSlots": 2
+  },
+  "RCB": {
+    "retainedCount": 20,
+    "overseasCount": 7,
+    "spentLakhs": 11585,
+    "remainingPurseLakhs": 1415,
+    "remainingPurseCr": "14.15",
+    "vacantSlots": 5,
+    "maxOverseasSlots": 1
+  },
+  "KKR": {
+    "retainedCount": 17,
+    "overseasCount": 5,
+    "spentLakhs": 8835,
+    "remainingPurseLakhs": 4165,
+    "remainingPurseCr": "41.65",
+    "vacantSlots": 8,
+    "maxOverseasSlots": 3
+  },
+  "SRH": {
+    "retainedCount": 18,
+    "overseasCount": 5,
+    "spentLakhs": 8985,
+    "remainingPurseLakhs": 4015,
+    "remainingPurseCr": "40.15",
+    "vacantSlots": 7,
+    "maxOverseasSlots": 3
+  },
+  "RR": {
+    "retainedCount": 19,
+    "overseasCount": 5,
+    "spentLakhs": 10295,
+    "remainingPurseLakhs": 2705,
+    "remainingPurseCr": "27.05",
+    "vacantSlots": 6,
+    "maxOverseasSlots": 3
+  },
+  "DC": {
+    "retainedCount": 16,
+    "overseasCount": 4,
+    "spentLakhs": 9050,
+    "remainingPurseLakhs": 3950,
+    "remainingPurseCr": "39.50",
+    "vacantSlots": 9,
+    "maxOverseasSlots": 4
+  },
+  "PBKS": {
+    "retainedCount": 19,
+    "overseasCount": 6,
+    "spentLakhs": 11140,
+    "remainingPurseLakhs": 1860,
+    "remainingPurseCr": "18.60",
+    "vacantSlots": 6,
+    "maxOverseasSlots": 2
+  },
+  "GT": {
+    "retainedCount": 22,
+    "overseasCount": 6,
+    "spentLakhs": 12125,
+    "remainingPurseLakhs": 875,
+    "remainingPurseCr": "8.75",
+    "vacantSlots": 3,
+    "maxOverseasSlots": 2
+  },
+  "LSG": {
+    "retainedCount": 18,
+    "overseasCount": 5,
+    "spentLakhs": 8255,
+    "remainingPurseLakhs": 4745,
+    "remainingPurseCr": "47.45",
+    "vacantSlots": 7,
+    "maxOverseasSlots": 3
+  }
+}

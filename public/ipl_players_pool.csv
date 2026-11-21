@@ -1,0 +1,225 @@
+Name,Role,Country,IsOverseas,BasePrice,Set,PreviousTeam
+Ruturaj Gaikwad,BAT,India,No,200,Marquee,CSK
+Sanju Samson,WK,India,No,200,Marquee,CSK
+Shivam Dube,AR,India,No,200,All-Rounders,CSK
+Liam Livingstone,AR,England,Yes,200,All-Rounders,CSK
+Noor Ahmad,BOWL,Afghanistan,Yes,150,Spinners,CSK
+Dewald Brevis,BAT,South Africa,Yes,100,Batters,CSK
+Ayush Mhatre,BAT,India,No,50,Uncapped Batters,CSK
+Rahul Chahar,BOWL,India,No,100,Spinners,CSK
+Anshul Kamboj,AR,India,No,75,Uncapped All-Rounders,CSK
+Gurjapneet Singh,BOWL,India,No,50,Uncapped Bowlers,CSK
+Mukesh Choudhary,BOWL,India,No,50,Fast Bowlers,CSK
+Nathan Ellis,BOWL,Australia,Yes,150,Fast Bowlers,CSK
+Jamie Overton,AR,England,Yes,150,All-Rounders,CSK
+Shreyas Gopal,BOWL,India,No,50,Spinners,CSK
+Ramakrishna Ghosh,AR,India,No,30,Uncapped All-Rounders,CSK
+Shaik Rasheed,BAT,India,No,30,Uncapped Batters,CSK
+Vansh Bedi,WK,India,No,30,Uncapped Wicketkeepers,CSK
+Andre Siddarth,BAT,India,No,30,Uncapped Batters,CSK
+MS Dhoni,WK,India,No,200,Released Stars,CSK
+Deepak Hooda,AR,India,No,75,Released Stars,CSK
+Vijay Shankar,AR,India,No,75,Released Stars,CSK
+Rahul Tripathi,BAT,India,No,75,Released Stars,CSK
+Devon Conway,WK,New Zealand,Yes,200,Released Stars,CSK
+Sam Curran,AR,England,Yes,200,All-Rounders,CSK
+Jasprit Bumrah,BOWL,India,No,200,Marquee,MI
+Suryakumar Yadav,BAT,India,No,200,Marquee,MI
+Rohit Sharma,BAT,India,No,200,Marquee,MI
+Tilak Varma,BAT,India,No,200,Batters,MI
+Arshdeep Singh,BOWL,India,No,200,Fast Bowlers,MI
+Will Jacks,AR,England,Yes,150,All-Rounders,MI
+Quinton de Kock,WK,South Africa,Yes,200,Wicketkeepers,MI
+Ryan Rickelton,WK,South Africa,Yes,100,Wicketkeepers,MI
+Naman Dhir,AR,India,No,100,Uncapped All-Rounders,MI
+Robin Minz,WK,India,No,50,Uncapped Wicketkeepers,MI
+Allah Ghazanfar,BOWL,Afghanistan,Yes,100,Spinners,MI
+Corbin Bosch,AR,South Africa,Yes,75,All-Rounders,MI
+Mitchell Santner,AR,New Zealand,Yes,150,Spinners,MI
+Ashwani Kumar,BOWL,India,No,30,Uncapped Bowlers,MI
+Raj Angad Bawa,AR,India,No,30,Uncapped All-Rounders,MI
+Vignesh Puthur,BOWL,India,No,30,Uncapped Bowlers,MI
+Satyanarayana Raju,BOWL,India,No,30,Uncapped Bowlers,MI
+Bevon Jacobs,BAT,New Zealand,Yes,30,Uncapped Batters,MI
+Trent Boult,BOWL,New Zealand,Yes,200,Released Stars,MI
+Deepak Chahar,BOWL,India,No,150,Released Stars,MI
+Reece Topley,BOWL,England,Yes,100,Released Stars,MI
+Karn Sharma,BOWL,India,No,50,Released Stars,MI
+Virat Kohli,BAT,India,No,200,Marquee,RCB
+Rajat Patidar,BAT,India,No,150,Batters,RCB
+Phil Salt,WK,England,Yes,200,Wicketkeepers,RCB
+Josh Hazlewood,BOWL,Australia,Yes,200,Fast Bowlers,RCB
+Bhuvneshwar Kumar,BOWL,India,No,150,Fast Bowlers,RCB
+Krunal Pandya,AR,India,No,150,All-Rounders,RCB
+Venkatesh Iyer,AR,India,No,150,All-Rounders,RCB
+Tim David,BAT,Australia,Yes,150,Batters,RCB
+Jitesh Sharma,WK,India,No,150,Wicketkeepers,RCB
+Devdutt Padikkal,BAT,India,No,100,Batters,RCB
+Romario Shepherd,AR,West Indies,Yes,100,All-Rounders,RCB
+Suyash Sharma,BOWL,India,No,75,Spinners,RCB
+Yash Dayal,BOWL,India,No,100,Fast Bowlers,RCB
+Nuwan Thushara,BOWL,Sri Lanka,Yes,100,Fast Bowlers,RCB
+Swapnil Singh,AR,India,No,50,All-Rounders,RCB
+Rasikh Dar,BOWL,India,No,75,Fast Bowlers,RCB
+Manoj Bhandage,AR,India,No,30,Uncapped All-Rounders,RCB
+Swastik Chikara,BAT,India,No,30,Uncapped Batters,RCB
+Abhinandan Singh,BOWL,India,No,30,Uncapped Bowlers,RCB
+Mohit Rathee,AR,India,No,30,Uncapped All-Rounders,RCB
+Jacob Bethell,AR,England,Yes,100,Released Stars,RCB
+Lungi Ngidi,BOWL,South Africa,Yes,100,Released Stars,RCB
+Sunil Narine,AR,West Indies,Yes,200,All-Rounders,KKR
+Rinku Singh,BAT,India,No,200,Batters,KKR
+Varun Chakaravarthy,BOWL,India,No,200,Spinners,KKR
+Cameron Green,AR,Australia,Yes,200,All-Rounders,KKR
+Harshit Rana,BOWL,India,No,150,Fast Bowlers,KKR
+Angkrish Raghuvanshi,BAT,India,No,75,Batters,KKR
+Ramandeep Singh,AR,India,No,100,All-Rounders,KKR
+Finn Allen,WK,New Zealand,Yes,100,Wicketkeepers,KKR
+Tim Seifert,WK,New Zealand,Yes,100,Wicketkeepers,KKR
+Vaibhav Arora,BOWL,India,No,75,Fast Bowlers,KKR
+Rovman Powell,BAT,West Indies,Yes,150,Batters,KKR
+Anukul Roy,AR,India,No,50,All-Rounders,KKR
+Manish Pandey,BAT,India,No,75,Batters,KKR
+Mayank Markande,BOWL,India,No,50,Spinners,KKR
+Luvnith Sisodia,WK,India,No,30,Uncapped Wicketkeepers,KKR
+Matheesha Pathirana,BOWL,Sri Lanka,Yes,200,Released Stars,KKR
+Rachin Ravindra,AR,New Zealand,Yes,150,Released Stars,KKR
+Mustafizur Rahman,BOWL,Bangladesh,Yes,150,Released Stars,KKR
+Ajinkya Rahane,BAT,India,No,100,Released Stars,KKR
+Akash Deep,BOWL,India,No,100,Released Stars,KKR
+Umran Malik,BOWL,India,No,75,Released Stars,KKR
+Andre Russell,AR,West Indies,Yes,200,Released Stars,KKR
+Heinrich Klaasen,WK,South Africa,Yes,200,Marquee,SRH
+Pat Cummins,BOWL,Australia,Yes,200,Marquee,SRH
+Abhishek Sharma,AR,India,No,200,Batters,SRH
+Ishan Kishan,WK,India,No,200,Wicketkeepers,SRH
+Nitish Kumar Reddy,AR,India,No,150,All-Rounders,SRH
+Harshal Patel,BOWL,India,No,150,Fast Bowlers,SRH
+T Natarajan,BOWL,India,No,150,Fast Bowlers,SRH
+Khaleel Ahmed,BOWL,India,No,100,Fast Bowlers,SRH
+Kamindu Mendis,AR,Sri Lanka,Yes,75,All-Rounders,SRH
+Brydon Carse,AR,England,Yes,100,All-Rounders,SRH
+Eshan Malinga,BOWL,Sri Lanka,Yes,75,Fast Bowlers,SRH
+Abhinav Manohar,BAT,India,No,75,Batters,SRH
+Atharva Taide,BAT,India,No,30,Uncapped Batters,SRH
+Simarjeet Singh,BOWL,India,No,50,Fast Bowlers,SRH
+Jaydev Unadkat,BOWL,India,No,75,Fast Bowlers,SRH
+Zeeshan Ansari,BOWL,India,No,30,Uncapped Bowlers,SRH
+Aniket Verma,BAT,India,No,30,Uncapped Batters,SRH
+Sachin Baby,BAT,India,No,30,Batters,SRH
+Travis Head,BAT,Australia,Yes,200,Released Stars,SRH
+Adam Zampa,BOWL,Australia,Yes,150,Released Stars,SRH
+Rahul Chahar,BOWL,India,No,100,Released Stars,SRH
+Yashasvi Jaiswal,BAT,India,No,200,Batters,RR
+Ravindra Jadeja,AR,India,No,200,Marquee,RR
+Mohammed Shami,BOWL,India,No,200,Fast Bowlers,RR
+Riyan Parag,AR,India,No,150,Batters,RR
+Dhruv Jurel,WK,India,No,150,Wicketkeepers,RR
+Jofra Archer,BOWL,England,Yes,200,Fast Bowlers,RR
+Ravi Bishnoi,BOWL,India,No,150,Spinners,RR
+Vaibhav Sooryavanshi,BAT,India,No,100,Batters,RR
+Sandeep Sharma,BOWL,India,No,100,Fast Bowlers,RR
+Maheesh Theekshana,BOWL,Sri Lanka,Yes,150,Spinners,RR
+Fazalhaq Farooqi,BOWL,Afghanistan,Yes,150,Fast Bowlers,RR
+Kwena Maphaka,BOWL,South Africa,Yes,75,Fast Bowlers,RR
+Shubham Dubey,BAT,India,No,30,Uncapped Batters,RR
+Yudhvir Singh,AR,India,No,30,Uncapped All-Rounders,RR
+Akash Madhwal,BOWL,India,No,50,Fast Bowlers,RR
+Kumar Kartikeya,BOWL,India,No,30,Spinners,RR
+Kunal Singh Rathore,WK,India,No,30,Uncapped Wicketkeepers,RR
+Ashok Sharma,BOWL,India,No,30,Uncapped Bowlers,RR
+Shimron Hetmyer,BAT,West Indies,Yes,150,Released Stars,RR
+Tushar Deshpande,BOWL,India,No,100,Released Stars,RR
+Nitish Rana,BAT,India,No,100,Released Stars,DC
+Rishabh Pant,WK,India,No,200,Marquee,DC
+KL Rahul,WK,India,No,200,Marquee,DC
+Axar Patel,AR,India,No,200,All-Rounders,DC
+Kuldeep Yadav,BOWL,India,No,200,Spinners,DC
+Tristan Stubbs,BAT,South Africa,Yes,150,Batters,DC
+David Miller,BAT,South Africa,Yes,150,Batters,DC
+Mukesh Kumar,BOWL,India,No,100,Fast Bowlers,DC
+Jake Fraser-McGurk,BAT,Australia,Yes,200,Batters,DC
+Faf du Plessis,BAT,South Africa,Yes,200,Batters,DC
+Harry Brook,BAT,England,Yes,200,Batters,DC
+Dushmantha Chameera,BOWL,Sri Lanka,Yes,75,Fast Bowlers,DC
+Ashutosh Sharma,BAT,India,No,75,Batters,DC
+Sameer Rizvi,BAT,India,No,50,Uncapped Batters,DC
+Karun Nair,BAT,India,No,50,Batters,DC
+Donovan Ferreira,WK,South Africa,Yes,75,Wicketkeepers,DC
+Mohit Sharma,BOWL,India,No,100,Fast Bowlers,DC
+Darshan Nalkande,AR,India,No,30,Uncapped All-Rounders,DC
+Vipraj Nigam,AR,India,No,30,Uncapped All-Rounders,DC
+Tripurana Vijay,AR,India,No,30,Uncapped All-Rounders,DC
+Manvanth Kumar,AR,India,No,30,Uncapped All-Rounders,DC
+Mitchell Starc,BOWL,Australia,Yes,200,Released Stars,DC
+Abishek Porel,WK,India,No,75,Released Stars,DC
+Prithvi Shaw,BAT,India,No,75,Released Stars,DC
+Hardik Pandya,AR,India,No,200,Marquee,PBKS
+Shreyas Iyer,BAT,India,No,200,Marquee,PBKS
+Yuzvendra Chahal,BOWL,India,No,200,Spinners,PBKS
+Marcus Stoinis,AR,Australia,Yes,200,All-Rounders,PBKS
+Marco Jansen,AR,South Africa,Yes,150,All-Rounders,PBKS
+Shashank Singh,BAT,India,No,100,Batters,PBKS
+Prabhsimran Singh,WK,India,No,100,Wicketkeepers,PBKS
+Priyansh Arya,BAT,India,No,50,Uncapped Batters,PBKS
+Josh Inglis,WK,Australia,Yes,150,Wicketkeepers,PBKS
+Azmatullah Omarzai,AR,Afghanistan,Yes,150,All-Rounders,PBKS
+Glenn Maxwell,AR,Australia,Yes,200,All-Rounders,PBKS
+Vyshak Vijaykumar,BOWL,India,No,50,Fast Bowlers,PBKS
+Yash Thakur,BOWL,India,No,50,Fast Bowlers,PBKS
+Harpreet Brar,AR,India,No,75,Spinners,PBKS
+Vishnu Vinod,WK,India,No,50,Wicketkeepers,PBKS
+Aaron Hardie,AR,Australia,Yes,100,All-Rounders,PBKS
+Xavier Bartlett,BOWL,Australia,Yes,75,Fast Bowlers,PBKS
+Kuldeep Sen,BOWL,India,No,50,Fast Bowlers,PBKS
+Suryansh Shedge,AR,India,No,30,Uncapped All-Rounders,PBKS
+Musheer Khan,AR,India,No,30,Uncapped All-Rounders,PBKS
+Harnoor Pannu,BAT,India,No,30,Uncapped Batters,PBKS
+Pyla Avinash,BAT,India,No,30,Uncapped Batters,PBKS
+Lockie Ferguson,BOWL,New Zealand,Yes,150,Released Stars,PBKS
+Nehal Wadhera,BAT,India,No,75,Released Stars,PBKS
+Shubman Gill,BAT,India,No,200,Marquee,GT
+Rashid Khan,BOWL,Afghanistan,Yes,200,Marquee,GT
+Sai Sudharsan,BAT,India,No,200,Batters,GT
+Jos Buttler,WK,England,Yes,200,Wicketkeepers,GT
+Mohammed Siraj,BOWL,India,No,200,Fast Bowlers,GT
+Kagiso Rabada,BOWL,South Africa,Yes,200,Fast Bowlers,GT
+Washington Sundar,AR,India,No,150,All-Rounders,GT
+Prasidh Krishna,BOWL,India,No,150,Fast Bowlers,GT
+Glenn Phillips,AR,New Zealand,Yes,150,All-Rounders,GT
+Jason Holder,AR,West Indies,Yes,150,All-Rounders,GT
+Rahul Tewatia,AR,India,No,100,All-Rounders,GT
+Sai Kishore,BOWL,India,No,100,Spinners,GT
+Sherfane Rutherford,BAT,West Indies,Yes,150,Batters,GT
+Gerald Coetzee,BOWL,South Africa,Yes,150,Fast Bowlers,GT
+Mahipal Lomror,AR,India,No,50,All-Rounders,GT
+Anuj Rawat,WK,India,No,50,Wicketkeepers,GT
+Arshad Khan,AR,India,No,30,Uncapped All-Rounders,GT
+Gurnoor Brar,BOWL,India,No,30,Uncapped Bowlers,GT
+Nishant Sindhu,AR,India,No,30,Uncapped All-Rounders,GT
+Manav Suthar,BOWL,India,No,30,Uncapped Bowlers,GT
+Kumar Kushagra,WK,India,No,30,Uncapped Wicketkeepers,GT
+Karim Janat,AR,Afghanistan,Yes,75,All-Rounders,GT
+Jayant Yadav,AR,India,No,50,Spinners,GT
+Shahrukh Khan,BAT,India,No,75,Released Stars,GT
+Ishant Sharma,BOWL,India,No,75,Released Stars,GT
+Nicholas Pooran,WK,West Indies,Yes,200,Wicketkeepers,LSG
+Mitchell Marsh,AR,Australia,Yes,200,All-Rounders,LSG
+Mayank Yadav,BOWL,India,No,150,Fast Bowlers,LSG
+Ayush Badoni,BAT,India,No,75,Batters,LSG
+Mohsin Khan,BOWL,India,No,75,Fast Bowlers,LSG
+Abdul Samad,BAT,India,No,75,Batters,LSG
+Shahbaz Ahmed,AR,India,No,100,All-Rounders,LSG
+Aiden Markram,BAT,South Africa,Yes,200,Batters,LSG
+Shamar Joseph,BOWL,West Indies,Yes,75,Fast Bowlers,LSG
+Akash Singh,BOWL,India,No,30,Uncapped Bowlers,LSG
+M Siddharth,BOWL,India,No,30,Uncapped Bowlers,LSG
+Digvesh Rathi,BOWL,India,No,30,Uncapped Bowlers,LSG
+Prince Yadav,BOWL,India,No,30,Uncapped Bowlers,LSG
+Arshin Kulkarni,AR,India,No,30,Uncapped All-Rounders,LSG
+Matthew Breetzke,BAT,South Africa,Yes,75,Batters,LSG
+Himmat Singh,BAT,India,No,30,Uncapped Batters,LSG
+Rajvardhan Hangargekar,AR,India,No,30,Uncapped All-Rounders,LSG
+Yuvraj Chaudhary,AR,India,No,30,Uncapped All-Rounders,LSG
+Avesh Khan,BOWL,India,No,150,Released Stars,LSG
+Wanindu Hasaranga,AR,Sri Lanka,Yes,150,Released Stars,LSG
