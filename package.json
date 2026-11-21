@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "tsx watch server.ts",
     "build": "next build --webpack",
+    "build.": "next build --webpack",
     "start": "tsx server.ts",
     "postinstall": "prisma generate",
     "lint": "eslint"
