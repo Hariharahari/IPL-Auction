@@ -9,53 +9,96 @@ import { IPL_2027_MINI_AUCTION_PURSE_DEFAULTS, generateRoomAccessCodes } from '.
 export async function persistRoomState(room: AuctionRoomState): Promise<void> {
   await safeDbOperation(async (client) => {
     const roomCode = room.roomCode || room.code || '';
+    if (!roomCode) return;
+
+    // Check existing room in DB first to protect against data regression
+    const existing = await client.room.findUnique({
+      where: { code: roomCode },
+    });
+
+    let existingLiveState: any = {};
+    let existingConfig: any = {};
+    try {
+      existingLiveState = JSON.parse(existing?.liveStateJson || '{}');
+    } catch {}
+    try {
+      existingConfig = JSON.parse(existing?.configJson || '{}');
+    } catch {}
+
+    // Never allow a COMPLETED room to be downgraded to LOBBY or ACTIVE
+    const isCompleted =
+      room.phase === 'COMPLETED' ||
+      existing?.status === 'COMPLETED' ||
+      existingConfig?.status === 'COMPLETED';
+    const status = isCompleted
+      ? 'COMPLETED'
+      : room.phase === 'LOBBY'
+      ? 'LOBBY'
+      : 'ACTIVE';
+
+    // Preserve non-zero sold history so an incidental stub never wipes out completed auction data
+    const cleanSold = (room.soldHistory || []).filter((p) => !p.isRetained);
+    const existingSold = (existingLiveState.soldHistory || []).filter(
+      (p: any) => !p.isRetained
+    );
+    const finalSold = cleanSold.length > 0 ? cleanSold : existingSold;
+
+    const finalUnsold =
+      room.unsoldHistory && room.unsoldHistory.length > 0
+        ? room.unsoldHistory
+        : existingLiveState.unsoldHistory || [];
+
+    const soldCount = finalSold.length;
+    const unsoldCount = finalUnsold.length;
+    const totalSpentLakhs = finalSold.reduce(
+      (sum: number, p: any) => sum + (p.soldAmount || 0),
+      0
+    );
+
+    const mergedConfig = {
+      ...existingConfig,
+      ...room.settings,
+      accessCodes: room.accessCodes,
+      soldCount,
+      unsoldCount,
+      totalSpentLakhs,
+      status: isCompleted ? 'COMPLETED' : status,
+    };
+
+    const mergedLiveState = {
+      phase: isCompleted ? 'COMPLETED' : room.phase,
+      currentBid: isCompleted ? 0 : room.currentBid,
+      highestBidderTeam: isCompleted ? null : room.highestBidderTeam,
+      highestBidderUserId: isCompleted ? null : room.highestBidderUserId,
+      activePlayer: isCompleted ? null : room.activePlayer,
+      lastActionMessage: room.lastActionMessage,
+      soldHistory: finalSold,
+      unsoldHistory: finalUnsold,
+      bidHistory: room.bidHistory || existingLiveState.bidHistory || [],
+      isAuctionPaused: isCompleted ? false : room.isAuctionPaused || false,
+      tempAuctioneerId: room.tempAuctioneerId || null,
+      soldCount,
+      unsoldCount,
+      totalSpentLakhs,
+    };
+
     // 1. Upsert Room record
     const dbRoom = await client.room.upsert({
       where: { code: roomCode },
       update: {
         hostId: room.hostId,
         auctioneerId: room.auctioneerId,
-        status: room.phase === 'COMPLETED' ? 'COMPLETED' : room.phase === 'LOBBY' ? 'LOBBY' : 'ACTIVE',
-        configJson: JSON.stringify({
-          ...room.settings,
-          accessCodes: room.accessCodes,
-        }),
-        liveStateJson: JSON.stringify({
-          phase: room.phase,
-          currentBid: room.currentBid,
-          highestBidderTeam: room.highestBidderTeam,
-          highestBidderUserId: room.highestBidderUserId,
-          activePlayer: room.activePlayer,
-          lastActionMessage: room.lastActionMessage,
-          soldHistory: room.soldHistory || [],
-          unsoldHistory: room.unsoldHistory || [],
-          bidHistory: room.bidHistory || [],
-          isAuctionPaused: room.isAuctionPaused || false,
-          tempAuctioneerId: room.tempAuctioneerId || null,
-        }),
+        status,
+        configJson: JSON.stringify(mergedConfig),
+        liveStateJson: JSON.stringify(mergedLiveState),
       },
       create: {
         code: roomCode,
         hostId: room.hostId,
         auctioneerId: room.auctioneerId,
-        status: room.phase === 'COMPLETED' ? 'COMPLETED' : room.phase === 'LOBBY' ? 'LOBBY' : 'ACTIVE',
-        configJson: JSON.stringify({
-          ...room.settings,
-          accessCodes: room.accessCodes,
-        }),
-        liveStateJson: JSON.stringify({
-          phase: room.phase,
-          currentBid: room.currentBid,
-          highestBidderTeam: room.highestBidderTeam,
-          highestBidderUserId: room.highestBidderUserId,
-          activePlayer: room.activePlayer,
-          lastActionMessage: room.lastActionMessage,
-          soldHistory: room.soldHistory || [],
-          unsoldHistory: room.unsoldHistory || [],
-          bidHistory: room.bidHistory || [],
-          isAuctionPaused: room.isAuctionPaused || false,
-          tempAuctioneerId: room.tempAuctioneerId || null,
-        }),
+        status,
+        configJson: JSON.stringify(mergedConfig),
+        liveStateJson: JSON.stringify(mergedLiveState),
       },
     });
 
@@ -154,6 +197,24 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
         }).catch(() => null);
       });
     await Promise.all(participantPromises);
+
+    // 5. Ensure newly bought SquadPlayer rows are saved in DB
+    if (finalSold.length > 0) {
+      await client.squadPlayer.createMany({
+        data: finalSold.map((p: any) => ({
+          roomId: dbRoom.id,
+          franchiseCode: p.soldTo || 'CSK',
+          name: p.name,
+          role: p.role || 'BAT',
+          country: p.country || 'India',
+          isOverseas: !!p.isOverseas,
+          price: p.soldAmount || p.price || 0,
+          isRetained: false,
+          imageUrl: p.imageUrl || null,
+        })),
+        skipDuplicates: true,
+      }).catch(console.warn);
+    }
   }, undefined);
 }
 
@@ -380,6 +441,14 @@ export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoom
 
     // Reconstruct teams
     const teams = {} as AuctionRoomState['teams'];
+    const rawSoldHistory = (
+      Array.isArray(liveState.soldHistory)
+        ? liveState.soldHistory
+        : Array.isArray(config.soldHistory)
+        ? config.soldHistory
+        : []
+    ).filter((p: any) => !p.isRetained);
+
     FRANCHISE_LIST.forEach((f) => {
       const dbTeam = dbRoom.teams.find((t) => t.franchiseCode === f.code);
       const teamSquad = dbRoom.squadPlayers
@@ -401,11 +470,47 @@ export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoom
           imageUrl: sp.imageUrl || undefined,
         }));
 
+      // Merge any newly bought players from soldHistory that are not already in teamSquad
+      const missingFromSquad = rawSoldHistory.filter(
+        (p: any) =>
+          p.soldTo === f.code &&
+          !teamSquad.some(
+            (sp) => sp.id === p.id || sp.name?.toLowerCase() === p.name?.toLowerCase()
+          )
+      );
+
+      missingFromSquad.forEach((p: any) => {
+        teamSquad.push({
+          id: p.id || `sold_${f.code}_${p.name.replace(/\s+/g, '_')}`,
+          name: p.name,
+          role: (p.role as any) || 'BAT',
+          country: p.country || 'India',
+          isOverseas: !!p.isOverseas,
+          basePrice: p.basePrice || 20,
+          previousTeam: f.code,
+          statsSummary: `Bought by ${f.code}`,
+          set: (p.set as any) || 'Accelerated',
+          status: 'SOLD' as const,
+          soldTo: f.code,
+          soldAmount: p.soldAmount || p.price || 0,
+          isRetained: false,
+          imageUrl: p.imageUrl || undefined,
+        });
+      });
+
+      const totalSpentByTeam = teamSquad
+        .filter((sp) => !sp.isRetained)
+        .reduce((sum, sp) => sum + (sp.soldAmount || 0), 0);
+      const defaultPurse = IPL_2027_MINI_AUCTION_PURSE_DEFAULTS[f.code].remainingPurse;
+      const remainingPurse = dbTeam
+        ? dbTeam.remainingPurse
+        : Math.max(0, defaultPurse - totalSpentByTeam);
+
       teams[f.code] = {
         code: f.code,
         name: f.name,
         shortName: f.shortName,
-        remainingPurse: dbTeam ? dbTeam.remainingPurse : IPL_2027_MINI_AUCTION_PURSE_DEFAULTS[f.code].remainingPurse,
+        remainingPurse,
         rtmCardsRemaining: 0,
         squad: teamSquad,
         overseasCount: teamSquad.filter((p) => p.isOverseas).length,
@@ -445,12 +550,20 @@ export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoom
       imageUrl: pp.imageUrl || undefined,
     }));
 
+    const isCompleted =
+      dbRoom.status === 'COMPLETED' ||
+      liveState.phase === 'COMPLETED' ||
+      config.status === 'COMPLETED';
+
     const restoredRoom: AuctionRoomState = {
       roomCode: dbRoom.code,
       code: dbRoom.code,
       hostId: dbRoom.hostId,
       auctioneerId: dbRoom.auctioneerId,
-      phase: (liveState.phase as any) || (dbRoom.status === 'ACTIVE' ? 'IDLE' : 'LOBBY'),
+      phase: isCompleted
+        ? 'COMPLETED'
+        : (liveState.phase as any) ||
+          (dbRoom.status === 'ACTIVE' ? 'IDLE' : 'LOBBY'),
       settings: {
         initialPurse: config.initialPurse || 13000,
         maxSquadSize: config.maxSquadSize || 25,

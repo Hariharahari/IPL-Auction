@@ -43,10 +43,6 @@ export async function GET(
   const engine = AuctionEngine.getInstance();
   let room = engine.getRoomState(roomCode);
 
-  if (!room && roomCode.length === 6 && /^[A-Z0-9]+$/.test(roomCode)) {
-    room = engine.createRoom('system_host', 'IPL Auction System', 'system_sock', undefined, roomCode);
-  }
-
   if (!room) {
     return NextResponse.json({ error: 'Room not found' }, { status: 404 });
   }

@@ -271,21 +271,31 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
     // Sheet 4: Final Franchise Squads
     const allSquadRows: Array<Record<string, unknown>> = [];
     FRANCHISE_LIST.forEach((f) => {
-      const team = roomState.teams[f.code];
-      if (team) {
-        team.squad.forEach((p) => {
-          allSquadRows.push({
-            Franchise: f.code,
-            FranchiseName: f.name,
-            PlayerName: p.name,
-            Role: p.role,
-            Country: p.country,
-            IsOverseas: p.isOverseas ? 'Yes' : 'No',
-            AcquisitionType: p.isRetained ? 'Pre-Retained' : 'Auction Bought',
-            Price_Cr: ((p.soldAmount || p.basePrice || 0) / 100).toFixed(2),
-          });
+      const team = roomState.teams?.[f.code];
+      const retained = (team?.squad || []).filter((p) => p.isRetained);
+      const squadBought = (team?.squad || []).filter((p) => !p.isRetained);
+      const historyBought = soldPlayers.filter((p) => p.soldTo === f.code);
+      const boughtMap = new Map<string, BoughtPlayer>();
+      squadBought.forEach((p) => boughtMap.set(p.name.toLowerCase(), p));
+      historyBought.forEach((p) => {
+        if (!boughtMap.has(p.name.toLowerCase())) {
+          boughtMap.set(p.name.toLowerCase(), p);
+        }
+      });
+      const fullSquad = [...retained, ...Array.from(boughtMap.values())];
+
+      fullSquad.forEach((p) => {
+        allSquadRows.push({
+          Franchise: f.code,
+          FranchiseName: f.name,
+          PlayerName: p.name,
+          Role: p.role,
+          Country: p.country,
+          IsOverseas: p.isOverseas ? 'Yes' : 'No',
+          AcquisitionType: p.isRetained ? 'Pre-Retained' : 'Auction Bought',
+          Price_Cr: ((p.soldAmount || p.basePrice || 0) / 100).toFixed(2),
         });
-      }
+      });
     });
     const wsSquads = XLSX.utils.json_to_sheet(allSquadRows);
     XLSX.utils.book_append_sheet(wb, wsSquads, 'UpdatedSquads');
@@ -299,15 +309,25 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
 
     let csv = 'Franchise,PlayerName,Role,Country,IsOverseas,Type,Price_Cr\n';
     FRANCHISE_LIST.forEach((f) => {
-      const team = roomState.teams[f.code];
-      if (team) {
-        team.squad.forEach((p) => {
-          const priceCr = ((p.soldAmount || p.basePrice || 0) / 100).toFixed(2);
-          csv += `"${f.code}","${p.name}","${p.role}","${p.country}","${p.isOverseas ? 'Yes' : 'No'}","${
-            p.isRetained ? 'Retained' : 'Bought'
-          }","${priceCr}"\n`;
-        });
-      }
+      const team = roomState.teams?.[f.code];
+      const retained = (team?.squad || []).filter((p) => p.isRetained);
+      const squadBought = (team?.squad || []).filter((p) => !p.isRetained);
+      const historyBought = soldPlayers.filter((p) => p.soldTo === f.code);
+      const boughtMap = new Map<string, BoughtPlayer>();
+      squadBought.forEach((p) => boughtMap.set(p.name.toLowerCase(), p));
+      historyBought.forEach((p) => {
+        if (!boughtMap.has(p.name.toLowerCase())) {
+          boughtMap.set(p.name.toLowerCase(), p);
+        }
+      });
+      const fullSquad = [...retained, ...Array.from(boughtMap.values())];
+
+      fullSquad.forEach((p) => {
+        const priceCr = ((p.soldAmount || p.basePrice || 0) / 100).toFixed(2);
+        csv += `"${f.code}","${p.name}","${p.role}","${p.country}","${p.isOverseas ? 'Yes' : 'No'}","${
+          p.isRetained ? 'Retained' : 'Bought'
+        }","${priceCr}"\n`;
+      });
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -919,10 +939,26 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
             {FRANCHISE_LIST.filter(
               (f) => selectedFranchise === 'ALL' || selectedFranchise === f.code
             ).map((f) => {
-              const teamState = roomState?.teams[f.code];
+              const teamState = roomState?.teams?.[f.code];
               const squad = teamState?.squad || [];
               const retained = squad.filter((p) => p.isRetained);
-              const bought = squad.filter((p) => !p.isRetained);
+
+              // Merge newly bought players from team squad and room soldPlayers
+              const squadBought = squad.filter((p) => !p.isRetained);
+              const historyBought = soldPlayers.filter((p) => p.soldTo === f.code);
+              const boughtMap = new Map<string, BoughtPlayer>();
+              squadBought.forEach((p) => boughtMap.set(p.name.toLowerCase(), p));
+              historyBought.forEach((p) => {
+                if (!boughtMap.has(p.name.toLowerCase())) {
+                  boughtMap.set(p.name.toLowerCase(), p);
+                }
+              });
+              const bought = Array.from(boughtMap.values());
+              const totalSquadCount = retained.length + bought.length;
+              const totalOverseasCount = [
+                ...retained.filter((p) => p.isOverseas),
+                ...bought.filter((p) => p.isOverseas),
+              ].length;
 
               return (
                 <div
@@ -941,9 +977,9 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
                       <div>
                         <h3 className="font-black text-sm text-white">{f.name}</h3>
                         <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                          <span>Squad: <strong className="text-white">{squad.length}/25</strong></span>
+                          <span>Squad: <strong className="text-white">{totalSquadCount}/25</strong></span>
                           <span>•</span>
-                          <span>Overseas: <strong className="text-amber-400">{teamState?.overseasCount || 0}/8</strong></span>
+                          <span>Overseas: <strong className="text-amber-400">{totalOverseasCount}/8</strong></span>
                         </div>
                       </div>
                     </div>
@@ -951,7 +987,7 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
                     <div className="text-right">
                       <span className="text-[10px] text-slate-400 block uppercase font-bold">Purse Left</span>
                       <span className="font-mono font-black text-emerald-400 text-sm">
-                        {formatIndianCurrency(teamState?.remainingPurse || 0)}
+                        {formatIndianCurrency(teamState?.remainingPurse ?? 0)}
                       </span>
                     </div>
                   </div>

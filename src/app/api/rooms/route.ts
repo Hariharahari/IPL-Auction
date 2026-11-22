@@ -120,6 +120,17 @@ export async function GET() {
       const code = r.roomCode || r.code || '';
       if (!code) return;
 
+      const existingDb = sessionMap.get(code);
+      // Never allow an in-memory stub to downgrade a Completed DB room or wipe out real sold counts
+      if (existingDb) {
+        if (existingDb.status === 'Completed' && r.phase !== 'COMPLETED') {
+          return;
+        }
+        if (existingDb.soldCount > 0 && (r.soldHistory || []).filter((p) => !p.isRetained).length === 0) {
+          return;
+        }
+      }
+
       const soldCount = (r.soldHistory || []).filter((p) => !p.isRetained).length;
       const unsoldCount = r.unsoldHistory?.length || 0;
       const totalSpentLakhs = (r.soldHistory || [])

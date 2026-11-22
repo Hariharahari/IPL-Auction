@@ -251,7 +251,7 @@ export class AuctionEngine {
         room = rehydrated;
       } else {
         const scheduled = getAuctionByCode(code);
-        if (scheduled || code === 'GLZ8PJ' || (code.length === 6 && /^[A-Z0-9]+$/.test(code))) {
+        if (scheduled || code === 'GLZ8PJ') {
           room = this.createRoom('system_host', 'IPL Auction System', socketId, undefined, code);
         } else {
           return { error: 'Auction room not found' };
@@ -300,7 +300,7 @@ export class AuctionEngine {
         room = restored;
       } else {
         const scheduled = getAuctionByCode(code);
-        if (scheduled || code === 'GLZ8PJ' || (code.length === 6 && /^[A-Z0-9]+$/.test(code))) {
+        if (scheduled || code === 'GLZ8PJ') {
           room = this.createRoom('system_host', 'IPL Auction System', socketId, undefined, code);
         } else {
           return { error: 'Auction room not found' };
@@ -715,6 +715,10 @@ export class AuctionEngine {
 
   public getAllRooms(): AuctionRoomState[] {
     return Array.from(rooms.values());
+  }
+
+  public setRoomState(roomCode: string, state: AuctionRoomState): void {
+    rooms.set(roomCode.toUpperCase(), state);
   }
 
   public setTeamCaptain(

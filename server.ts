@@ -75,6 +75,14 @@ const io = new SocketIOServer(httpServer, {
 
 setupSocketHandler(io);
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('> Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('> Uncaught Exception thrown:', err);
+});
+
 // Listen immediately on 0.0.0.0 so Render detects an open port without 502 timeout
 httpServer.listen(port, '0.0.0.0', () => {
   console.log(`> IPL Auction Server listening on http://0.0.0.0:${port}`);

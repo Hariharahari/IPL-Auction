@@ -24,12 +24,13 @@ export async function GET(
     const restored = await restoreRoomState(roomCode);
     if (restored) {
       room = restored;
+      engine.setRoomState(roomCode, restored);
     }
   }
 
   if (!room) {
     const scheduled = getAuctionByCode(roomCode);
-    if (scheduled || roomCode === 'GLZ8PJ' || (roomCode.length === 6 && /^[A-Z0-9]+$/.test(roomCode))) {
+    if (scheduled || roomCode === 'GLZ8PJ') {
       room = engine.createRoom('system_host', 'IPL Auction System', 'system_sock', undefined, roomCode);
     }
   }

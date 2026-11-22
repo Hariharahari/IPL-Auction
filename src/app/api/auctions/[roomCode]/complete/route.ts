@@ -38,9 +38,9 @@ export async function POST(
       soldPlayers && soldPlayers.length > 0
         ? soldPlayers
         : memRoom?.soldHistory || [];
-    const cleanSoldHistory = rawSold.filter((p: any) => !p.isRetained);
+    let cleanSoldHistory = rawSold.filter((p: any) => !p.isRetained);
 
-    const cleanUnsoldHistory =
+    let cleanUnsoldHistory =
       unsoldPlayers && unsoldPlayers.length > 0
         ? unsoldPlayers
         : memRoom?.unsoldHistory || [];
@@ -55,9 +55,14 @@ export async function POST(
         ? squads
         : memRoom?.teams || {};
 
-    const soldCount = cleanSoldHistory.length;
-    const unsoldCount = cleanUnsoldHistory.length;
-    const totalSpentLakhs =
+    const endedAtIso = new Date().toISOString();
+    const actionMessage =
+      lastActionMessage ||
+      '🏆 LIVE AUCTION OFFICIALLY CONCLUDED! All franchises and final squad rosters are locked.';
+
+    let finalSoldCount = cleanSoldHistory.length;
+    let finalUnsoldCount = cleanUnsoldHistory.length;
+    let finalTotalSpentLakhs =
       totalSpent != null
         ? Number(totalSpent)
         : cleanSoldHistory.reduce(
@@ -65,18 +70,71 @@ export async function POST(
             0
           );
 
-    const endedAtIso = new Date().toISOString();
-    const actionMessage =
-      lastActionMessage ||
-      '🏆 LIVE AUCTION OFFICIALLY CONCLUDED! All franchises and final squad rosters are locked.';
-
     // Execute single, strictly awaited PostgreSQL transaction
     if (process.env.DATABASE_URL) {
       await prisma.$transaction(async (tx) => {
         // 1. Find or create Room record
         let dbRoom = await tx.room.findUnique({
           where: { code: roomCode },
+          include: {
+            squadPlayers: true,
+            poolPlayers: true,
+          },
         });
+
+        // Defensive recovery: If client and RAM had 0 sold players, inspect existing DB squadPlayers
+        if (cleanSoldHistory.length === 0 && dbRoom?.squadPlayers) {
+          const existingBought = dbRoom.squadPlayers.filter(
+            (sp) => !sp.isRetained
+          );
+          if (existingBought.length > 0) {
+            cleanSoldHistory = existingBought.map((sp) => ({
+              id: sp.id,
+              name: sp.name,
+              role: sp.role as any,
+              country: sp.country,
+              isOverseas: sp.isOverseas,
+              basePrice: sp.price,
+              previousTeam: (sp.franchiseCode as any) || null,
+              statsSummary: `Bought by ${sp.franchiseCode}`,
+              set: 'Accelerated' as any,
+              status: 'SOLD' as const,
+              soldTo: sp.franchiseCode as any,
+              soldAmount: sp.price,
+              isRetained: false,
+              imageUrl: sp.imageUrl || undefined,
+            }));
+            finalSoldCount = cleanSoldHistory.length;
+            finalTotalSpentLakhs = cleanSoldHistory.reduce(
+              (sum: number, p: any) => sum + (p.soldAmount || 0),
+              0
+            );
+          }
+        }
+
+        if (cleanUnsoldHistory.length === 0 && dbRoom?.poolPlayers) {
+          const existingUnsold = dbRoom.poolPlayers.filter(
+            (pp) => pp.status === 'UNSOLD'
+          );
+          if (existingUnsold.length > 0) {
+            cleanUnsoldHistory = existingUnsold.map((pp) => ({
+              id: pp.id,
+              name: pp.name,
+              role: pp.role as any,
+              country: pp.country,
+              isOverseas: pp.isOverseas,
+              basePrice: pp.basePrice,
+              previousTeam: null,
+              statsSummary: `Base Price ₹${(pp.basePrice / 100).toFixed(2)} Cr`,
+              set: pp.set as any,
+              status: 'UNSOLD' as const,
+              soldTo: null,
+              soldAmount: null,
+              imageUrl: pp.imageUrl || undefined,
+            }));
+            finalUnsoldCount = cleanUnsoldHistory.length;
+          }
+        }
 
         const liveState = {
           phase: 'COMPLETED',
@@ -89,16 +147,16 @@ export async function POST(
           unsoldHistory: cleanUnsoldHistory,
           bidHistory: cleanBidHistory,
           isAuctionPaused: false,
-          soldCount,
-          unsoldCount,
-          totalSpentLakhs,
+          soldCount: finalSoldCount,
+          unsoldCount: finalUnsoldCount,
+          totalSpentLakhs: finalTotalSpentLakhs,
           endedAt: endedAtIso,
         };
 
         const summaryConfig = {
-          soldCount,
-          unsoldCount,
-          totalSpentLakhs,
+          soldCount: finalSoldCount,
+          unsoldCount: finalUnsoldCount,
+          totalSpentLakhs: finalTotalSpentLakhs,
           endedAt: endedAtIso,
           status: 'COMPLETED',
         };
@@ -112,6 +170,10 @@ export async function POST(
               status: 'COMPLETED',
               configJson: JSON.stringify(summaryConfig),
               liveStateJson: JSON.stringify(liveState),
+            },
+            include: {
+              squadPlayers: true,
+              poolPlayers: true,
             },
           });
         } else {
@@ -127,6 +189,10 @@ export async function POST(
               configJson: JSON.stringify({ ...existingConfig, ...summaryConfig }),
               liveStateJson: JSON.stringify(liveState),
               updatedAt: new Date(),
+            },
+            include: {
+              squadPlayers: true,
+              poolPlayers: true,
             },
           });
         }
@@ -163,15 +229,15 @@ export async function POST(
           });
         }
 
-        // 3. Persist SquadPlayer rows: delete non-retained players first to prevent duplication
-        await tx.squadPlayer.deleteMany({
-          where: {
-            roomId,
-            isRetained: false,
-          },
-        });
-
+        // 3. Persist SquadPlayer rows: only replace if we have non-retained players
         if (cleanSoldHistory.length > 0) {
+          await tx.squadPlayer.deleteMany({
+            where: {
+              roomId,
+              isRetained: false,
+            },
+          });
+
           await tx.squadPlayer.createMany({
             data: cleanSoldHistory.map((p: any) => ({
               roomId,
@@ -227,15 +293,16 @@ export async function POST(
       memRoom.soldHistory = cleanSoldHistory;
       memRoom.unsoldHistory = cleanUnsoldHistory;
       memRoom.lastActionMessage = actionMessage;
+      engine.setRoomState(roomCode, memRoom);
     }
 
     return NextResponse.json({
       success: true,
       roomCode,
       status: 'COMPLETED',
-      soldCount,
-      unsoldCount,
-      totalSpentLakhs,
+      soldCount: finalSoldCount,
+      unsoldCount: finalUnsoldCount,
+      totalSpentLakhs: finalTotalSpentLakhs,
       endedAt: endedAtIso,
     });
   } catch (error: any) {
