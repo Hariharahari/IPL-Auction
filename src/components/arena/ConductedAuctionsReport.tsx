@@ -127,7 +127,7 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
   const soldPlayers = useMemo(() => {
     if (!roomState) return [];
     if (roomState.soldHistory && roomState.soldHistory.length > 0) {
-      return roomState.soldHistory;
+      return roomState.soldHistory.filter((p) => !p.isRetained);
     }
     const bought: BoughtPlayer[] = [];
     Object.values(roomState.teams || {}).forEach((team) => {
@@ -166,7 +166,9 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
       timestamp?: number;
     }> = [];
 
-    (roomState.soldHistory || []).forEach((p, index) => {
+    (roomState.soldHistory || [])
+      .filter((p) => !p.isRetained)
+      .forEach((p, index) => {
       events.push({
         id: p.id,
         name: p.name,

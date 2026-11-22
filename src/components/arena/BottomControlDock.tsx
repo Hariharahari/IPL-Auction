@@ -68,6 +68,7 @@ export const BottomControlDock: React.FC<BottomControlDockProps> = ({
     setIsCameraActive,
     unreadGlobalCount,
     unreadTeamCount,
+    resetUnreadChat,
     isHandRaised,
     toggleHandRaise,
     placeBid,
@@ -454,7 +455,11 @@ export const BottomControlDock: React.FC<BottomControlDockProps> = ({
 
         {/* Chat Drawer Toggle Button */}
         <button
-          onClick={() => setIsChatDrawerOpen(!isChatDrawerOpen)}
+          onClick={() => {
+            const nextState = !isChatDrawerOpen;
+            setIsChatDrawerOpen(nextState);
+            if (nextState) resetUnreadChat();
+          }}
           className={`p-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition border relative cursor-pointer ${
             isChatDrawerOpen
               ? 'bg-blue-500/20 text-blue-400 border-blue-500/50 shadow'

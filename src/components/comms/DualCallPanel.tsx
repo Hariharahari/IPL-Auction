@@ -161,6 +161,10 @@ export const DualCallPanel: React.FC = () => {
     });
 
     await mainRoom.connect(serverUrl, mainToken);
+    if (mainRoom.localParticipant) {
+      await mainRoom.localParticipant.setMicrophoneEnabled(false);
+    }
+    mainRoom.startAudio().catch(() => {});
 
     // 2. Connect Team Room (if part of franchise)
     if (teamToken) {
@@ -180,6 +184,10 @@ export const DualCallPanel: React.FC = () => {
       });
 
       await teamRoom.connect(serverUrl, teamToken);
+      if (teamRoom.localParticipant) {
+        await teamRoom.localParticipant.setMicrophoneEnabled(false);
+      }
+      teamRoom.startAudio().catch(() => {});
     }
   }
 

@@ -74,6 +74,53 @@ export default function AuctionArenaPage() {
   const [showFranchiseModal, setShowFranchiseModal] = useState(false);
   const [hasPromptedModal, setHasPromptedModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [chatToast, setChatToast] = useState<{ senderName: string; text: string; channel: string } | null>(null);
+
+  const latestIncomingMessage = useAuctionStore((s) => s.latestIncomingMessage);
+  const clearLatestIncomingMessage = useAuctionStore((s) => s.clearLatestIncomingMessage);
+  const resetUnreadChat = useAuctionStore((s) => s.resetUnreadChat);
+
+  // Soft Web Audio API notification chime for new chat messages
+  const playChatChime = () => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15); // A5
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.35);
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (!latestIncomingMessage) return;
+    if (latestIncomingMessage.senderName === userName) {
+      clearLatestIncomingMessage();
+      return;
+    }
+
+    if (!isChatDrawerOpen) {
+      playChatChime();
+      setChatToast({
+        senderName: latestIncomingMessage.senderName,
+        text: latestIncomingMessage.content,
+        channel: latestIncomingMessage.channel,
+      });
+
+      const timer = setTimeout(() => {
+        setChatToast(null);
+      }, 4500);
+      return () => clearTimeout(timer);
+    }
+  }, [latestIncomingMessage, isChatDrawerOpen, userName, clearLatestIncomingMessage]);
 
   const handleLeaveAuction = async () => {
     const isAuctioneer = role === 'AUCTIONEER' || room?.auctioneerId === userId;
@@ -158,18 +205,6 @@ export default function AuctionArenaPage() {
       <header className="h-12 border-b border-slate-800 bg-slate-900/95 backdrop-blur-md px-3 sm:px-4 flex items-center justify-between shrink-0 z-40 shadow-sm">
         {/* Left: Branding, Room Code, Current Set & Recent Sold Ticker */}
         <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
-          {/* Lobby backlink */}
-          <Link
-            href={`/room/${roomCode}/lobby`}
-            className="flex items-center gap-1 text-slate-400 hover:text-white text-xs font-semibold transition shrink-0"
-            title="Return to lobby"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Lobby</span>
-          </Link>
-
-          <div className="h-3.5 w-px bg-slate-800 shrink-0" />
-
           {/* Room Code Pill */}
           <div className="flex items-center gap-1.5 shrink-0 bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800">
             <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
@@ -193,18 +228,8 @@ export default function AuctionArenaPage() {
           </div>
         </div>
 
-        {/* Right: Quick Drawer Toggles, All Squads & Identity */}
+        {/* Right: Controls & Identity */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Quick link: All Squads */}
-          <Link
-            href={`/room/${roomCode}/squads`}
-            className="hidden sm:flex items-center gap-1 text-[11px] text-slate-300 hover:text-white font-bold bg-slate-950 hover:bg-slate-800 border border-slate-800 px-2.5 py-1 rounded-lg transition"
-            title="View master retained & bought squads"
-          >
-            <Users className="w-3 h-3 text-blue-400" />
-            <span>All Squads</span>
-          </Link>
-
           {/* Share Team PINs & Direct Links (Auctioneer / Host only) */}
           {isAuctioneerOrHost && (
             <button
@@ -242,27 +267,6 @@ export default function AuctionArenaPage() {
             </div>
           )}
 
-          {/* Huddle Drawer Toggle Button (Strictly isolated: only for non-auctioneer franchise members) */}
-          {!isAuctioneerOrHost && role === 'TEAM_MEMBER' && franchiseCode && (
-            <button
-              onClick={() => setIsHuddleDrawerOpen(!isHuddleDrawerOpen)}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition border cursor-pointer ${
-                isHuddleDrawerOpen
-                  ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-900/30'
-                  : 'bg-slate-950 hover:bg-slate-800 text-slate-300 border-slate-800'
-              }`}
-              title="Open Franchise Team Huddle Panel"
-            >
-              <Users className="w-3.5 h-3.5 text-blue-400" />
-              <span className="hidden sm:inline">Huddle</span>
-              {franchise && (
-                <span className="text-[10px] text-blue-300 font-mono hidden md:inline">
-                  ({franchise.code})
-                </span>
-              )}
-            </button>
-          )}
-
           {/* Teams & Purses Drawer Toggle Button */}
           <button
             onClick={() => setIsTeamsDrawerOpen(!isTeamsDrawerOpen)}
@@ -275,25 +279,6 @@ export default function AuctionArenaPage() {
           >
             <Shield className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden sm:inline">Teams</span>
-          </button>
-
-          {/* Chat Drawer Toggle Button */}
-          <button
-            onClick={() => setIsChatDrawerOpen(!isChatDrawerOpen)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition border relative cursor-pointer ${
-              isChatDrawerOpen
-                ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow'
-                : 'bg-slate-950 hover:bg-slate-800 text-slate-300 border-slate-800'
-            }`}
-            title="Open Live Chat Drawer"
-          >
-            <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
-            <span className="hidden sm:inline">Chat</span>
-            {totalUnread > 0 && !isChatDrawerOpen && (
-              <span className="w-4 h-4 rounded-full bg-amber-500 text-slate-950 text-[9px] font-black flex items-center justify-center animate-pulse">
-                {totalUnread}
-              </span>
-            )}
           </button>
 
           {/* Claim Auctioneer Gavel for Host if desynced */}
@@ -500,6 +485,44 @@ export default function AuctionArenaPage() {
           isOpen={isTempAuctioneerOpen}
           onClose={() => setIsTempAuctioneerOpen(false)}
         />
+      )}
+
+      {/* Floating Real-Time Chat Notification Toast */}
+      {chatToast && !isChatDrawerOpen && (
+        <div
+          onClick={() => {
+            setIsChatDrawerOpen(true);
+            resetUnreadChat();
+            setChatToast(null);
+          }}
+          className="fixed bottom-16 right-4 z-50 max-w-xs sm:max-w-sm bg-slate-900/95 border border-amber-500/60 text-slate-100 p-3 rounded-2xl shadow-2xl backdrop-blur-md flex items-start gap-3 cursor-pointer hover:bg-slate-900 animate-slide-in-up transition-all group ring-1 ring-amber-400/20"
+        >
+          <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
+            <MessageSquare className="w-4 h-4" />
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <div className="flex items-center justify-between gap-1 mb-0.5">
+              <span className="text-xs font-black text-amber-400 truncate">
+                {chatToast.senderName}
+              </span>
+              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded uppercase bg-slate-800 text-slate-400 border border-slate-700">
+                {chatToast.channel === 'GLOBAL' ? 'Global' : chatToast.channel}
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 truncate font-medium">
+              {chatToast.text}
+            </p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setChatToast(null);
+            }}
+            className="text-slate-500 hover:text-white text-xs font-bold p-1 cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
       )}
     </div>
   );

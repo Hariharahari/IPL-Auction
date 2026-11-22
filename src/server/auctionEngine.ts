@@ -156,8 +156,6 @@ export class AuctionEngine {
         imageUrl: p.imageUrl,
       }));
 
-      squad.forEach((sp) => soldHistory.push(sp));
-
       teams[f.code] = {
         code: f.code,
         name: f.name,

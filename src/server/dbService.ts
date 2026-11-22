@@ -15,7 +15,7 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
       update: {
         hostId: room.hostId,
         auctioneerId: room.auctioneerId,
-        status: room.phase === 'LOBBY' ? 'LOBBY' : 'ACTIVE',
+        status: room.phase === 'COMPLETED' ? 'COMPLETED' : room.phase === 'LOBBY' ? 'LOBBY' : 'ACTIVE',
         configJson: JSON.stringify({
           ...room.settings,
           accessCodes: room.accessCodes,
@@ -38,7 +38,7 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
         code: roomCode,
         hostId: room.hostId,
         auctioneerId: room.auctioneerId,
-        status: room.phase === 'LOBBY' ? 'LOBBY' : 'ACTIVE',
+        status: room.phase === 'COMPLETED' ? 'COMPLETED' : room.phase === 'LOBBY' ? 'LOBBY' : 'ACTIVE',
         configJson: JSON.stringify({
           ...room.settings,
           accessCodes: room.accessCodes,
@@ -474,7 +474,7 @@ export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoom
       rtmState: null,
       bidHistory: liveState.bidHistory || [],
       soldHistory: liveState.soldHistory && liveState.soldHistory.length > 0
-        ? liveState.soldHistory
+        ? liveState.soldHistory.filter((p: any) => !p.isRetained)
         : dbRoom.squadPlayers
             .filter((sp) => !sp.isRetained)
             .map((sp) => ({

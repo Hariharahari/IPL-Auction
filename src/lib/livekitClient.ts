@@ -146,6 +146,8 @@ class LiveKitClientService {
           this.notifyVideoListeners();
         } else if (track.kind === Track.Kind.Audio) {
           const audioEl = (track as RemoteAudioTrack).attach() as HTMLAudioElement;
+          audioEl.muted = false;
+          audioEl.autoplay = true;
           if (track.sid) {
             audioEl.id = `lk-audio-main-${track.sid}`;
             this.remoteAudioElements.set(track.sid, audioEl);
@@ -204,6 +206,8 @@ class LiveKitClientService {
         team.on(RoomEvent.TrackSubscribed, (track: RemoteTrack) => {
           if (track.kind === Track.Kind.Audio) {
             const audioEl = (track as RemoteAudioTrack).attach() as HTMLAudioElement;
+            audioEl.muted = false;
+            audioEl.autoplay = true;
             if (track.sid) {
               audioEl.id = `lk-audio-team-${track.sid}`;
             }
@@ -236,6 +240,25 @@ class LiveKitClientService {
         await team.connect(data.serverUrl, data.teamToken);
         console.log(`[LiveKit Team] Connected to private huddle as ${opts.userId}`);
       }
+
+      // Explicit default: Microphone MUTED on join, Incoming Speaker/Audio ON
+      if (main.localParticipant) {
+        await main.localParticipant.setMicrophoneEnabled(false);
+      }
+      if (this.teamRoom?.localParticipant) {
+        await this.teamRoom.localParticipant.setMicrophoneEnabled(false);
+      }
+
+      // Autoplay incoming room audio and handle browser autoplay policy via user interaction
+      main.startAudio().catch(() => {});
+      const resumeAudio = () => {
+        main.startAudio().catch(() => {});
+        if (this.teamRoom) this.teamRoom.startAudio().catch(() => {});
+        window.removeEventListener('click', resumeAudio);
+        window.removeEventListener('keydown', resumeAudio);
+      };
+      window.addEventListener('click', resumeAudio, { once: true });
+      window.addEventListener('keydown', resumeAudio, { once: true });
 
       // Re-apply microphone route
       await this.setMicRoute(this.currentMicRoute);

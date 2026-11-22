@@ -37,6 +37,9 @@ interface AuctionStoreState {
   unreadTeamCount: number;
   unreadGlobalCount: number;
   activeChatTab: 'GLOBAL' | 'TEAM';
+  latestIncomingMessage: ChatMessage | null;
+  clearLatestIncomingMessage: () => void;
+  resetUnreadChat: () => void;
 
   // Audio / Comms routing
   micRoute: MicRouting;
@@ -170,6 +173,7 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
     unreadTeamCount: 0,
     unreadGlobalCount: 0,
     activeChatTab: 'GLOBAL',
+    latestIncomingMessage: null,
 
     micRoute: 'MUTED',
     isTeammateSpeaking: false,
@@ -209,6 +213,14 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
       } else {
         set({ activeChatTab: 'TEAM', unreadTeamCount: 0 });
       }
+    },
+
+    clearLatestIncomingMessage: () => {
+      set({ latestIncomingMessage: null });
+    },
+
+    resetUnreadChat: () => {
+      set({ unreadGlobalCount: 0, unreadTeamCount: 0 });
     },
 
     setMicRoute: (route: MicRouting) => {
@@ -515,6 +527,7 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
             messages: [...state.messages, msg],
             unreadGlobalCount: unreadGlobal,
             unreadTeamCount: unreadTeam,
+            latestIncomingMessage: msg,
           };
         });
       });

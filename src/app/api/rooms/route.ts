@@ -105,9 +105,11 @@ export async function GET() {
       const code = r.roomCode || r.code || '';
       if (!code) return;
 
-      const soldCount = r.soldHistory?.length || 0;
+      const soldCount = (r.soldHistory || []).filter((p) => !p.isRetained).length;
       const unsoldCount = r.unsoldHistory?.length || 0;
-      const totalSpentLakhs = (r.soldHistory || []).reduce((sum, p) => sum + (p.soldAmount || 0), 0);
+      const totalSpentLakhs = (r.soldHistory || [])
+        .filter((p) => !p.isRetained)
+        .reduce((sum, p) => sum + (p.soldAmount || 0), 0);
 
       const isSolo =
         code.startsWith('SOLO') ||
