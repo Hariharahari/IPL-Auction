@@ -34,6 +34,7 @@ export const MiniLiveAuctionWidget: React.FC = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const [activeCode, setActiveCode] = useState<string | null>(null);
+  const isEndingRef = React.useRef(false);
 
   // Sync and persist active room code
   useEffect(() => {
@@ -53,9 +54,10 @@ export const MiniLiveAuctionWidget: React.FC = () => {
 
   const code = storeRoomCode || activeCode;
   const isArena = pathname ? pathname.includes(`/room/${code}/arena`) : false;
+  const isAuctionEnded = typeof window !== 'undefined' && code ? localStorage.getItem('ipl_auction_ended') === code : false;
 
   // Don't render on the main Live Arena page itself or if dismissed/no active room code or completed auction
-  if (!code || isArena || isDismissed || room?.phase === 'COMPLETED') {
+  if (!code || isArena || isDismissed || room?.phase === 'COMPLETED' || isAuctionEnded) {
     return null;
   }
 
@@ -77,19 +79,24 @@ export const MiniLiveAuctionWidget: React.FC = () => {
   const currentUser = getStoredUser();
   const isSuperAdmin = currentUser.isAdmin || currentUser.userEmail?.toLowerCase() === 'hariharan12403@gmail.com';
 
-  const handleEndAuction = async () => {
-    if (!confirm(`Are you sure you want to officially END the Live Auction for room ${code}?`)) return;
+  const handleEndAuction = async (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    if (isEndingRef.current) return;
+    isEndingRef.current = true;
     try {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('ipl_active_room_code');
+        if (code) localStorage.setItem('ipl_auction_ended', code);
+      }
+      setIsDismissed(true);
       await endAuction();
       await leaveAuction();
     } catch (e) {
       console.warn('Error ending auction:', e);
     }
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('ipl_active_room_code');
-    }
-    setIsDismissed(true);
-    router.push('/?tab=REPORTS');
+    router.refresh();
+    router.push('/conducted-auctions');
   };
 
   return (
@@ -254,7 +261,8 @@ export const MiniLiveAuctionWidget: React.FC = () => {
 
             {isSuperAdmin && (
               <button
-                onClick={handleEndAuction}
+                type="button"
+                onClick={(e) => handleEndAuction(e)}
                 className="bg-rose-950 hover:bg-rose-900 text-rose-300 font-black py-2 px-2.5 rounded-xl text-xs transition border border-rose-800 cursor-pointer"
                 title="End this live auction session"
               >

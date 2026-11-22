@@ -1,23 +1,65 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { AuctionEngine } from '@/server/auctionEngine';
 import { safeDbOperation } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const userEmail = searchParams.get('email')?.trim().toLowerCase() || null;
+    const isAdminParam = searchParams.get('isAdmin');
+    const searchCode = searchParams.get('code')?.trim().toUpperCase() || null;
+
+    const superAdminEmail = (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase();
+    const isAdmin =
+      isAdminParam === 'true' ||
+      (userEmail != null && userEmail === superAdminEmail);
+
     const engine = AuctionEngine.getInstance();
     const ramRooms = engine.getAllRooms();
 
     // Also fetch rooms from PostgreSQL
     const dbRooms = await safeDbOperation(async (client) => {
+      let whereClause: any = {};
+      if (searchCode) {
+        whereClause.code = searchCode;
+      } else if (!isAdmin && userEmail) {
+        whereClause.OR = [
+          {
+            participants: {
+              some: {
+                userEmail: {
+                  equals: userEmail,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          },
+          {
+            configJson: {
+              contains: userEmail,
+              mode: 'insensitive',
+            },
+          },
+          {
+            hostId: {
+              equals: userEmail,
+              mode: 'insensitive',
+            },
+          },
+        ];
+      }
+
       return await client.room.findMany({
+        where: whereClause,
         orderBy: { updatedAt: 'desc' },
-        take: 30,
+        take: 50,
         include: {
           squadPlayers: true,
           poolPlayers: true,
           teams: true,
+          participants: true,
         },
       });
     }, []);
@@ -119,6 +161,19 @@ export async function GET() {
     ramRooms.forEach((r) => {
       const code = r.roomCode || r.code || '';
       if (!code) return;
+
+      // Filter RAM rooms for non-admins if email is provided
+      if (!isAdmin && userEmail) {
+        const matchesUser =
+          Object.values(r.users || {}).some(
+            (u) => u.email?.toLowerCase() === userEmail
+          ) ||
+          r.hostId?.toLowerCase() === userEmail ||
+          code.startsWith('SOLO');
+        if (!matchesUser) return;
+      }
+
+      if (searchCode && code !== searchCode) return;
 
       const existingDb = sessionMap.get(code);
       // Never allow an in-memory stub to downgrade a Completed DB room or wipe out real sold counts

@@ -20,6 +20,10 @@ export async function POST(
 
     const body = await req.json().catch(() => ({}));
     const {
+      mode,
+      hostEmail: rawEmail,
+      hostName = 'Auctioneer',
+      participatingTeams = [],
       soldPlayers = [],
       unsoldPlayers = [],
       squads = {},
@@ -28,6 +32,9 @@ export async function POST(
       totalSpent,
       lastActionMessage,
     } = body;
+
+    const hostEmail = rawEmail?.trim().toLowerCase() || null;
+    const isSuper = hostEmail === (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase();
 
     const engine = AuctionEngine.getInstance();
     const memRoom = engine.getRoomState(roomCode);
@@ -153,7 +160,28 @@ export async function POST(
           endedAt: endedAtIso,
         };
 
+        let existingConfig: any = {};
+        if (dbRoom) {
+          try {
+            existingConfig = JSON.parse(dbRoom.configJson || '{}');
+          } catch {}
+        }
+
+        const isSolo =
+          mode === 'SOLO' ||
+          roomCode.startsWith('SOLO') ||
+          existingConfig.isSolo === true ||
+          memRoom?.hostId?.startsWith('solo_');
+
+        const effectiveHostEmail = hostEmail || existingConfig.hostEmail || null;
+        const effectiveHostName = hostName || existingConfig.hostName || 'Auctioneer';
+
         const summaryConfig = {
+          ...existingConfig,
+          mode: isSolo ? 'SOLO' : 'MULTIPLAYER',
+          isSolo,
+          hostEmail: effectiveHostEmail,
+          hostName: effectiveHostName,
           soldCount: finalSoldCount,
           unsoldCount: finalUnsoldCount,
           totalSpentLakhs: finalTotalSpentLakhs,
@@ -165,7 +193,7 @@ export async function POST(
           dbRoom = await tx.room.create({
             data: {
               code: roomCode,
-              hostId: memRoom?.hostId || 'system_host',
+              hostId: effectiveHostEmail || (isSolo ? 'solo_host' : memRoom?.hostId || 'system_host'),
               auctioneerId: memRoom?.auctioneerId || 'auctioneer',
               status: 'COMPLETED',
               configJson: JSON.stringify(summaryConfig),
@@ -177,16 +205,11 @@ export async function POST(
             },
           });
         } else {
-          let existingConfig = {};
-          try {
-            existingConfig = JSON.parse(dbRoom.configJson || '{}');
-          } catch {}
-
           dbRoom = await tx.room.update({
             where: { id: dbRoom.id },
             data: {
               status: 'COMPLETED',
-              configJson: JSON.stringify({ ...existingConfig, ...summaryConfig }),
+              configJson: JSON.stringify(summaryConfig),
               liveStateJson: JSON.stringify(liveState),
               updatedAt: new Date(),
             },
@@ -198,6 +221,47 @@ export async function POST(
         }
 
         const roomId = dbRoom.id;
+
+        // Upsert User and AuctionParticipant so user mapping is guaranteed
+        if (effectiveHostEmail) {
+          const dbUser = await tx.user.upsert({
+            where: { email: effectiveHostEmail },
+            update: {
+              name: effectiveHostName,
+              ...(isSuper ? { role: 'SUPER_ADMIN' } : {}),
+            },
+            create: {
+              email: effectiveHostEmail,
+              name: effectiveHostName,
+              role: isSuper ? 'SUPER_ADMIN' : 'USER',
+            },
+          });
+
+          await tx.auctionParticipant.upsert({
+            where: {
+              roomCode_userEmail: {
+                roomCode,
+                userEmail: effectiveHostEmail,
+              },
+            },
+            update: {
+              userName: effectiveHostName,
+              userId: dbUser.id,
+              role: 'AUCTIONEER',
+              isCaptain: true,
+              updatedAt: new Date(),
+            },
+            create: {
+              roomId,
+              roomCode,
+              userEmail: effectiveHostEmail,
+              userName: effectiveHostName,
+              userId: dbUser.id,
+              role: 'AUCTIONEER',
+              isCaptain: true,
+            },
+          });
+        }
 
         // 2. Persist all FranchiseTeam records
         for (const franchise of FRANCHISE_LIST) {
@@ -293,6 +357,16 @@ export async function POST(
       memRoom.soldHistory = cleanSoldHistory;
       memRoom.unsoldHistory = cleanUnsoldHistory;
       memRoom.lastActionMessage = actionMessage;
+      // Ensure in-memory team squads also have the newly bought players
+      cleanSoldHistory.forEach((p: any) => {
+        const teamCode = p.soldTo as keyof typeof memRoom.teams;
+        if (teamCode && memRoom.teams[teamCode]) {
+          const squad = memRoom.teams[teamCode].squad;
+          if (!squad.some((sp: any) => sp.id === p.id || sp.name?.toLowerCase() === p.name?.toLowerCase())) {
+            squad.push(p);
+          }
+        }
+      });
       engine.setRoomState(roomCode, memRoom);
     }
 

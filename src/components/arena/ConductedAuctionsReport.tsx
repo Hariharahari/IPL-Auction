@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { AuctionRoomState, BoughtPlayer, FranchiseCode, Player } from '@/types/auction';
-import { formatIndianCurrency } from '@/lib/utils';
+import { formatIndianCurrency, getStoredUser } from '@/lib/utils';
 import Link from 'next/link';
 import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
@@ -75,7 +75,20 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
   const fetchSessionsList = async () => {
     setIsSessionsLoading(true);
     try {
-      const res = await fetch('/api/rooms', { cache: 'no-store' });
+      const user = getStoredUser();
+      const params = new URLSearchParams();
+      if (user.userEmail) {
+        params.set('email', user.userEmail);
+      }
+      if (user.isAdmin || user.userEmail?.toLowerCase() === 'hariharan12403@gmail.com') {
+        params.set('isAdmin', 'true');
+      }
+      const qs = params.toString() ? `?${params.toString()}` : '';
+
+      let res = await fetch(`/api/auctions/conducted${qs}`, { cache: 'no-store' });
+      if (!res.ok) {
+        res = await fetch(`/api/rooms${qs}`, { cache: 'no-store' });
+      }
       const data = await res.json();
       if (data.success && Array.isArray(data.sessions)) {
         setSessions(data.sessions);

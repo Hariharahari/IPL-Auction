@@ -193,6 +193,27 @@ export default function HomePage() {
         if (typeof window !== 'undefined') {
           localStorage.setItem('ipl_active_room_code', res.roomCode);
         }
+        // Guarantee session row exists in PostgreSQL on creation
+        await fetch('/api/auctions/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            roomCode: res.roomCode,
+            mode: 'MULTIPLAYER',
+            hostEmail: userEmail.trim().toLowerCase(),
+            hostName: userName.trim(),
+            settings: {
+              initialPurse,
+              maxSquadSize,
+              minSquadSize,
+              maxOverseas,
+              rtmCardsPerTeam,
+              bidTimerSeconds,
+              biddingPermission,
+            },
+          }),
+        }).catch(console.warn);
+
         router.push(`/room/${res.roomCode}/lobby`);
       } else {
         setErrorMsg(res.error || 'Failed to create auction room');
@@ -207,9 +228,10 @@ export default function HomePage() {
   // 1-Click Solo Test Launch
   const handleLaunchSoloTest = async () => {
     const name = userName.trim() || 'Solo Auctioneer';
+    const email = userEmail.trim().toLowerCase() || 'solo@ipl.local';
     setIsSoloLaunching(true);
     setErrorMsg(null);
-    saveStoredUser(name);
+    saveStoredUser(name, email);
     setIdentity(name);
 
     try {
@@ -227,6 +249,27 @@ export default function HomePage() {
         if (typeof window !== 'undefined') {
           localStorage.setItem('ipl_active_room_code', res.roomCode);
         }
+        // Guarantee Solo Test session is created in PostgreSQL immediately on start
+        await fetch('/api/auctions/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            roomCode: res.roomCode,
+            mode: 'SOLO',
+            hostEmail: email,
+            hostName: name,
+            settings: {
+              initialPurse: 10000,
+              maxSquadSize: 25,
+              minSquadSize: 18,
+              maxOverseas: 8,
+              rtmCardsPerTeam: 2,
+              bidTimerSeconds: 15,
+              biddingPermission: 'ANY_MEMBER',
+            },
+          }),
+        }).catch(console.warn);
+
         // Auto-start live auction immediately with random draw
         await startAuction({
           autoNominate: true,

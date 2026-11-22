@@ -33,7 +33,7 @@ import {
 } from 'lucide-react';
 import { useAuctionStore } from '@/store/auctionStore';
 import { FranchiseCode, Player, PlayerRole, PlayerSet, PlayerStatus } from '@/types/auction';
-import { formatIndianCurrency } from '@/lib/utils';
+import { formatIndianCurrency, getStoredUser } from '@/lib/utils';
 import { FRANCHISE_LIST, FRANCHISES } from '@/data/franchises';
 
 export const AuctioneerDeck: React.FC = () => {
@@ -64,6 +64,7 @@ export const AuctioneerDeck: React.FC = () => {
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
   const [isEndAuctionModalOpen, setIsEndAuctionModalOpen] = useState(false);
   const [isEnding, setIsEnding] = useState(false);
+  const isEndingRef = React.useRef(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSet, setSelectedSet] = useState<string>('ALL');
   const [selectedRole, setSelectedRole] = useState<string>('ALL');
@@ -162,19 +163,32 @@ export const AuctioneerDeck: React.FC = () => {
     }
   };
 
-  const handleEndAuction = async () => {
+  const handleEndAuction = async (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    if (isEndingRef.current) return;
+    isEndingRef.current = true;
     setIsEnding(true);
     try {
       const activeRoomCode = room?.roomCode || room?.code || '';
+      if (typeof window !== 'undefined' && activeRoomCode) {
+        localStorage.removeItem('ipl_active_room_code');
+        localStorage.setItem('ipl_auction_ended', activeRoomCode);
+      }
+      const user = getStoredUser();
       const finalSold = (room?.soldHistory || []).filter((p) => !p.isRetained);
       const finalUnsold = room?.unsoldHistory || [];
       const totalSpentLakhs = finalSold.reduce((sum, p) => sum + (p.soldAmount || 0), 0);
+      const isSolo = activeRoomCode.startsWith('SOLO') || room?.hostId?.startsWith('solo_');
 
       if (activeRoomCode) {
         await fetch(`/api/auctions/${activeRoomCode}/complete`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            mode: isSolo ? 'SOLO' : 'MULTIPLAYER',
+            hostEmail: user.userEmail || null,
+            hostName: user.userName || 'Auctioneer',
             soldPlayers: finalSold,
             unsoldPlayers: finalUnsold,
             squads: room?.teams || {},
@@ -909,7 +923,7 @@ export const AuctioneerDeck: React.FC = () => {
               </button>
               <button
                 type="button"
-                onClick={handleEndAuction}
+                onClick={(e) => handleEndAuction(e)}
                 disabled={isEnding}
                 className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-rose-900/40 transition disabled:opacity-40"
               >

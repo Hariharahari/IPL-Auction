@@ -36,11 +36,14 @@ import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { FranchiseCode } from '@/types/auction';
 import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 import { livekitClient } from '@/lib/livekitClient';
+import { getStoredUser } from '@/lib/utils';
 
 export default function AuctionArenaPage() {
   const params = useParams();
   const router = useRouter();
   const roomCode = (params.code as string)?.toUpperCase();
+
+  const isEndingRef = React.useRef(false);
 
   const {
     room,
@@ -124,35 +127,52 @@ export default function AuctionArenaPage() {
     }
   }, [latestIncomingMessage, isChatDrawerOpen, userName, clearLatestIncomingMessage]);
 
-  const handleLeaveAuction = async () => {
+  const handleLeaveAuction = async (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
     const isAuctioneer = role === 'AUCTIONEER' || room?.auctioneerId === userId;
     const confirmMsg = isAuctioneer
       ? 'Leave the auction room? The designated Deputy Auctioneer will take over the gavel, and you will return to the dashboard.'
       : 'Are you sure you want to leave this live auction session and return to the dashboard?';
 
     if (confirm(confirmMsg)) {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('ipl_active_room_code');
+      }
       await leaveAuction();
       router.push('/');
     }
   };
 
-  const handleConcludeAuction = async () => {
-    if (!confirm('Conclude the live auction officially? This will finalize all squads in PostgreSQL and transition to Conducted Auctions.')) {
-      return;
-    }
+  const handleConcludeAuction = async (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
 
+    if (isEndingRef.current) return;
+    isEndingRef.current = true;
     setIsConcluding(true);
+
     try {
-      // 1. Prepare full fallback payload from Zustand store
+      const user = getStoredUser();
       const finalSold = (room?.soldHistory || []).filter((p) => !p.isRetained);
       const finalUnsold = room?.unsoldHistory || [];
       const totalSpentLakhs = finalSold.reduce((sum, p) => sum + (p.soldAmount || 0), 0);
+      const isSolo = roomCode.startsWith('SOLO') || room?.hostId?.startsWith('solo_');
 
-      // 2. Strictly await the dedicated HTTP persistence endpoint
+      // Prevent floating mini auction widget from ever mounting
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('ipl_active_room_code');
+        localStorage.setItem('ipl_auction_ended', roomCode);
+      }
+
+      // Strictly await the dedicated HTTP persistence endpoint
       const res = await fetch(`/api/auctions/${roomCode}/complete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          mode: isSolo ? 'SOLO' : 'MULTIPLAYER',
+          hostEmail: user.userEmail || null,
+          hostName: user.userName || userName || 'Auctioneer',
           soldPlayers: finalSold,
           unsoldPlayers: finalUnsold,
           squads: room?.teams || {},
@@ -163,31 +183,36 @@ export default function AuctionArenaPage() {
       });
 
       if (!res.ok) {
-        console.warn('[Complete] HTTP persistence endpoint returned non-200, continuing fallback...');
+        console.warn('[Complete] HTTP persistence endpoint returned non-200, continuing...');
       }
 
-      // 3. Emit socket event for peers and leave
+      // Emit socket event for peers and leave
       await endAuction();
       await leaveAuction();
 
-      // 4. Invalidate and refresh cache, then route to Conducted Auctions
+      // Invalidate and refresh cache, then route directly to Conducted Auctions
       router.refresh();
       router.push('/conducted-auctions');
     } catch (err) {
       console.error('Error concluding auction:', err);
-      alert('Failed to complete auction: ' + (err instanceof Error ? err.message : String(err)));
-      setIsConcluding(false);
+      router.push('/conducted-auctions');
     }
   };
 
   useEffect(() => {
     if (room?.phase === 'COMPLETED') {
-      alert('The live auction has officially ended! Transitioning to Conducted Auctions & Final Squads.');
+      if (isEndingRef.current) return;
+      isEndingRef.current = true;
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('ipl_active_room_code');
+        localStorage.setItem('ipl_auction_ended', roomCode || '');
+      }
       leaveAuction().then(() => {
-        router.push('/?tab=REPORTS');
+        router.refresh();
+        router.push('/conducted-auctions');
       });
     }
-  }, [room?.phase, leaveAuction, router]);
+  }, [room?.phase, leaveAuction, router, roomCode]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -239,6 +264,21 @@ export default function AuctionArenaPage() {
 
   return (
     <div className="h-screen max-h-screen min-h-screen overflow-hidden flex flex-col bg-slate-950 text-slate-100 select-none">
+      {/* 0. PERSISTENCE & FINALIZING OVERLAY (STAGE REMAINS OPEN, NEVER MINIMIZES) */}
+      {isConcluding && (
+        <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center gap-4 animate-in fade-in select-none">
+          <div className="w-16 h-16 rounded-full border-4 border-amber-500/20 border-t-amber-500 animate-spin flex items-center justify-center">
+            <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+          </div>
+          <div className="text-center px-4">
+            <h2 className="text-xl font-black text-white tracking-wide">Finalizing & Saving Auction Results...</h2>
+            <p className="text-sm text-slate-400 mt-1 max-w-md">
+              Persisting completed squad rosters, calculating hammer expenditures & archiving session to Conducted Auctions.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* 1. TOP BROADCAST BAR (h-12) */}
       <header className="h-12 border-b border-slate-800 bg-slate-900/95 backdrop-blur-md px-3 sm:px-4 flex items-center justify-between shrink-0 z-40 shadow-sm">
         {/* Left: Branding, Room Code, Current Set & Recent Sold Ticker */}
@@ -350,7 +390,8 @@ export default function AuctionArenaPage() {
 
           {/* Leave Auction Button (All participants) */}
           <button
-            onClick={handleLeaveAuction}
+            type="button"
+            onClick={(e) => handleLeaveAuction(e)}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-950/70 hover:bg-rose-900 text-rose-300 border border-rose-800 transition cursor-pointer"
             title="Leave this auction room and return to dashboard"
           >
@@ -361,7 +402,8 @@ export default function AuctionArenaPage() {
           {/* Conclude Auction Button (Auctioneer only) */}
           {isAuctioneerOrHost && (
             <button
-              onClick={handleConcludeAuction}
+              type="button"
+              onClick={(e) => handleConcludeAuction(e)}
               disabled={isConcluding}
               className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800 transition cursor-pointer font-bold text-xs shadow disabled:opacity-50"
               title="Conclude live auction and save final squads to PostgreSQL"

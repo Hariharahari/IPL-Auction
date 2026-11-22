@@ -773,6 +773,22 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
       const { roomCode, userId } = get();
       if (!roomCode) return { success: false, error: 'No active room' };
 
+      // Ensure session is registered in PostgreSQL immediately
+      try {
+        const user = getStoredUser();
+        const isSolo = roomCode.startsWith('SOLO');
+        await fetch('/api/auctions/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            roomCode,
+            mode: isSolo ? 'SOLO' : 'MULTIPLAYER',
+            hostEmail: user.userEmail || null,
+            hostName: user.userName || 'Auctioneer',
+          }),
+        }).catch(console.warn);
+      } catch {}
+
       return new Promise((resolve) => {
         socket.emit(
           'auction:start',
@@ -789,14 +805,19 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
 
       // Strictly await POST /api/auctions/[roomCode]/complete before completing socket
       try {
+        const user = getStoredUser();
         const finalSold = (room?.soldHistory || []).filter((p) => !p.isRetained);
         const finalUnsold = room?.unsoldHistory || [];
         const totalSpentLakhs = finalSold.reduce((sum, p) => sum + (p.soldAmount || 0), 0);
+        const isSolo = roomCode.startsWith('SOLO') || room?.hostId?.startsWith('solo_');
 
         await fetch(`/api/auctions/${roomCode}/complete`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            mode: isSolo ? 'SOLO' : 'MULTIPLAYER',
+            hostEmail: user.userEmail || null,
+            hostName: user.userName || 'Auctioneer',
             soldPlayers: finalSold,
             unsoldPlayers: finalUnsold,
             squads: room?.teams || {},
