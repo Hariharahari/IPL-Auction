@@ -75,7 +75,7 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
   const fetchSessionsList = async () => {
     setIsSessionsLoading(true);
     try {
-      const res = await fetch('/api/rooms');
+      const res = await fetch('/api/rooms', { cache: 'no-store' });
       const data = await res.json();
       if (data.success && Array.isArray(data.sessions)) {
         setSessions(data.sessions);
@@ -95,7 +95,7 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
     setIsLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch(`/api/room/${code.trim().toUpperCase()}`);
+      const res = await fetch(`/api/room/${code.trim().toUpperCase()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && data.room) {
         setRoomState(data.room);

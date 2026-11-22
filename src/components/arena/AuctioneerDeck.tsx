@@ -165,10 +165,31 @@ export const AuctioneerDeck: React.FC = () => {
   const handleEndAuction = async () => {
     setIsEnding(true);
     try {
+      const activeRoomCode = room?.roomCode || room?.code || '';
+      const finalSold = (room?.soldHistory || []).filter((p) => !p.isRetained);
+      const finalUnsold = room?.unsoldHistory || [];
+      const totalSpentLakhs = finalSold.reduce((sum, p) => sum + (p.soldAmount || 0), 0);
+
+      if (activeRoomCode) {
+        await fetch(`/api/auctions/${activeRoomCode}/complete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            soldPlayers: finalSold,
+            unsoldPlayers: finalUnsold,
+            squads: room?.teams || {},
+            bidHistory: room?.bidHistory || [],
+            totalSpent: totalSpentLakhs,
+            lastActionMessage: '🏆 LIVE AUCTION OFFICIALLY CONCLUDED! All franchises and final squad rosters are locked.',
+          }),
+        }).catch(console.warn);
+      }
+
       await endAuction();
       setIsEndAuctionModalOpen(false);
       await leaveAuction();
-      router.push('/?tab=REPORTS');
+      router.refresh();
+      router.push('/conducted-auctions');
     } finally {
       setIsEnding(false);
     }
@@ -892,7 +913,7 @@ export const AuctioneerDeck: React.FC = () => {
                 disabled={isEnding}
                 className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-rose-900/40 transition disabled:opacity-40"
               >
-                {isEnding ? 'Concluding...' : 'Yes, End Auction'}
+                {isEnding ? 'Finalizing & Saving Auction...' : 'Yes, End Auction'}
               </button>
             </div>
           </div>

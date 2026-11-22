@@ -3,6 +3,8 @@ import { AuctionEngine } from '@/server/auctionEngine';
 import { restoreRoomState } from '@/server/dbService';
 import { getAuctionByCode } from '@/server/scheduleService';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ code: string }> }

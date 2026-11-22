@@ -1,7 +1,7 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { AuctionEngine } from './auctionEngine';
 import { ChatMessage, FranchiseCode, Player, RoomSettings } from '@/types/auction';
-import { persistChatMessage } from './dbService';
+import { persistChatMessage, persistRoomState } from './dbService';
 
 export function setupSocketHandler(io: SocketIOServer) {
   const engine = AuctionEngine.getInstance();
@@ -216,11 +216,15 @@ export function setupSocketHandler(io: SocketIOServer) {
     // 5b. End Auction (Auctioneer explicitly concludes)
     socket.on(
       'auction:end',
-      (
+      async (
         data: { roomCode: string; requesterId: string },
         callback?: (res: { success: boolean; error?: string }) => void
       ) => {
         const res = engine.endAuction(data.roomCode, data.requesterId);
+        const room = engine.getRoomState(data.roomCode);
+        if (room) {
+          await persistRoomState(room).catch(console.warn);
+        }
         if (callback) callback(res);
       }
     );

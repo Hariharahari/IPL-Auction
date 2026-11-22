@@ -108,6 +108,11 @@ export default function HomePage() {
         setActiveTab('JOIN');
       }
 
+      const urlTab = params.get('tab');
+      if (urlTab === 'REPORTS') {
+        setActiveTab('REPORTS');
+      }
+
       const savedCode = localStorage.getItem('ipl_active_room_code');
       if (savedCode && !urlRoom) {
         setActiveRoomCode(savedCode);

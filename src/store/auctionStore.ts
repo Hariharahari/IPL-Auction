@@ -478,6 +478,37 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
           message?: string;
         }) => {
           set({ latestSoldPlayer: payload });
+          const currentRoomCode = get().roomCode || code;
+          if (currentRoomCode) {
+            fetch(`/api/auctions/${currentRoomCode}/lot`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                eventType: 'SOLD',
+                player: payload.player,
+                winningTeam: payload.winningTeam,
+                finalPrice: payload.finalAmount,
+              }),
+            }).catch(() => {});
+          }
+        }
+      );
+
+      // Player Unsold Event with Incremental Write-Through
+      socket.on(
+        'player:unsold',
+        (payload: { player: Player; message?: string }) => {
+          const currentRoomCode = get().roomCode || code;
+          if (currentRoomCode && payload?.player) {
+            fetch(`/api/auctions/${currentRoomCode}/lot`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                eventType: 'UNSOLD',
+                player: payload.player,
+              }),
+            }).catch(() => {});
+          }
         }
       );
 
@@ -753,8 +784,31 @@ export const useAuctionStore = create<AuctionStoreState>((set, get) => {
 
     endAuction: async () => {
       const socket = getSocket();
-      const { roomCode, userId } = get();
+      const { roomCode, userId, room } = get();
       if (!roomCode) return { success: false, error: 'No active room' };
+
+      // Strictly await POST /api/auctions/[roomCode]/complete before completing socket
+      try {
+        const finalSold = (room?.soldHistory || []).filter((p) => !p.isRetained);
+        const finalUnsold = room?.unsoldHistory || [];
+        const totalSpentLakhs = finalSold.reduce((sum, p) => sum + (p.soldAmount || 0), 0);
+
+        await fetch(`/api/auctions/${roomCode}/complete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            soldPlayers: finalSold,
+            unsoldPlayers: finalUnsold,
+            squads: room?.teams || {},
+            bidHistory: room?.bidHistory || [],
+            totalSpent: totalSpentLakhs,
+            lastActionMessage:
+              '🏆 LIVE AUCTION OFFICIALLY CONCLUDED! All franchises and final squad rosters are locked.',
+          }),
+        });
+      } catch (err) {
+        console.warn('Error during awaited /api/auctions/complete write-through:', err);
+      }
 
       return new Promise((resolve) => {
         socket.emit(

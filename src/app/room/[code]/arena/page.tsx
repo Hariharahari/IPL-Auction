@@ -17,6 +17,7 @@ import {
   ExternalLink,
   Key,
   LogOut,
+  Loader2,
 } from 'lucide-react';
 import { useAuctionStore } from '@/store/auctionStore';
 import { VideoCallStrip } from '@/components/arena/VideoCallStrip';
@@ -74,6 +75,7 @@ export default function AuctionArenaPage() {
   const [showFranchiseModal, setShowFranchiseModal] = useState(false);
   const [hasPromptedModal, setHasPromptedModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isConcluding, setIsConcluding] = useState(false);
   const [chatToast, setChatToast] = useState<{ senderName: string; text: string; channel: string } | null>(null);
 
   const latestIncomingMessage = useAuctionStore((s) => s.latestIncomingMessage);
@@ -135,10 +137,46 @@ export default function AuctionArenaPage() {
   };
 
   const handleConcludeAuction = async () => {
-    if (confirm('Conclude the live auction officially? This will finalize all squads in PostgreSQL and transition to Conducted Auctions.')) {
+    if (!confirm('Conclude the live auction officially? This will finalize all squads in PostgreSQL and transition to Conducted Auctions.')) {
+      return;
+    }
+
+    setIsConcluding(true);
+    try {
+      // 1. Prepare full fallback payload from Zustand store
+      const finalSold = (room?.soldHistory || []).filter((p) => !p.isRetained);
+      const finalUnsold = room?.unsoldHistory || [];
+      const totalSpentLakhs = finalSold.reduce((sum, p) => sum + (p.soldAmount || 0), 0);
+
+      // 2. Strictly await the dedicated HTTP persistence endpoint
+      const res = await fetch(`/api/auctions/${roomCode}/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          soldPlayers: finalSold,
+          unsoldPlayers: finalUnsold,
+          squads: room?.teams || {},
+          bidHistory: room?.bidHistory || [],
+          totalSpent: totalSpentLakhs,
+          lastActionMessage: '🏆 LIVE AUCTION OFFICIALLY CONCLUDED! All franchises and final squad rosters are locked.',
+        }),
+      });
+
+      if (!res.ok) {
+        console.warn('[Complete] HTTP persistence endpoint returned non-200, continuing fallback...');
+      }
+
+      // 3. Emit socket event for peers and leave
       await endAuction();
       await leaveAuction();
-      router.push('/?tab=REPORTS');
+
+      // 4. Invalidate and refresh cache, then route to Conducted Auctions
+      router.refresh();
+      router.push('/conducted-auctions');
+    } catch (err) {
+      console.error('Error concluding auction:', err);
+      alert('Failed to complete auction: ' + (err instanceof Error ? err.message : String(err)));
+      setIsConcluding(false);
     }
   };
 
@@ -324,10 +362,21 @@ export default function AuctionArenaPage() {
           {isAuctioneerOrHost && (
             <button
               onClick={handleConcludeAuction}
-              className="p-1.5 rounded-lg bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800 transition cursor-pointer"
-              title="Conclude live auction and save final squads"
+              disabled={isConcluding}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800 transition cursor-pointer font-bold text-xs shadow disabled:opacity-50"
+              title="Conclude live auction and save final squads to PostgreSQL"
             >
-              <PowerOff className="w-3.5 h-3.5" />
+              {isConcluding ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-400" />
+                  <span className="inline">Finalizing & Saving Auction...</span>
+                </>
+              ) : (
+                <>
+                  <PowerOff className="w-3.5 h-3.5 text-rose-400" />
+                  <span className="hidden sm:inline">End Auction</span>
+                </>
+              )}
             </button>
           )}
         </div>

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { AuctionEngine } from '@/server/auctionEngine';
 import { safeDbOperation } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const engine = AuctionEngine.getInstance();
@@ -49,16 +51,24 @@ export async function GET() {
       } catch {}
 
       const soldCount =
-        (liveState.soldHistory && liveState.soldHistory.length) ||
+        (config.soldCount != null ? Number(config.soldCount) : null) ??
+        (liveState.soldCount != null ? Number(liveState.soldCount) : null) ??
+        (liveState.soldHistory ? liveState.soldHistory.filter((p: any) => !p.isRetained).length : null) ??
         r.squadPlayers.filter((sp) => !sp.isRetained).length;
 
       const unsoldCount =
-        (liveState.unsoldHistory && liveState.unsoldHistory.length) ||
+        (config.unsoldCount != null ? Number(config.unsoldCount) : null) ??
+        (liveState.unsoldCount != null ? Number(liveState.unsoldCount) : null) ??
+        (liveState.unsoldHistory ? liveState.unsoldHistory.length : null) ??
         r.poolPlayers.filter((pp) => pp.status === 'UNSOLD').length;
 
-      const totalSpentLakhs = r.squadPlayers
-        .filter((sp) => !sp.isRetained)
-        .reduce((sum, p) => sum + (p.price || 0), 0);
+      const totalSpentLakhs =
+        (config.totalSpentLakhs != null ? Number(config.totalSpentLakhs) : null) ??
+        (liveState.totalSpentLakhs != null ? Number(liveState.totalSpentLakhs) : null) ??
+        (liveState.soldHistory ? liveState.soldHistory.filter((p: any) => !p.isRetained).reduce((sum: number, p: any) => sum + (p.soldAmount || 0), 0) : null) ??
+        r.squadPlayers
+          .filter((sp) => !sp.isRetained)
+          .reduce((sum, p) => sum + (p.price || 0), 0);
 
       const isSolo =
         r.code.startsWith('SOLO') ||
@@ -85,7 +95,12 @@ export async function GET() {
       sessionMap.set(r.code, {
         roomCode: r.code,
         mode: isSolo ? 'Solo Test' : 'Multiplayer',
-        status: r.status === 'COMPLETED' || liveState.phase === 'COMPLETED' ? 'Completed' : 'In Progress',
+        status:
+          r.status === 'COMPLETED' ||
+          liveState.phase === 'COMPLETED' ||
+          config.status === 'COMPLETED'
+            ? 'Completed'
+            : 'In Progress',
         phase: liveState.phase || (r.status === 'ACTIVE' ? 'IDLE' : 'LOBBY'),
         soldCount,
         unsoldCount,
