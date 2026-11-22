@@ -14,7 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { useAuctionStore } from '@/store/auctionStore';
-import { formatIndianCurrency, getStoredUser } from '@/lib/utils';
+import { formatIndianCurrency, getStoredUser, isSuperAdminEmail } from '@/lib/utils';
 import { FRANCHISES } from '@/data/franchises';
 
 export const MiniLiveAuctionWidget: React.FC = () => {
@@ -77,7 +77,7 @@ export const MiniLiveAuctionWidget: React.FC = () => {
   };
 
   const currentUser = getStoredUser();
-  const isSuperAdmin = currentUser.isAdmin || currentUser.userEmail?.toLowerCase() === 'hariharan12403@gmail.com';
+  const isSuperAdmin = currentUser.isAdmin || isSuperAdminEmail(currentUser.userEmail);
 
   const handleEndAuction = async (e?: React.MouseEvent) => {
     e?.preventDefault();

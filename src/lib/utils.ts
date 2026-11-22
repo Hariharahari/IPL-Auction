@@ -20,7 +20,23 @@ export function cn(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
-export const SUPER_ADMIN_EMAIL = 'hariharan12403@gmail.com';
+export const SUPER_ADMIN_EMAILS = [
+  'hari12403@gmail.com',
+  'hariharan12403@gmail.com',
+];
+
+export const isSuperAdminEmail = (email?: string | null): boolean => {
+  if (!email) return false;
+  const clean = email.trim().toLowerCase();
+  const envSuper = (process.env.SUPER_ADMIN_EMAIL || '').trim().toLowerCase();
+  return (
+    clean === 'hari12403@gmail.com' ||
+    clean === 'hariharan12403@gmail.com' ||
+    (envSuper ? clean === envSuper : false)
+  );
+};
+
+export const SUPER_ADMIN_EMAIL = 'hari12403@gmail.com';
 
 export interface StoredSession {
   userId: string;
@@ -47,7 +63,10 @@ export function getStoredUser(): StoredSession {
     if (data) {
       const parsed = JSON.parse(data);
       const email = parsed.userEmail || '';
-      const isAdmin = email.trim().toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+      const isAdmin =
+        parsed.isAdmin === true ||
+        parsed.role === 'ADMIN' ||
+        isSuperAdminEmail(email);
       return {
         userId: parsed.userId || `usr_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
         userName: parsed.userName || '',

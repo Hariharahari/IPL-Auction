@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { upsertDbUser, getUserSessions } from '@/server/dbService';
+import { isSuperAdminEmail } from '@/lib/utils';
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,8 +16,7 @@ export async function POST(req: NextRequest) {
 
     const cleanEmail = email.trim().toLowerCase();
     const cleanName = name.trim();
-    const superAdminEnv = (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase();
-    const isSuperAdmin = cleanEmail === superAdminEnv;
+    const isSuperAdmin = isSuperAdminEmail(cleanEmail);
 
     const user = await upsertDbUser(cleanName, cleanEmail);
     const sessions = await getUserSessions(cleanEmail, isSuperAdmin);

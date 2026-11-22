@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AuctionEngine } from '@/server/auctionEngine';
 import { safeDbOperation } from '@/lib/db';
+import { isSuperAdminEmail } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,47 +12,19 @@ export async function GET(req: NextRequest) {
     const isAdminParam = searchParams.get('isAdmin');
     const searchCode = searchParams.get('code')?.trim().toUpperCase() || null;
 
-    const superAdminEmail = (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase();
     const isAdmin =
       isAdminParam === 'true' ||
-      (userEmail != null && userEmail === superAdminEmail);
+      isSuperAdminEmail(userEmail);
 
     const engine = AuctionEngine.getInstance();
     const ramRooms = engine.getAllRooms();
 
     // Fetch rooms from PostgreSQL
     const dbRooms = await safeDbOperation(async (client) => {
-      // Base where clause
       let whereClause: any = {};
 
       if (searchCode) {
         whereClause.code = searchCode;
-      } else if (!isAdmin && userEmail) {
-        // Non-admin user filter: Match if participant, or hostEmail in config, or user created room
-        whereClause.OR = [
-          {
-            participants: {
-              some: {
-                userEmail: {
-                  equals: userEmail,
-                  mode: 'insensitive',
-                },
-              },
-            },
-          },
-          {
-            configJson: {
-              contains: userEmail,
-              mode: 'insensitive',
-            },
-          },
-          {
-            hostId: {
-              equals: userEmail,
-              mode: 'insensitive',
-            },
-          },
-        ];
       }
 
       return await client.room.findMany({
@@ -170,17 +143,6 @@ export async function GET(req: NextRequest) {
     ramRooms.forEach((r) => {
       const code = r.roomCode || r.code || '';
       if (!code) return;
-
-      // Filter RAM rooms for non-admins if email is provided
-      if (!isAdmin && userEmail) {
-        const matchesUser =
-          Object.values(r.users || {}).some(
-            (u) => u.email?.toLowerCase() === userEmail
-          ) ||
-          r.hostId?.toLowerCase() === userEmail ||
-          code.startsWith('SOLO');
-        if (!matchesUser) return;
-      }
 
       if (searchCode && code !== searchCode) return;
 

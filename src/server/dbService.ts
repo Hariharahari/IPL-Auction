@@ -2,6 +2,7 @@ import { prisma, safeDbOperation } from '@/lib/db';
 import { AuctionRoomState, BoughtPlayer, ChatMessage, FranchiseCode, Player, RoomUser } from '@/types/auction';
 import { FRANCHISE_LIST } from '@/data/franchises';
 import { IPL_2027_MINI_AUCTION_PURSE_DEFAULTS, generateRoomAccessCodes } from './rules';
+import { isSuperAdminEmail } from '@/lib/utils';
 
 /**
  * Persists Room, Franchise Teams, and Member records to PostgreSQL
@@ -168,7 +169,7 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
           create: {
             email: cleanEmail,
             name: user.name,
-            role: cleanEmail === (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase() ? 'SUPER_ADMIN' : 'USER',
+            role: isSuperAdminEmail(cleanEmail) ? 'SUPER_ADMIN' : 'USER',
           },
         }).catch(() => null);
 
@@ -651,7 +652,7 @@ export async function upsertDbUser(name: string, email: string): Promise<{ id: s
   return await safeDbOperation(async (client) => {
     const cleanEmail = email.trim().toLowerCase();
     const cleanName = name.trim();
-    const isSuper = cleanEmail === (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase();
+    const isSuper = isSuperAdminEmail(cleanEmail);
     const defaultRole = isSuper ? 'SUPER_ADMIN' : 'USER';
 
     const user = await client.user.upsert({
@@ -695,7 +696,7 @@ export async function recordAuctionParticipant(params: {
       create: {
         email: cleanEmail,
         name: params.userName,
-        role: cleanEmail === (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase() ? 'SUPER_ADMIN' : 'USER',
+        role: isSuperAdminEmail(cleanEmail) ? 'SUPER_ADMIN' : 'USER',
       },
     });
 

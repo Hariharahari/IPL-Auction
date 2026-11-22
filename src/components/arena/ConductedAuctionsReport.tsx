@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { AuctionRoomState, BoughtPlayer, FranchiseCode, Player } from '@/types/auction';
-import { formatIndianCurrency, getStoredUser } from '@/lib/utils';
+import { formatIndianCurrency, getStoredUser, isSuperAdminEmail } from '@/lib/utils';
 import Link from 'next/link';
 import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
@@ -80,7 +80,7 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
       if (user.userEmail) {
         params.set('email', user.userEmail);
       }
-      if (user.isAdmin || user.userEmail?.toLowerCase() === 'hariharan12403@gmail.com') {
+      if (user.isAdmin || isSuperAdminEmail(user.userEmail)) {
         params.set('isAdmin', 'true');
       }
       const qs = params.toString() ? `?${params.toString()}` : '';

@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     if (!isAdmin(adminEmail)) {
       return NextResponse.json(
-        { success: false, error: 'Unauthorized: Only admin (hariharan12403@gmail.com) can schedule auctions' },
+        { success: false, error: 'Unauthorized: Only administrator can schedule auctions' },
         { status: 403 }
       );
     }
@@ -99,7 +99,7 @@ export async function DELETE(req: NextRequest) {
 
     if (!isAdmin(adminEmail)) {
       return NextResponse.json(
-        { success: false, error: 'Unauthorized: Only admin (hariharan12403@gmail.com) can delete schedules' },
+        { success: false, error: 'Unauthorized: Only administrator can delete schedules' },
         { status: 403 }
       );
     }

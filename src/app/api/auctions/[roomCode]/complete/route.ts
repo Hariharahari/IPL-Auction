@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db';
 import { AuctionEngine } from '@/server/auctionEngine';
 import { FRANCHISE_LIST } from '@/data/franchises';
 import { IPL_2027_MINI_AUCTION_PURSE_DEFAULTS } from '@/server/rules';
+import { isSuperAdminEmail } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +35,7 @@ export async function POST(
     } = body;
 
     const hostEmail = rawEmail?.trim().toLowerCase() || null;
-    const isSuper = hostEmail === (process.env.SUPER_ADMIN_EMAIL || 'hariharan12403@gmail.com').toLowerCase();
+    const isSuper = isSuperAdminEmail(hostEmail);
 
     const engine = AuctionEngine.getInstance();
     const memRoom = engine.getRoomState(roomCode);

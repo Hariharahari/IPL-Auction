@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { FranchiseCode } from '@/types/auction';
 
-export const SUPER_ADMIN_EMAIL = 'hariharan12403@gmail.com';
+export const SUPER_ADMIN_EMAIL = 'hari12403@gmail.com';
 
 export interface ScheduledAuction {
   id: string;
@@ -27,7 +27,12 @@ if (!fs.existsSync(DATA_DIR)) {
 
 export function isAdmin(email?: string | null): boolean {
   if (!email) return false;
-  return email.trim().toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+  const clean = email.trim().toLowerCase();
+  return (
+    clean === 'hari12403@gmail.com' ||
+    clean === 'hariharan12403@gmail.com' ||
+    clean === (process.env.SUPER_ADMIN_EMAIL || '').trim().toLowerCase()
+  );
 }
 
 export function getScheduledAuctions(): ScheduledAuction[] {

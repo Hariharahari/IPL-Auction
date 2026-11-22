@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     // Optional admin security check (allow during initial onboarding or verify email)
     if (adminEmail && !isAdmin(adminEmail)) {
       return NextResponse.json(
-        { success: false, error: 'Unauthorized: Only admin (hariharan12403@gmail.com) can manage global squads' },
+        { success: false, error: 'Unauthorized: Only administrator can manage global squads' },
         { status: 403 }
       );
     }
