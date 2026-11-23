@@ -24,12 +24,24 @@ import {
 import { parseMasterWorkbook } from './excelIngestion';
 import { getGlobalMasterData } from './globalMasterStore';
 import { getAuctionByCode, resolveUserRoleForRoom, SUPER_ADMIN_EMAIL } from './scheduleService';
+import { saveConductedSession } from './conductedStore';
 
-// In-memory store for active auction rooms
-const rooms = new Map<string, AuctionRoomState>();
+// In-memory store for active auction rooms anchored to globalThis so Next.js API routes & server.ts share state
+const g = globalThis as unknown as {
+  __ipl_rooms?: Map<string, AuctionRoomState>;
+  __ipl_roomLocks?: Map<string, Promise<void>>;
+  __ipl_auction_engine?: AuctionEngine;
+};
 
-// Mutex locks per room to prevent race conditions during rapid concurrent bids
-const roomLocks = new Map<string, Promise<void>>();
+if (!g.__ipl_rooms) {
+  g.__ipl_rooms = new Map<string, AuctionRoomState>();
+}
+if (!g.__ipl_roomLocks) {
+  g.__ipl_roomLocks = new Map<string, Promise<void>>();
+}
+
+const rooms = g.__ipl_rooms;
+const roomLocks = g.__ipl_roomLocks;
 
 export async function acquireRoomLock<T>(roomCode: string, task: () => Promise<T> | T): Promise<T> {
   const currentLock = roomLocks.get(roomCode) || Promise.resolve();
@@ -74,9 +86,13 @@ export class AuctionEngine {
   private constructor() {}
 
   public static getInstance(): AuctionEngine {
+    if (g.__ipl_auction_engine) {
+      return g.__ipl_auction_engine;
+    }
     if (!AuctionEngine.instance) {
       AuctionEngine.instance = new AuctionEngine();
     }
+    g.__ipl_auction_engine = AuctionEngine.instance;
     return AuctionEngine.instance;
   }
 

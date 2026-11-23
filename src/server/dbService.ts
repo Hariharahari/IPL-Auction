@@ -3,6 +3,7 @@ import { AuctionRoomState, BoughtPlayer, ChatMessage, FranchiseCode, Player, Roo
 import { FRANCHISE_LIST } from '@/data/franchises';
 import { IPL_2027_MINI_AUCTION_PURSE_DEFAULTS, generateRoomAccessCodes } from './rules';
 import { isSuperAdminEmail } from '@/lib/utils';
+import { saveConductedSession, getConductedSession } from './conductedStore';
 
 /**
  * Persists Room, Franchise Teams, and Member records to PostgreSQL
@@ -38,9 +39,12 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
       : 'ACTIVE';
 
     // Preserve non-zero sold history so an incidental stub never wipes out completed auction data
-    const cleanSold = (room.soldHistory || []).filter((p) => !p.isRetained);
+    const isRetainedStar = (p: { isRetained?: boolean; set?: string; id?: string }) =>
+      p.isRetained === true || p.set === 'Retained' || p.id?.startsWith('ret_');
+
+    const cleanSold = (room.soldHistory || []).filter((p) => !isRetainedStar(p));
     const existingSold = (existingLiveState.soldHistory || []).filter(
-      (p: any) => !p.isRetained
+      (p: any) => !isRetainedStar(p)
     );
     const finalSold = cleanSold.length > 0 ? cleanSold : existingSold;
 
@@ -55,6 +59,47 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
       (sum: number, p: any) => sum + (p.soldAmount || 0),
       0
     );
+
+    const isSolo =
+      roomCode.startsWith('SOLO') ||
+      room.hostId.startsWith('solo_') ||
+      (Object.keys(room.users).length <= 1 && !room.auctioneerId);
+
+    const participatingTeams = Array.from(
+      new Set([
+        ...Object.keys(room.teams || {}),
+        ...finalSold.map((p: any) => p.soldTo).filter(Boolean),
+      ])
+    );
+
+    // Always mirror to disk/memory conductedStore
+    saveConductedSession({
+      roomCode,
+      mode: isSolo ? 'Solo Test' : 'Multiplayer',
+      status: isCompleted ? 'Completed' : 'In Progress',
+      phase: isCompleted ? 'COMPLETED' : room.phase,
+      soldCount,
+      unsoldCount,
+      totalAuctioned: soldCount + unsoldCount,
+      totalSpentLakhs,
+      totalPlayers: room.allPlayers?.length || 0,
+      participatingTeams: participatingTeams.length > 0 ? participatingTeams : ['CSK', 'MI', 'RCB', 'KKR', 'SRH'],
+      lastActionMessage: room.lastActionMessage || 'Session active',
+      updatedAt: Date.now(),
+      createdAt: Date.now(),
+      formattedDate: new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      }).format(new Date()),
+      soldPlayers: finalSold,
+      unsoldPlayers: finalUnsold,
+      squads: room.teams,
+      bidHistory: room.bidHistory || [],
+    });
 
     const mergedConfig = {
       ...existingConfig,
@@ -424,7 +469,7 @@ export async function persistChatMessage(roomCode: string, msg: ChatMessage): Pr
  * Attempts to rehydrate a room from PostgreSQL if it exists in DB but not in-memory
  */
 export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoomState | null> {
-  return await safeDbOperation(async (client) => {
+  const fromDb = await safeDbOperation(async (client) => {
     const dbRoom = await client.room.findUnique({
       where: { code: roomCode },
       include: {
@@ -442,13 +487,16 @@ export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoom
 
     // Reconstruct teams
     const teams = {} as AuctionRoomState['teams'];
+    const isRetainedStar = (p: { isRetained?: boolean; set?: string; id?: string }) =>
+      p.isRetained === true || p.set === 'Retained' || p.id?.startsWith('ret_');
+
     const rawSoldHistory = (
       Array.isArray(liveState.soldHistory)
         ? liveState.soldHistory
         : Array.isArray(config.soldHistory)
         ? config.soldHistory
         : []
-    ).filter((p: any) => !p.isRetained);
+    ).filter((p: any) => !isRetainedStar(p));
 
     FRANCHISE_LIST.forEach((f) => {
       const dbTeam = dbRoom.teams.find((t) => t.franchiseCode === f.code);
@@ -474,7 +522,8 @@ export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoom
       // Merge any newly bought players from soldHistory that are not already in teamSquad
       const missingFromSquad = rawSoldHistory.filter(
         (p: any) =>
-          p.soldTo === f.code &&
+          ((p.soldTo || '').toString().trim().toUpperCase() === f.code ||
+           (p.soldTo || '').toString().trim().toUpperCase() === f.name.toUpperCase()) &&
           !teamSquad.some(
             (sp) => sp.id === p.id || sp.name?.toLowerCase() === p.name?.toLowerCase()
           )
@@ -588,9 +637,9 @@ export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoom
       rtmState: null,
       bidHistory: liveState.bidHistory || [],
       soldHistory: liveState.soldHistory && liveState.soldHistory.length > 0
-        ? liveState.soldHistory.filter((p: any) => !p.isRetained)
+        ? liveState.soldHistory.filter((p: any) => !isRetainedStar(p))
         : dbRoom.squadPlayers
-            .filter((sp) => !sp.isRetained)
+            .filter((sp) => !isRetainedStar(sp))
             .map((sp) => ({
               id: sp.id,
               name: sp.name,
@@ -632,6 +681,58 @@ export async function rehydrateRoomFromDb(roomCode: string): Promise<AuctionRoom
 
     return restoredRoom;
   }, null);
+
+  if (fromDb) return fromDb;
+
+  // Fallback to conductedStore
+  const session = getConductedSession(roomCode);
+  if (!session) return null;
+
+  const teams = {} as AuctionRoomState['teams'];
+  FRANCHISE_LIST.forEach((f) => {
+    const savedTeam = session.squads?.[f.code];
+    teams[f.code] = {
+      code: f.code,
+      name: f.name,
+      shortName: f.shortName,
+      remainingPurse: savedTeam?.remainingPurse ?? IPL_2027_MINI_AUCTION_PURSE_DEFAULTS[f.code].remainingPurse,
+      rtmCardsRemaining: 0,
+      squad: savedTeam?.squad || [],
+      overseasCount: (savedTeam?.squad || []).filter((p: any) => p.isOverseas).length,
+    };
+  });
+
+  return {
+    code: session.roomCode,
+    roomCode: session.roomCode,
+    hostId: session.hostEmail || 'system_host',
+    auctioneerId: 'auctioneer',
+    settings: {
+      initialPurse: 13000,
+      maxSquadSize: 25,
+      minSquadSize: 0,
+      maxOverseas: 8,
+      rtmCardsPerTeam: 0,
+      bidTimerSeconds: 15,
+      biddingPermission: 'ANY_MEMBER',
+    },
+    phase: 'COMPLETED',
+    teams,
+    users: {},
+    currentBid: 0,
+    highestBidderTeam: null,
+    highestBidderUserId: null,
+    activePlayer: null,
+    timerEndsAt: null,
+    isTimerPaused: false,
+    isAuctionPaused: false,
+    rtmState: null,
+    bidHistory: session.bidHistory || [],
+    soldHistory: session.soldPlayers || [],
+    unsoldHistory: session.unsoldPlayers || [],
+    allPlayers: [...(session.soldPlayers || []), ...(session.unsoldPlayers || [])],
+    lastActionMessage: session.lastActionMessage || 'Concluded session restored from archive',
+  };
 }
 
 export async function removeRoomMember(roomCode: string, userId: string): Promise<void> {

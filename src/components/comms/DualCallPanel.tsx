@@ -12,6 +12,7 @@ import {
   VolumeX,
   ShieldAlert,
   Crown,
+  Gavel,
   Sparkles,
   AlertCircle,
   Camera,
@@ -520,10 +521,10 @@ export const DualCallPanel: React.FC = () => {
             {/* Fallback visual avatar / broadcast podium */}
             <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-950 p-4 text-center">
               <div className="relative mb-2">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/20 text-slate-950 font-black text-xl">
-                  {auctioneerUser ? auctioneerUser.name.charAt(0).toUpperCase() : 'A'}
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/30 text-slate-950 ring-2 ring-amber-400/50">
+                  <Gavel className="w-8 h-8 text-slate-950" />
                 </div>
-                <div className="absolute -bottom-1 -right-1 bg-amber-500 text-slate-950 p-1 rounded-full shadow">
+                <div className="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 p-1 rounded-full shadow">
                   <Crown className="w-3.5 h-3.5" />
                 </div>
               </div>

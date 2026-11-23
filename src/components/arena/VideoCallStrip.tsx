@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Crown, Mic, MicOff, Radio, Video } from 'lucide-react';
+import { Crown, Gavel, Mic, MicOff, Radio, Video } from 'lucide-react';
 import { useAuctionStore } from '@/store/auctionStore';
 import { subscribeToMediaStream } from '@/lib/mediaStream';
 import { FRANCHISES } from '@/data/franchises';
 import { useRemoteVideoTrack, useLiveKitActiveSpeakers } from '@/lib/livekitClient';
 import { RemoteVideoTrack } from 'livekit-client';
 import { RoomUser, FranchiseCode } from '@/types/auction';
+import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 
 // Dedicated WebRTC Video Element for Remote Participants
 const RemoteVideoElement: React.FC<{ track: RemoteVideoTrack }> = ({ track }) => {
@@ -56,16 +57,39 @@ const ParticipantTile: React.FC<{
       {track ? (
         <RemoteVideoElement track={track} />
       ) : (
-        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-950 p-2 text-center">
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-sm shadow-md"
-            style={{
-              backgroundColor: team ? team.primaryColor : '#475569',
-            }}
-          >
-            {user.name.charAt(0).toUpperCase()}
-          </div>
-          <span className="text-[10px] font-semibold text-slate-300 mt-1 truncate max-w-[110px]">
+        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-950 p-2 text-center relative overflow-hidden">
+          {/* Ambient Franchise Glow */}
+          {team && (
+            <div
+              className="absolute inset-0 opacity-15 blur-xl pointer-events-none"
+              style={{ backgroundColor: team.primaryColor }}
+            />
+          )}
+
+          {user.franchiseCode ? (
+            <div className="relative z-10 flex items-center justify-center">
+              <div
+                className="absolute -inset-1 rounded-2xl blur-sm opacity-60"
+                style={{ backgroundColor: team?.primaryColor || '#3B82F6' }}
+              />
+              <FranchiseLogo code={user.franchiseCode} size="md" className="relative shadow-lg ring-1 ring-white/10" />
+            </div>
+          ) : user.role === 'AUCTIONEER' ? (
+            <div className="relative z-10 w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center shadow-lg">
+              <Gavel className="w-5 h-5 text-amber-400" />
+            </div>
+          ) : (
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md border border-slate-700"
+              style={{
+                backgroundColor: team ? team.primaryColor : '#475569',
+              }}
+            >
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+          )}
+
+          <span className="text-[10px] font-semibold text-slate-300 mt-1 truncate max-w-[110px] relative z-10">
             {user.name}
           </span>
         </div>
@@ -183,26 +207,19 @@ export const VideoCallStrip: React.FC = () => {
         ) : !isAuctioneer && auctioneerTrack ? (
           <RemoteVideoElement track={auctioneerTrack} />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-amber-950/20 to-slate-950 p-2 text-center">
-            <div className="relative">
-              <div
-                className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black text-sm shadow-md ring-2 ring-amber-400/40"
-                suppressHydrationWarning
-              >
-                {isMounted
-                  ? isAuctioneer
-                    ? (userName || 'A').charAt(0).toUpperCase()
-                    : auctioneerUser
-                    ? auctioneerUser.name.charAt(0).toUpperCase()
-                    : 'A'
-                  : 'A'}
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-amber-950/20 to-slate-950 p-2 text-center relative overflow-hidden">
+            {/* Ambient Gold Glow */}
+            <div className="absolute inset-0 bg-amber-500/10 blur-xl pointer-events-none" />
+            <div className="relative z-10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/30 ring-2 ring-amber-400/50">
+                <Gavel className="w-5 h-5 text-slate-950" />
               </div>
-              <div className="absolute -bottom-1 -right-1 bg-amber-500 text-slate-950 p-0.5 rounded-full shadow">
+              <div className="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 p-0.5 rounded-full shadow">
                 <Crown className="w-2.5 h-2.5" />
               </div>
             </div>
             <span
-              className="text-[10px] font-bold text-amber-300 mt-1 truncate max-w-[110px]"
+              className="text-[10px] font-bold text-amber-300 mt-1 truncate max-w-[110px] relative z-10"
               suppressHydrationWarning
             >
               {isMounted
@@ -256,21 +273,37 @@ export const VideoCallStrip: React.FC = () => {
               className="w-full h-full object-cover transform -scale-x-100"
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-950 p-2 text-center">
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-sm shadow-md"
-                style={{
-                  backgroundColor:
-                    franchiseCode && FRANCHISES[franchiseCode]
-                      ? FRANCHISES[franchiseCode].primaryColor
-                      : '#3B82F6',
-                }}
-                suppressHydrationWarning
-              >
-                {(userName || 'U').charAt(0).toUpperCase()}
-              </div>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-950 p-2 text-center relative overflow-hidden">
+              {/* Ambient Franchise Glow */}
+              {franchiseCode && FRANCHISES[franchiseCode] && (
+                <div
+                  className="absolute inset-0 opacity-20 blur-xl pointer-events-none"
+                  style={{ backgroundColor: FRANCHISES[franchiseCode].primaryColor }}
+                />
+              )}
+
+              {franchiseCode ? (
+                <div className="relative z-10 flex items-center justify-center">
+                  <div
+                    className="absolute -inset-1 rounded-2xl blur-sm opacity-60"
+                    style={{ backgroundColor: FRANCHISES[franchiseCode]?.primaryColor || '#3B82F6' }}
+                  />
+                  <FranchiseLogo code={franchiseCode} size="md" className="relative shadow-lg ring-1 ring-white/10" />
+                </div>
+              ) : (
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md border border-slate-700"
+                  style={{
+                    backgroundColor: '#3B82F6',
+                  }}
+                  suppressHydrationWarning
+                >
+                  {(userName || 'U').charAt(0).toUpperCase()}
+                </div>
+              )}
+
               <span
-                className="text-[10px] font-bold text-slate-200 mt-1 truncate max-w-[110px]"
+                className="text-[10px] font-bold text-slate-200 mt-1 truncate max-w-[110px] relative z-10"
                 suppressHydrationWarning
               >
                 {userName} (You)

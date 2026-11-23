@@ -90,9 +90,25 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
         res = await fetch(`/api/rooms${qs}`, { cache: 'no-store' });
       }
       const data = await res.json();
-      if (data.success && Array.isArray(data.sessions)) {
-        setSessions(data.sessions);
+      let allSessions: SessionSummaryItem[] = data.success && Array.isArray(data.sessions) ? data.sessions : [];
+
+      if (typeof window !== 'undefined') {
+        try {
+          const localSaved = JSON.parse(localStorage.getItem('ipl_conducted_sessions') || '[]');
+          if (Array.isArray(localSaved) && localSaved.length > 0) {
+            const map = new Map<string, SessionSummaryItem>();
+            allSessions.forEach((s) => map.set(s.roomCode.toUpperCase(), s));
+            localSaved.forEach((s) => {
+              if (s && s.roomCode && !map.has(s.roomCode.toUpperCase())) {
+                map.set(s.roomCode.toUpperCase(), s);
+              }
+            });
+            allSessions = Array.from(map.values()).sort((a, b) => b.updatedAt - a.updatedAt);
+          }
+        } catch {}
       }
+
+      setSessions(allSessions);
     } catch (e) {
       console.warn('Failed to fetch rooms list', e);
     } finally {
@@ -136,16 +152,19 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
     fetchRoomReport(inputCode.trim().toUpperCase());
   };
 
-  // Derive Sold Players
+  // Derive Sold Players (Strictly live auction purchases, never retained stars)
   const soldPlayers = useMemo(() => {
     if (!roomState) return [];
+    const isCleanBought = (p: { isRetained?: boolean; set?: string; id?: string }) =>
+      !p.isRetained && p.set !== 'Retained' && !p.id?.startsWith('ret_');
+
     if (roomState.soldHistory && roomState.soldHistory.length > 0) {
-      return roomState.soldHistory.filter((p) => !p.isRetained);
+      return roomState.soldHistory.filter(isCleanBought);
     }
     const bought: BoughtPlayer[] = [];
     Object.values(roomState.teams || {}).forEach((team) => {
       (team.squad || []).forEach((player) => {
-        if (!player.isRetained) {
+        if (isCleanBought(player)) {
           bought.push(player);
         }
       });
@@ -180,7 +199,7 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
     }> = [];
 
     (roomState.soldHistory || [])
-      .filter((p) => !p.isRetained)
+      .filter((p) => !p.isRetained && p.set !== 'Retained' && !p.id?.startsWith('ret_'))
       .forEach((p, index) => {
       events.push({
         id: p.id,
@@ -954,16 +973,28 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
             ).map((f) => {
               const teamState = roomState?.teams?.[f.code];
               const squad = teamState?.squad || [];
-              const retained = squad.filter((p) => p.isRetained);
+              const isRetainedStar = (p: { isRetained?: boolean; set?: string; id?: string }) =>
+                p.isRetained === true || p.set === 'Retained' || p.id?.startsWith('ret_');
+
+              const retained = squad.filter(isRetainedStar);
 
               // Merge newly bought players from team squad and room soldPlayers
-              const squadBought = squad.filter((p) => !p.isRetained);
-              const historyBought = soldPlayers.filter((p) => p.soldTo === f.code);
+              const squadBought = squad.filter((p) => !isRetainedStar(p));
+              const historyBought = soldPlayers.filter((p) => {
+                if (isRetainedStar(p)) return false;
+                const s = (p.soldTo || '').toString().trim().toUpperCase();
+                return (
+                  s === f.code ||
+                  s === f.name.toUpperCase() ||
+                  s === f.shortName.toUpperCase()
+                );
+              });
+
               const boughtMap = new Map<string, BoughtPlayer>();
-              squadBought.forEach((p) => boughtMap.set(p.name.toLowerCase(), p));
+              squadBought.forEach((p) => boughtMap.set(p.name.trim().toLowerCase(), p));
               historyBought.forEach((p) => {
-                if (!boughtMap.has(p.name.toLowerCase())) {
-                  boughtMap.set(p.name.toLowerCase(), p);
+                if (!boughtMap.has(p.name.trim().toLowerCase())) {
+                  boughtMap.set(p.name.trim().toLowerCase(), p);
                 }
               });
               const bought = Array.from(boughtMap.values());

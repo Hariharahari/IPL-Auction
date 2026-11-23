@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AuctionEngine } from '@/server/auctionEngine';
 import { safeDbOperation } from '@/lib/db';
 import { isSuperAdminEmail } from '@/lib/utils';
+import { getAllConductedSessions } from '@/server/conductedStore';
 
 export const dynamic = 'force-dynamic';
 
@@ -200,6 +201,34 @@ export async function GET(req: NextRequest) {
         createdAt: Date.now(),
         formattedDate,
       });
+    });
+
+    // 3. Overlay conductedStore disk & memory sessions
+    const storedSessions = getAllConductedSessions();
+    storedSessions.forEach((s) => {
+      const code = s.roomCode;
+      if (!code) return;
+      if (searchCode && code !== searchCode) return;
+
+      const existing = sessionMap.get(code);
+      if (!existing || (existing.status !== 'Completed' && s.status === 'Completed')) {
+        sessionMap.set(code, {
+          roomCode: s.roomCode,
+          mode: s.mode,
+          status: s.status,
+          phase: s.phase,
+          soldCount: s.soldCount,
+          unsoldCount: s.unsoldCount,
+          totalAuctioned: s.totalAuctioned,
+          totalSpentLakhs: s.totalSpentLakhs,
+          totalPlayers: s.totalPlayers,
+          participatingTeams: s.participatingTeams,
+          lastActionMessage: s.lastActionMessage,
+          updatedAt: s.updatedAt,
+          createdAt: s.createdAt,
+          formattedDate: s.formattedDate,
+        });
+      }
     });
 
     const sessions = Array.from(sessionMap.values()).sort(

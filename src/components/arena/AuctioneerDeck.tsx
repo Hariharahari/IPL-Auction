@@ -176,7 +176,9 @@ export const AuctioneerDeck: React.FC = () => {
         localStorage.setItem('ipl_auction_ended', activeRoomCode);
       }
       const user = getStoredUser();
-      const finalSold = (room?.soldHistory || []).filter((p) => !p.isRetained);
+      const isRetainedStar = (p: { isRetained?: boolean; set?: string; id?: string }) =>
+        p.isRetained === true || p.set === 'Retained' || p.id?.startsWith('ret_');
+      const finalSold = (room?.soldHistory || []).filter((p) => !isRetainedStar(p));
       const finalUnsold = room?.unsoldHistory || [];
       const totalSpentLakhs = finalSold.reduce((sum, p) => sum + (p.soldAmount || 0), 0);
       const isSolo = activeRoomCode.startsWith('SOLO') || room?.hostId?.startsWith('solo_');

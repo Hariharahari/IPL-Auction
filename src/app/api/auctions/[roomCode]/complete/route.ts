@@ -4,6 +4,7 @@ import { AuctionEngine } from '@/server/auctionEngine';
 import { FRANCHISE_LIST } from '@/data/franchises';
 import { IPL_2027_MINI_AUCTION_PURSE_DEFAULTS } from '@/server/rules';
 import { isSuperAdminEmail } from '@/lib/utils';
+import { saveConductedSession } from '@/server/conductedStore';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,7 +47,9 @@ export async function POST(
       soldPlayers && soldPlayers.length > 0
         ? soldPlayers
         : memRoom?.soldHistory || [];
-    let cleanSoldHistory = rawSold.filter((p: any) => !p.isRetained);
+    let cleanSoldHistory = rawSold.filter(
+      (p: any) => !p.isRetained && p.set !== 'Retained' && !p.id?.startsWith('ret_')
+    );
 
     let cleanUnsoldHistory =
       unsoldPlayers && unsoldPlayers.length > 0
@@ -77,6 +80,14 @@ export async function POST(
             (sum: number, p: any) => sum + (p.soldAmount || p.price || 0),
             0
           );
+
+    const isSolo =
+      mode === 'SOLO' ||
+      roomCode.startsWith('SOLO') ||
+      memRoom?.hostId?.startsWith('solo_');
+
+    const effectiveHostEmail = hostEmail || null;
+    const effectiveHostName = hostName || 'Auctioneer';
 
     // Execute single, strictly awaited PostgreSQL transaction
     if (process.env.DATABASE_URL) {
@@ -348,6 +359,45 @@ export async function POST(
       });
     }
 
+    // Always persist to conductedStore (disk + memory backup, safe without Postgres)
+    const participatingTeamsList = Array.from(
+      new Set([
+        ...Object.keys(finalSquads || {}),
+        ...cleanSoldHistory.map((p: any) => p.soldTo).filter(Boolean),
+      ])
+    );
+
+    saveConductedSession({
+      roomCode,
+      mode: isSolo ? 'Solo Test' : 'Multiplayer',
+      status: 'Completed',
+      phase: 'COMPLETED',
+      soldCount: finalSoldCount,
+      unsoldCount: finalUnsoldCount,
+      totalAuctioned: finalSoldCount + finalUnsoldCount,
+      totalSpentLakhs: finalTotalSpentLakhs,
+      totalPlayers: finalSoldCount + finalUnsoldCount,
+      participatingTeams:
+        participatingTeamsList.length > 0 ? participatingTeamsList : ['CSK', 'MI', 'RCB', 'KKR', 'SRH'],
+      lastActionMessage: actionMessage,
+      updatedAt: Date.now(),
+      createdAt: Date.now(),
+      formattedDate: new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      }).format(new Date()),
+      soldPlayers: cleanSoldHistory,
+      unsoldPlayers: cleanUnsoldHistory,
+      squads: finalSquads,
+      bidHistory: cleanBidHistory,
+      hostEmail: effectiveHostEmail,
+      hostName: effectiveHostName,
+    });
+
     // Update in-memory room as well if present
     if (memRoom) {
       memRoom.phase = 'COMPLETED';
@@ -360,11 +410,15 @@ export async function POST(
       memRoom.lastActionMessage = actionMessage;
       // Ensure in-memory team squads also have the newly bought players
       cleanSoldHistory.forEach((p: any) => {
-        const teamCode = p.soldTo as keyof typeof memRoom.teams;
+        const teamCode = (p.soldTo || '').toString().toUpperCase() as keyof typeof memRoom.teams;
         if (teamCode && memRoom.teams[teamCode]) {
           const squad = memRoom.teams[teamCode].squad;
           if (!squad.some((sp: any) => sp.id === p.id || sp.name?.toLowerCase() === p.name?.toLowerCase())) {
-            squad.push(p);
+            squad.push({
+              ...p,
+              soldTo: teamCode,
+              isRetained: false,
+            });
           }
         }
       });

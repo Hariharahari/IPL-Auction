@@ -1,52 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<meta charset="utf-8">
-<title>Wikimedia Error</title>
-<style>
-* { margin: 0; padding: 0; }
-body { display: flex; flex-direction: column; min-height: 100vh; background: #fff; font: 14px/22px system-ui, -apple-system, 'Segoe UI', Roboto, Lato, Helvetica, Arial, sans-serif; color: #202122; }
-.content { box-sizing: border-box; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; margin: 0 auto; padding: 32px; max-width: 640px; text-align: center; }
-.footer { border-top: 1px solid #eaecf0; background: #f8f9fa; padding: 2em 1em; font-size: 12px; text-align: center; }
-#logo { display: block; }
-a img { border: 0; }
-.content-text { display: flex; flex-direction: column; gap: 8px; }
-h1 { font-size: 18px; line-height: 28px; font-weight: bold; }
-a { color: #36c; text-decoration: none; }
-a:hover { text-decoration: underline; }
-code { font-family: inherit; }
-summary { font-weight: bold; cursor: pointer; }
-details[open] { background: #970302; color: #dfdedd; }
-.text-muted { color: #777; }
-.external { display: inline-flex; align-items: center; gap: 4px; }
-.external svg { width: 14px; height: 14px; fill: currentColor; }
-@media (prefers-color-scheme: dark) {
-  body { background: #101418; color: #eaecf0; }
-  a { color: #88a3e8; }
-  .footer { border-top: 1px solid #54595d; background: #202122; }
-    #logo[src$="-logo.svg"], #wmfLogo { filter: invert(1) hue-rotate(180deg); }
-  .text-muted { color: #888; }
-}
-</style>
-<meta name="color-scheme" content="light dark">
-<div class="content" role="main">
-<a href="https://www.wikimedia.org"><img id="logo" src="https://www.wikimedia.org/static/images/footer/wikimedia.svg" alt="Wikimedia" width="120" height="120">
-</a>
-<script>
-if ( /(^|\.)wikipedia\.org$/.test( location.hostname ) ) {
-	document.getElementById( 'logo' ).outerHTML = '<picture>' +
-		'<source media="(max-width: 639px)" srcset="https://www.wikimedia.org/static/images/errorpages/baby-globe-phone-250px.png">' +
-		'<img id="logo" src="https://www.wikimedia.org/static/images/errorpages/baby-globe-laptop-250px.png" alt="Wikipedia" width="120" height="120">' +
-		'</picture>';
-}
-</script>
-<div class="content-text">
-<h1>Error</h1>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Background Shield Gradient -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#021B79" />
+      <stop offset="50%" stop-color="#0575E6" />
+      <stop offset="100%" stop-color="#00F260" />
+    </linearGradient>
 
-<p>Too many requests. Please contact the Wikimedia SRE team at noc@wikimedia.org and refer to this message. (daab851)</p>
-</div>
-<a class="external" href="https://www.wikimediastatus.net/">Wikimedia Status <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M17 17H3V3h5V1H3a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-5h-2z"/><path d="M11 1l3.29 3.29-5.73 5.73 1.42 1.42 5.73-5.72L19 9V1z"/></svg></a>
-<a href="https://wikimediafoundation.org/"><img id="wmfLogo" src="https://www.wikimedia.org/static/images/wmf.png" srcset="https://www.wikimedia.org/static/images/wmf-2x.png 2x" alt="Wikimedia Foundation" width="86" height="86"></a>
-</div>
-<div class="footer"><p>If you report this error to the Wikimedia System Administrators, please include the details below.</p><p class="text-muted"><code>Request served via cp5028 cp5028, Varnish XID 923770621<br>Upstream caches: cp5028 int<br>Error: 429, Too many requests. Please contact the Wikimedia SRE team at noc@wikimedia.org and refer to this message. (daab851) at Sat, 21 Nov 2026 18:36:25 GMT<br><details><summary>Sensitive client information</summary>IP address: 116.73.158.12</details></code></p>
-</div>
-</html>
+    <!-- Deep Blue Metallic Gradient -->
+    <linearGradient id="lsgBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A2540" />
+      <stop offset="50%" stop-color="#0047AB" />
+      <stop offset="100%" stop-color="#001845" />
+    </linearGradient>
+
+    <!-- Wing Orange Gradient -->
+    <linearGradient id="wingOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF512F" />
+      <stop offset="100%" stop-color="#DD2476" />
+    </linearGradient>
+
+    <!-- Wing Cyan Gradient -->
+    <linearGradient id="wingCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F2FE" />
+      <stop offset="100%" stop-color="#4FACFE" />
+    </linearGradient>
+
+    <!-- Gold Accent Gradient -->
+    <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFE000" />
+      <stop offset="50%" stop-color="#799F0C" />
+      <stop offset="100%" stop-color="#FFE000" />
+    </linearGradient>
+
+    <linearGradient id="ballRed" x1="30%" y1="30%" x2="90%" y2="90%">
+      <stop offset="0%" stop-color="#FF4B4B" />
+      <stop offset="60%" stop-color="#C91818" />
+      <stop offset="100%" stop-color="#660000" />
+    </linearGradient>
+
+    <!-- Filter for subtle 3D drop shadow -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity="0.4" flood-color="#000" />
+    </filter>
+  </defs>
+
+  <!-- Outer Crest / Shield Contour -->
+  <path d="M 250 25 C 380 25, 450 65, 450 160 C 450 310, 340 420, 250 475 C 160 420, 50 310, 50 160 C 50 65, 120 25, 250 25 Z"
+        fill="url(#lsgBlue)" stroke="#00D2FF" stroke-width="8" filter="url(#shadow)" />
+
+  <path d="M 250 38 C 365 38, 435 75, 435 165 C 435 300, 335 405, 250 455 C 165 405, 65 300, 65 165 C 65 75, 135 38, 250 38 Z"
+        fill="#04122E" stroke="#FF5722" stroke-width="3" opacity="0.9" />
+
+  <!-- Tri-color Garuda / Wings Motif (Left Wing) -->
+  <!-- Top Saffron/Orange Feather -->
+  <path d="M 245 90 C 200 90, 110 115, 80 185 C 120 180, 175 160, 215 145 Z"
+        fill="url(#wingOrange)" filter="url(#shadow)" />
+  <!-- Middle White Feather -->
+  <path d="M 240 145 C 195 155, 125 185, 100 240 C 140 230, 185 205, 225 185 Z"
+        fill="#FFFFFF" />
+  <!-- Bottom Cyan/Blue Feather -->
+  <path d="M 235 190 C 195 205, 145 240, 125 295 C 160 275, 200 245, 230 225 Z"
+        fill="url(#wingCyan)" />
+
+  <!-- Tri-color Garuda / Wings Motif (Right Wing) -->
+  <!-- Top Saffron/Orange Feather -->
+  <path d="M 255 90 C 300 90, 390 115, 420 185 C 380 180, 325 160, 285 145 Z"
+        fill="url(#wingOrange)" filter="url(#shadow)" />
+  <!-- Middle White Feather -->
+  <path d="M 260 145 C 305 155, 375 185, 400 240 C 360 230, 315 205, 275 185 Z"
+        fill="#FFFFFF" />
+  <!-- Bottom Cyan/Blue Feather -->
+  <path d="M 265 190 C 305 205, 355 240, 375 295 C 340 275, 300 245, 270 225 Z"
+        fill="url(#wingCyan)" />
+
+  <!-- Central Cricket Bat (Handle & Blade) -->
+  <g transform="translate(250, 210) rotate(-45)">
+    <!-- Bat Grip/Handle -->
+    <rect x="-8" y="-120" width="16" height="50" rx="4" fill="#E2E8F0" stroke="#0A2540" stroke-width="2" />
+    <line x1="-8" y1="-105" x2="8" y2="-105" stroke="#94A3B8" stroke-width="2" />
+    <line x1="-8" y1="-90" x2="8" y2="-90" stroke="#94A3B8" stroke-width="2" />
+    <!-- Bat Shoulder & Blade -->
+    <path d="M -15 -70 L 15 -70 L 18 60 C 18 70, -18 70, -18 60 Z"
+          fill="#E0A96D" stroke="#8D5B28" stroke-width="3" />
+    <line x1="0" y1="-65" x2="0" y2="55" stroke="#C38B4B" stroke-width="2" stroke-dasharray="8 4" />
+  </g>
+
+  <!-- Red Cricket Ball in Flight with Glowing Aura -->
+  <circle cx="250" cy="180" r="32" fill="url(#ballRed)" stroke="#FFFFFF" stroke-width="3" filter="url(#shadow)" />
+  <!-- Cricket Ball White Curved Seam -->
+  <path d="M 230 162 C 248 174, 252 186, 270 198" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-dasharray="3 2" />
+
+  <!-- Speed Swooshes around ball -->
+  <path d="M 200 180 A 50 50 0 0 1 295 160" fill="none" stroke="#FFD700" stroke-width="4" stroke-linecap="round" />
+  <path d="M 215 205 A 40 40 0 0 0 280 205" fill="none" stroke="#00F2FE" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Banner / Ribbons for LSG Branding -->
+  <path d="M 80 340 L 420 340 L 390 415 L 110 415 Z" fill="#0A192F" stroke="#00D2FF" stroke-width="3" />
+  <path d="M 95 348 L 405 348 L 380 407 L 120 407 Z" fill="#003580" />
+
+  <!-- Typography: LSG -->
+  <text x="250" y="392"
+        text-anchor="middle"
+        font-family="'Montserrat', 'Arial Black', sans-serif"
+        font-weight="900"
+        font-size="46"
+        fill="#FFFFFF"
+        stroke="#020C1B"
+        stroke-width="2"
+        letter-spacing="5">
+    LSG
+  </text>
+
+  <!-- Subtitle: LUCKNOW SUPER GIANTS -->
+  <text x="250" y="440"
+        text-anchor="middle"
+        font-family="'Montserrat', 'Arial', sans-serif"
+        font-weight="800"
+        font-size="14"
+        fill="#FFB703"
+        letter-spacing="3">
+    LUCKNOW SUPER GIANTS
+  </text>
+</svg>
