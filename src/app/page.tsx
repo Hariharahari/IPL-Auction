@@ -552,16 +552,6 @@ export default function HomePage() {
                 <span>{isJoining ? 'Connecting & Locking Seat...' : 'Enter Live Auction'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
-
-              <div className="pt-2 text-center">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('SOLO')}
-                  className="text-xs text-slate-400 hover:text-amber-400 transition"
-                >
-                  Don&apos;t have a room? <strong className="text-amber-400 underline">Try 1-Click Solo Test Mode</strong>
-                </button>
-              </div>
             </form>
           </div>
         )}

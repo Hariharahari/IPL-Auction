@@ -203,9 +203,6 @@ export const AuctioneerDeck: React.FC = () => {
 
       await endAuction();
       setIsEndAuctionModalOpen(false);
-      await leaveAuction();
-      router.refresh();
-      router.push('/conducted-auctions');
     } finally {
       setIsEnding(false);
     }

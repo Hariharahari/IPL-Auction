@@ -32,6 +32,7 @@ import { AuctioneerAwardModal } from '@/components/arena/AuctioneerAwardModal';
 import { SoldPlayerCelebrationModal } from '@/components/arena/SoldPlayerCelebrationModal';
 import { ShareTeamCodesModal } from '@/components/arena/ShareTeamCodesModal';
 import { TempAuctioneerModal } from '@/components/arena/TempAuctioneerModal';
+import { AuctionCompletionModal } from '@/components/arena/AuctionCompletionModal';
 import { FRANCHISES, FRANCHISE_LIST } from '@/data/franchises';
 import { FranchiseCode } from '@/types/auction';
 import { FranchiseLogo } from '@/components/common/FranchiseLogo';
@@ -79,6 +80,7 @@ export default function AuctionArenaPage() {
   const [hasPromptedModal, setHasPromptedModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isConcluding, setIsConcluding] = useState(false);
+  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
   const [chatToast, setChatToast] = useState<{ senderName: string; text: string; channel: string } | null>(null);
 
   const latestIncomingMessage = useAuctionStore((s) => s.latestIncomingMessage);
@@ -186,33 +188,43 @@ export default function AuctionArenaPage() {
         console.warn('[Complete] HTTP persistence endpoint returned non-200, continuing...');
       }
 
-      // Emit socket event for peers and leave
+      // Emit socket event for peers and show completion modal
       await endAuction();
-      await leaveAuction();
-
-      // Invalidate and refresh cache, then route directly to Conducted Auctions
-      router.refresh();
-      router.push('/conducted-auctions');
+      setIsCompletionModalOpen(true);
     } catch (err) {
       console.error('Error concluding auction:', err);
-      router.push('/conducted-auctions');
+      setIsCompletionModalOpen(true);
+    } finally {
+      setIsConcluding(false);
     }
+  };
+
+  const handleViewReportFromCompletion = async () => {
+    setIsCompletionModalOpen(false);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('ipl_active_room_code');
+      localStorage.setItem('ipl_auction_ended', roomCode || '');
+    }
+    await leaveAuction();
+    router.refresh();
+    router.push('/conducted-auctions');
+  };
+
+  const handleExitDashboardFromCompletion = async () => {
+    setIsCompletionModalOpen(false);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('ipl_active_room_code');
+      localStorage.setItem('ipl_auction_ended', roomCode || '');
+    }
+    await leaveAuction();
+    router.push('/');
   };
 
   useEffect(() => {
     if (room?.phase === 'COMPLETED') {
-      if (isEndingRef.current) return;
-      isEndingRef.current = true;
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('ipl_active_room_code');
-        localStorage.setItem('ipl_auction_ended', roomCode || '');
-      }
-      leaveAuction().then(() => {
-        router.refresh();
-        router.push('/conducted-auctions');
-      });
+      setIsCompletionModalOpen(true);
     }
-  }, [room?.phase, leaveAuction, router, roomCode]);
+  }, [room?.phase]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -615,6 +627,17 @@ export default function AuctionArenaPage() {
           </button>
         </div>
       )}
+
+      {/* Official Auction Completion & Squad Download Modal */}
+      <AuctionCompletionModal
+        isOpen={isCompletionModalOpen || room?.phase === 'COMPLETED'}
+        room={room}
+        franchiseCode={franchiseCode}
+        userName={userName || 'Participant'}
+        isAuctioneer={isAuctioneerOrHost}
+        onViewReport={handleViewReportFromCompletion}
+        onExitDashboard={handleExitDashboardFromCompletion}
+      />
     </div>
   );
 }
