@@ -1,15 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #020617;
-  --foreground: #f8fafc;
+  --background: #070D26;
+  --foreground: #F8FAFC;
+  --font-display: 'Barlow Condensed', -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
 }
 
 body {
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, #1E3A8A 0%, #0F1C4D 45%, #070D26 100%);
   background-color: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans);
   overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Authentic TATA IPL Broadcast Typography */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-broadcast {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* TV Broadcast Geometry Utilities */
+.ipl-slant {
+  clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+}
+
+.ipl-slant-reverse {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 100%, 14px 100%);
+}
+
+.ipl-card-cut {
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+}
+
+.ipl-gold-gradient {
+  background: linear-gradient(135deg, #FDE047 0%, #F59E0B 50%, #B45309 100%);
+}
+
+.ipl-gold-border {
+  border: 1px solid rgba(250, 204, 21, 0.35);
+}
+
+.ipl-stadium-bg {
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, #1E3A8A 0%, #0F1C4D 45%, #070D26 100%);
+}
+
+.ipl-glass {
+  background: rgba(15, 28, 77, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* TV Broadcast Stamp Slam Animation */
+@keyframes stampSlam {
+  0% {
+    opacity: 0;
+    transform: scale(2.4) rotate(-14deg);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(0.92) rotate(-8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-9deg);
+  }
+}
+
+.animate-stamp-slam {
+  animation: stampSlam 0.42s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 /* Custom broadcast dark scrollbar */
@@ -19,14 +90,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0b0f19;
+  background: #070D26;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #1E3A8A;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #F59E0B;
 }

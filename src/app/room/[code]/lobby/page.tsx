@@ -120,19 +120,20 @@ export default function RoomLobbyPage() {
   const canStart = isHost || role === 'AUCTIONEER';
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500 selection:text-black">
+    <div className="min-h-screen ipl-stadium-bg text-slate-100 flex flex-col selection:bg-amber-400 selection:text-slate-950 font-sans">
       {/* Top Header */}
-      <header className="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md px-6 py-4 sticky top-0 z-30 flex items-center justify-between">
+      <header className="border-b border-amber-500/30 bg-[#091136]/90 backdrop-blur-xl px-6 py-4 sticky top-0 z-30 flex items-center justify-between shadow-xl">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black">
-              <Gavel className="w-5 h-5" />
+            <div className="ipl-slant px-3 py-1 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-display font-black text-sm uppercase shadow-md">
+              <Gavel className="w-4 h-4 mr-1.5" />
+              <span>TATA IPL</span>
             </div>
             <div>
-              <h1 className="text-base font-black text-white leading-none">
+              <h1 className="text-base font-display font-black text-white leading-none uppercase tracking-wide">
                 AUCTION LOBBY
               </h1>
-              <p className="text-xs text-slate-400 mt-0.5">Franchise & Role Selection</p>
+              <p className="text-xs text-amber-300/80 mt-0.5 font-sans">Franchise & Role Selection Stage</p>
             </div>
           </div>
 

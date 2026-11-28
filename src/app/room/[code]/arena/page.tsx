@@ -18,6 +18,7 @@ import {
   Key,
   LogOut,
   Loader2,
+  Trophy,
 } from 'lucide-react';
 import { useAuctionStore } from '@/store/auctionStore';
 import { VideoCallStrip } from '@/components/arena/VideoCallStrip';
@@ -319,46 +320,62 @@ export default function AuctionArenaPage() {
   const totalUnread = (unreadGlobalCount || 0) + (unreadTeamCount || 0);
 
   return (
-    <div className="h-screen max-h-screen min-h-screen overflow-hidden flex flex-col bg-slate-950 text-slate-100 select-none">
+    <div className="h-screen max-h-screen min-h-screen overflow-hidden flex flex-col ipl-stadium-bg text-slate-100 select-none">
       {/* 0. PERSISTENCE & FINALIZING OVERLAY (STAGE REMAINS OPEN, NEVER MINIMIZES) */}
       {isConcluding && (
-        <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center gap-4 animate-in fade-in select-none">
-          <div className="w-16 h-16 rounded-full border-4 border-amber-500/20 border-t-amber-500 animate-spin flex items-center justify-center">
+        <div className="fixed inset-0 z-[100] bg-[#070D26]/95 backdrop-blur-md flex flex-col items-center justify-center gap-4 animate-in fade-in select-none">
+          <div className="w-16 h-16 rounded-full border-4 border-amber-500/20 border-t-amber-400 animate-spin flex items-center justify-center">
             <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
           </div>
           <div className="text-center px-4">
-            <h2 className="text-xl font-black text-white tracking-wide">Finalizing & Saving Auction Results...</h2>
-            <p className="text-sm text-slate-400 mt-1 max-w-md">
+            <h2 className="text-xl font-display font-extrabold text-white tracking-wide uppercase">Finalizing & Saving Auction Results...</h2>
+            <p className="text-sm text-slate-300 mt-1 max-w-md font-sans">
               Persisting completed squad rosters, calculating hammer expenditures & archiving session to Conducted Auctions.
             </p>
           </div>
         </div>
       )}
 
-      {/* 1. TOP BROADCAST BAR (h-12) */}
-      <header className="h-12 border-b border-slate-800 bg-slate-900/95 backdrop-blur-md px-3 sm:px-4 flex items-center justify-between shrink-0 z-40 shadow-sm">
-        {/* Left: Branding, Room Code, Current Set & Recent Sold Ticker */}
+      {/* 1. TOP TV SCOREBUG BROADCAST BAR (h-14) */}
+      <header className="h-14 border-b border-amber-500/30 bg-[#091136]/95 backdrop-blur-xl px-3 sm:px-4 flex items-center justify-between shrink-0 z-40 shadow-xl relative">
+        {/* Subtle Championship Gold Edge Glow */}
+        <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-amber-400/50 to-transparent pointer-events-none" />
+
+        {/* Left: TATA IPL 2027 Crest Badge, Room Code Pill, Current Set */}
         <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
+          {/* TATA IPL 2027 Broadcast Crest Badge */}
+          <div className="ipl-slant flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 font-display font-black text-xs sm:text-sm tracking-wider uppercase shadow-md shrink-0">
+            <Trophy className="w-3.5 h-3.5" />
+            <span>TATA IPL 2027</span>
+          </div>
+
           {/* Room Code Pill */}
-          <div className="flex items-center gap-1.5 shrink-0 bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800">
+          <div className="flex items-center gap-1.5 shrink-0 bg-[#050922] px-2.5 py-1 rounded-lg border border-amber-500/30 shadow-inner">
             <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-            <span className="font-mono text-xs font-black text-amber-400 tracking-wider">
+            <span className="font-mono text-xs font-black text-amber-300 tracking-wider">
               {roomCode}
             </span>
           </div>
 
-          {/* Current Set Badge */}
-          <div className="hidden sm:flex items-center gap-1 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-md text-[11px] font-bold text-amber-300 shrink-0">
-            <span>Set:</span>
-            <strong className="text-white">{activePlayer ? activePlayer.set : 'Idle'}</strong>
+          {/* Current Set Ribbon (Replaces 'Set: Idle' with 'ON DECK') */}
+          <div className="hidden sm:flex items-center gap-1.5 bg-[#050922] border border-white/10 px-2.5 py-1 rounded-lg text-xs font-display shrink-0">
+            <span className="text-slate-400 uppercase tracking-wider text-[11px] font-bold">STAGE:</span>
+            <strong className="text-amber-400 tracking-wide uppercase font-extrabold">
+              {activePlayer ? `${activePlayer.set} SET` : 'ON DECK'}
+            </strong>
           </div>
+        </div>
 
-          <div className="hidden md:block h-3.5 w-px bg-slate-800 shrink-0" />
-
-          {/* Single-line scrolling/fading Recent Sold Ticker */}
-          <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-300 font-medium truncate max-w-sm lg:max-w-md">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 animate-ping" />
-            <span className="truncate">{room?.lastActionMessage || 'Live auction active • Ready for next nomination'}</span>
+        {/* Center: TV Angled Lower-Third Sports Ticker */}
+        <div className="hidden md:flex items-center mx-3 flex-1 max-w-md lg:max-w-lg overflow-hidden">
+          <div className="ipl-slant w-full bg-[#050922]/90 border border-amber-500/30 px-4 py-1 flex items-center gap-2 text-xs shadow-inner">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 animate-ping" />
+            <span className="font-display font-black text-amber-400 uppercase tracking-widest text-[11px] shrink-0">
+              LATEST:
+            </span>
+            <span className="text-slate-200 font-sans truncate text-xs">
+              {room?.lastActionMessage || 'LIVE STAGE ACTIVE • READY FOR FRANCHISE BIDS'}
+            </span>
           </div>
         </div>
 
@@ -368,7 +385,7 @@ export default function AuctionArenaPage() {
           {isAuctioneerOrHost && (
             <button
               onClick={() => setIsShareCodesOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 transition cursor-pointer"
+              className="ipl-slant flex items-center gap-1.5 px-3 py-1 text-xs font-display font-black ipl-gold-gradient text-slate-950 shadow-md transition transform hover:brightness-110 cursor-pointer uppercase tracking-wider"
               title="Share Franchise Access PINs & Direct Invite Links"
             >
               <Key className="w-3.5 h-3.5" />
@@ -380,10 +397,10 @@ export default function AuctionArenaPage() {
           {isAuctioneerOrHost && (
             <button
               onClick={() => setIsTempAuctioneerOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-display font-bold bg-[#070D26] hover:bg-[#0E1A4A] text-amber-300 border border-amber-500/30 transition cursor-pointer uppercase tracking-wider"
               title="Appoint a Temporary Deputy Auctioneer or Transfer Gavel"
             >
-              <Gavel className="w-3.5 h-3.5" />
+              <Gavel className="w-3.5 h-3.5 text-amber-400" />
               <span className="hidden lg:inline">Deputy</span>
               {room?.tempAuctioneerId && (
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -393,7 +410,7 @@ export default function AuctionArenaPage() {
 
           {/* Hand Raise Notice for Auctioneer in Top Bar */}
           {isAuctioneerOrHost && Object.values(room?.users || {}).filter((u) => u.handRaised).length > 0 && (
-            <div className="flex items-center gap-1 bg-amber-500 text-slate-950 font-black text-xs px-2 py-0.5 rounded-md animate-bounce shadow">
+            <div className="flex items-center gap-1 bg-amber-400 text-slate-950 font-display font-black text-xs px-2.5 py-0.5 rounded-md animate-bounce shadow">
               <span>✋</span>
               <span>
                 {Object.values(room?.users || {}).filter((u) => u.handRaised).length} Raised
@@ -404,10 +421,10 @@ export default function AuctionArenaPage() {
           {/* Teams & Purses Drawer Toggle Button */}
           <button
             onClick={() => setIsTeamsDrawerOpen(!isTeamsDrawerOpen)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition border cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-display font-bold transition border cursor-pointer uppercase tracking-wider ${
               isTeamsDrawerOpen
-                ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow'
-                : 'bg-slate-950 hover:bg-slate-800 text-slate-300 border-slate-800'
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-lg'
+                : 'bg-[#050922] hover:bg-[#0D1847] text-slate-300 border-white/10'
             }`}
             title="Open Franchise Purses & Squads Drawer"
           >
@@ -419,16 +436,16 @@ export default function AuctionArenaPage() {
           {isAuctioneerOrHost && role !== 'AUCTIONEER' && (
             <button
               onClick={() => claimRole('AUCTIONEER', null)}
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-2 py-1 rounded-lg flex items-center gap-1 transition"
+              className="ipl-slant ipl-gold-gradient text-slate-950 font-display font-black text-xs px-3 py-1 flex items-center gap-1 transition uppercase tracking-wider"
             >
-              <Gavel className="w-3 h-3" />
+              <Gavel className="w-3.5 h-3.5" />
               <span>Claim Gavel</span>
             </button>
           )}
 
           {/* User Identity Pill */}
           <div
-            className="hidden sm:flex items-center gap-1.5 bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-lg text-xs"
+            className="hidden sm:flex items-center gap-1.5 bg-[#050922] border border-white/10 px-2.5 py-1 rounded-lg text-xs"
             suppressHydrationWarning
           >
             {franchise ? (
@@ -439,7 +456,7 @@ export default function AuctionArenaPage() {
             <span className="font-bold text-slate-200" suppressHydrationWarning>
               {isMounted ? userName || 'Connecting...' : 'Connecting...'}
             </span>
-            <span className="text-slate-500 font-semibold uppercase text-[10px]" suppressHydrationWarning>
+            <span className="text-amber-400 font-display font-bold uppercase text-[10px]" suppressHydrationWarning>
               ({isMounted ? (isAuctioneerOrHost ? 'AUCTIONEER' : franchise ? franchise.code : role) : 'SPECTATOR'})
             </span>
           </div>
@@ -448,7 +465,7 @@ export default function AuctionArenaPage() {
           <button
             type="button"
             onClick={(e) => handleLeaveAuction(e)}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-950/70 hover:bg-rose-900 text-rose-300 border border-rose-800 transition cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-display font-bold bg-rose-950/70 hover:bg-rose-900 text-rose-300 border border-rose-800 transition cursor-pointer uppercase tracking-wider"
             title="Leave this auction room and return to dashboard"
           >
             <LogOut className="w-3.5 h-3.5" />
@@ -461,13 +478,13 @@ export default function AuctionArenaPage() {
               type="button"
               onClick={(e) => handleConcludeAuction(e)}
               disabled={isConcluding}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800 transition cursor-pointer font-bold text-xs shadow disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-950/90 hover:bg-rose-900 text-rose-300 border border-rose-700 transition cursor-pointer font-display font-black text-xs shadow disabled:opacity-50 uppercase tracking-wider"
               title="Conclude live auction and save final squads to PostgreSQL"
             >
               {isConcluding ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-400" />
-                  <span className="inline">Finalizing & Saving Auction...</span>
+                  <span className="inline">Finalizing...</span>
                 </>
               ) : (
                 <>

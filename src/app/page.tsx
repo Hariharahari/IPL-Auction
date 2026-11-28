@@ -313,41 +313,42 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-amber-500 selection:text-black">
-      {/* Dynamic Background Mesh */}
-      <div className="fixed inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px]" />
+    <div className="min-h-screen ipl-stadium-bg text-slate-100 flex flex-col justify-between selection:bg-amber-400 selection:text-slate-950 font-sans">
+      {/* Dynamic Stadium Floodlight Beams */}
+      <div className="fixed inset-0 pointer-events-none opacity-25">
+        <div className="absolute top-0 left-1/4 w-[700px] h-[500px] bg-amber-400/10 rounded-full blur-[140px]" />
+        <div className="absolute top-10 right-1/4 w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[140px]" />
       </div>
 
       {/* Broadcast Navigation Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md px-6 py-4 flex flex-wrap items-center justify-between gap-4 relative z-20">
+      <header className="border-b border-amber-500/30 bg-[#091136]/90 backdrop-blur-xl px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 relative z-20 shadow-xl">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20">
-            <Gavel className="w-5 h-5" />
+          <div className="ipl-slant px-3 py-1 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 font-display font-black text-sm tracking-wider uppercase shadow-md flex items-center gap-1.5">
+            <Trophy className="w-4 h-4" />
+            <span>TATA IPL 2027</span>
           </div>
           <div>
-            <h1 className="text-lg font-black tracking-tight text-white flex items-center gap-1.5">
-              IPL AUCTION COMMAND
-              <span className="text-[10px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.2 rounded uppercase">
-                LIVE
+            <h1 className="font-display font-black text-lg tracking-wide text-white uppercase flex items-center gap-2">
+              LIVE AUCTION COMMAND
+              <span className="text-[10px] bg-rose-600 text-white font-display font-black px-1.5 py-0.2 rounded uppercase animate-pulse">
+                ON AIR
               </span>
             </h1>
-            <p className="text-[11px] text-slate-400 font-medium">
-              Broadcast-Grade Real-Time Multiplayer Bidding Hub
+            <p className="text-[11px] text-amber-300/80 font-sans font-medium">
+              Authentic Television Broadcast Match Center & Multi-Franchise Stage
             </p>
           </div>
         </div>
 
         {/* Global Hub Navigation Tabs & User Profile */}
         <div className="flex flex-wrap items-center gap-3">
-          <nav className="flex items-center gap-1.5 bg-slate-950/80 border border-slate-800 p-1 rounded-xl text-xs font-bold">
+          <nav className="flex items-center gap-1 bg-[#050922] border border-amber-500/30 p-1 rounded-xl text-xs font-display font-bold uppercase tracking-wider">
             <button
               onClick={() => setActiveTab('SQUADS')}
               className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'SQUADS'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-900'
+                  ? 'ipl-gold-gradient text-slate-950 font-black shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-[#0E1A4A]'
               }`}
             >
               <Users className="w-3.5 h-3.5 text-blue-400" />
@@ -358,20 +359,20 @@ export default function HomePage() {
               onClick={() => setActiveTab('JOIN')}
               className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'JOIN'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-900'
+                  ? 'ipl-gold-gradient text-slate-950 font-black shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-[#0E1A4A]'
               }`}
             >
               <Trophy className="w-3.5 h-3.5" />
-              <span>Join Auction</span>
+              <span>Join Stage</span>
             </button>
 
             <button
               onClick={() => setActiveTab('SCHEDULES')}
               className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'SCHEDULES'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-900'
+                  ? 'ipl-gold-gradient text-slate-950 font-black shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-[#0E1A4A]'
               }`}
             >
               <Calendar className="w-3.5 h-3.5 text-amber-400" />
@@ -382,20 +383,20 @@ export default function HomePage() {
               onClick={() => setActiveTab('CREATE')}
               className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'CREATE'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-900'
+                  ? 'ipl-gold-gradient text-slate-950 font-black shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-[#0E1A4A]'
               }`}
             >
               <Settings className="w-3.5 h-3.5" />
-              <span>Create Room</span>
+              <span>Create Arena</span>
             </button>
 
             <button
               onClick={() => setActiveTab('SOLO')}
               className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'SOLO'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-amber-400 hover:bg-slate-900'
+                  ? 'ipl-gold-gradient text-slate-950 font-black shadow-md'
+                  : 'text-amber-400 hover:bg-[#0E1A4A]'
               }`}
             >
               <Zap className="w-3.5 h-3.5" />
@@ -406,8 +407,8 @@ export default function HomePage() {
               onClick={() => setActiveTab('REPORTS')}
               className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'REPORTS'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-900'
+                  ? 'ipl-gold-gradient text-slate-950 font-black shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-[#0E1A4A]'
               }`}
             >
               <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
@@ -420,7 +421,7 @@ export default function HomePage() {
                   setUploadInitialTarget('RETAINED_SQUADS');
                   setIsUploadModalOpen(true);
                 }}
-                className="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white font-black shadow cursor-pointer ml-1"
+                className="ipl-slant px-3 py-1.5 transition flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white font-display font-black shadow-md cursor-pointer ml-1 uppercase tracking-wider"
                 title="Upload Current Squad or Auction Pool to Server"
               >
                 <Upload className="w-3.5 h-3.5" />
@@ -432,8 +433,8 @@ export default function HomePage() {
           {/* User Persona Badge */}
           <div className="flex items-center gap-2">
             {userEmail ? (
-              <div className="flex items-center gap-2 bg-slate-950/90 border border-slate-800 px-3 py-1.5 rounded-xl text-xs">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center font-black text-[11px] text-slate-950">
+              <div className="flex items-center gap-2 bg-[#050922] border border-amber-500/30 px-3 py-1.5 rounded-xl text-xs font-sans">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-amber-500 flex items-center justify-center font-display font-black text-xs text-slate-950">
                   {userName.slice(0, 1).toUpperCase() || 'U'}
                 </div>
                 <div className="text-left hidden sm:block">
@@ -441,12 +442,12 @@ export default function HomePage() {
                   <span className="text-[10px] text-slate-400 font-mono">{userEmail}</span>
                 </div>
                 {isSuperAdmin ? (
-                  <span className="text-[9px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.2 rounded uppercase">
+                  <span className="text-[9px] ipl-gold-gradient text-slate-950 font-display font-black px-1.5 py-0.2 rounded uppercase">
                     ADMIN
                   </span>
                 ) : (
-                  <span className="text-[9px] bg-slate-800 text-slate-400 font-bold px-1.5 py-0.2 rounded uppercase">
-                    USER
+                  <span className="text-[9px] bg-slate-800 text-slate-300 font-display font-bold px-1.5 py-0.2 rounded uppercase">
+                    MEMBER
                   </span>
                 )}
                 <button

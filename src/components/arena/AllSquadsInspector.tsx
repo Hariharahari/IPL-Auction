@@ -18,6 +18,7 @@ import { formatIndianCurrency } from '@/lib/utils';
 import { PlayingXIBuilderModal } from './PlayingXIBuilderModal';
 import { useAuctionStore } from '@/store/auctionStore';
 import { FranchiseLogo } from '@/components/common/FranchiseLogo';
+import { getFranchiseTheme, BroadcastCricketSilhouette } from '@/lib/franchiseThemes';
 
 interface MasterPlayer {
   id: string;
@@ -128,12 +129,12 @@ export const AllSquadsInspector: React.FC<AllSquadsInspectorProps> = ({ activeRo
   return (
     <div className="space-y-6 animate-in fade-in">
       {/* Top Header Card matching Live Room Squads */}
-      <div className="border border-slate-800 bg-slate-900/90 backdrop-blur-md px-6 py-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+      <div className="border border-amber-500/30 bg-[#0A1138]/90 backdrop-blur-xl px-6 py-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-2xl">
         <div className="flex items-center gap-4 flex-wrap">
           {activeRoomCode && (
             <Link
               href={`/room/${activeRoomCode}/arena`}
-              className="flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-bold transition bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg"
+              className="ipl-slant flex items-center gap-1.5 text-xs text-slate-950 font-display font-black transition ipl-gold-gradient px-3.5 py-1.5 shadow-md uppercase tracking-wider"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Return to Live Arena</span>
@@ -141,27 +142,27 @@ export const AllSquadsInspector: React.FC<AllSquadsInspectorProps> = ({ activeRo
           )}
 
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black">
+            <div className="ipl-slant w-9 h-9 bg-gradient-to-tr from-amber-400 to-amber-600 text-slate-950 flex items-center justify-center font-display font-black shadow-md">
               <Users className="w-4 h-4" />
             </div>
             <div>
-              <h1 className="text-sm font-black text-white leading-tight uppercase tracking-wider flex items-center gap-2">
+              <h1 className="text-base font-display font-extrabold text-white leading-tight uppercase tracking-wider flex items-center gap-2">
                 All Franchises Squad Roster
-                <span className="font-mono text-xs text-amber-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                <span className="font-mono text-xs text-amber-300 bg-[#050922] px-2 py-0.5 rounded border border-amber-500/30">
                   {activeRoomCode || 'IPL 2027'}
                 </span>
               </h1>
-              <p className="text-[11px] text-slate-400">
-                Official Roster Sheet • Retained &amp; Auction-Bought Squads
+              <p className="text-[11px] text-amber-300/80 font-sans">
+                Official Match Center Roster Sheet • Retained &amp; Auction-Bought Squads
               </p>
             </div>
           </div>
         </div>
 
         {/* Global Summary Badge */}
-        <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 px-3.5 py-1.5 rounded-xl text-xs shrink-0">
+        <div className="flex items-center gap-2 bg-[#050922] border border-amber-500/30 px-3.5 py-1.5 rounded-xl text-xs shrink-0 font-display">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-slate-300 font-bold">
+          <span className="text-slate-200 font-bold uppercase tracking-wider">
             Total Players: <strong className="text-white">{allSquadPlayers.length}</strong>
           </span>
           <span className="text-slate-600">•</span>
@@ -382,128 +383,122 @@ export const AllSquadsInspector: React.FC<AllSquadsInspectorProps> = ({ activeRo
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filteredPlayers.map((player, idx) => {
             const franchise = FRANCHISES[player.teamCode];
+            const theme = getFranchiseTheme(player.teamCode);
 
             return (
               <div
                 key={`${player.id}-${player.teamCode}-${idx}`}
-                className="bg-slate-900/90 border rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl hover:border-slate-600 transition-all duration-200 group relative"
-                style={{ borderColor: `${franchise.primaryColor}55` }}
+                className="bg-[#0A1138]/95 border border-amber-500/30 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl hover:border-amber-400/70 hover:shadow-2xl transition-all duration-300 group relative backdrop-blur-md"
               >
-                {/* Image or Broadcast Cricket Jersey Avatar Placeholder */}
-                <div className="relative aspect-[4/3] bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 overflow-hidden flex items-center justify-center border-b border-slate-800">
+                {/* Top Broadcast Franchise Header Banner with Watermark */}
+                <div
+                  className="relative px-3 py-1.5 flex items-center justify-between overflow-hidden shadow"
+                  style={{ background: theme.primaryGradient }}
+                >
+                  <div className="flex items-center gap-1.5 relative z-10">
+                    <FranchiseLogo code={theme.code} size="xs" />
+                    <span
+                      className="font-display font-black text-xs uppercase tracking-wider"
+                      style={{ color: theme.textColor }}
+                    >
+                      {theme.shortName}
+                    </span>
+                  </div>
+
+                  <span
+                    className="font-display font-extrabold text-sm opacity-60 tracking-wider uppercase relative z-10"
+                    style={{ color: theme.textColor }}
+                  >
+                    {theme.code}
+                  </span>
+                </div>
+
+                {/* Middle: Image or Authentic Broadcast Cricket Silhouette */}
+                <div className="relative aspect-[4/3] bg-gradient-to-b from-[#101A4F] via-[#070D26] to-[#04081E] overflow-hidden flex items-center justify-center border-b border-white/10">
+                  {/* Stadium Diagonal Watermark Stripes */}
+                  <div
+                    className="absolute inset-0 opacity-10 pointer-events-none"
+                    style={{
+                      backgroundImage:
+                        'repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.06) 8px, rgba(255,255,255,0.06) 16px)',
+                    }}
+                  />
+
                   {player.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={player.imageUrl}
                       alt={player.name}
-                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-contain object-bottom group-hover:scale-105 transition-transform duration-300 relative z-10"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = 'none';
                       }}
                     />
                   ) : (
-                    /* Broadcast Cricket Player Silhouette / Jersey Avatar */
-                    <div
-                      className="w-full h-full flex flex-col items-center justify-center relative p-4 overflow-hidden"
-                      style={{
-                        background: `radial-gradient(circle at center, ${franchise.primaryColor}20 0%, #020617 80%)`,
-                      }}
-                    >
-                      {/* Styled Jersey Silhouette Outline */}
-                      <div className="relative flex items-center justify-center mb-1">
-                        <div
-                          className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-2xl shadow-lg border-2 transition-transform group-hover:scale-105"
-                          style={{
-                            backgroundColor: `${franchise.primaryColor}25`,
-                            borderColor: franchise.primaryColor,
-                            color: franchise.primaryColor,
-                          }}
-                        >
-                          {player.name
-                            .split(' ')
-                            .map((n) => n[0])
-                            .join('')
-                            .slice(0, 2)
-                            .toUpperCase()}
-                        </div>
-
-                        {/* Franchise Crest Corner Pin */}
-                        <div
-                          className="absolute -top-1 -right-1 w-5 h-5 rounded-md flex items-center justify-center font-black text-[9px] shadow"
-                          style={{
-                            backgroundColor: franchise.primaryColor,
-                            color: franchise.textColor,
-                          }}
-                        >
-                          {franchise.code}
-                        </div>
-                      </div>
-
-                      <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mt-1">
-                        Official Squad
-                      </span>
-                    </div>
+                    /* Authentic Cricket Jersey Avatar */
+                    <BroadcastCricketSilhouette
+                      code={theme.code}
+                      size="md"
+                      className="relative z-10"
+                    />
                   )}
 
-                  {/* Acquisition Tag Badge Overlay */}
-                  <div className="absolute top-2 left-2 z-10">
+                  {/* Top-Left Ribbon: Gold RETAINED or Green AUCTION BUY */}
+                  <div className="absolute top-2 left-2 z-20">
                     {player.isRetained ? (
-                      <span className="bg-blue-600/90 text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-md uppercase tracking-wider flex items-center gap-1">
+                      <span className="ipl-slant ipl-gold-gradient text-slate-950 font-display font-black text-[10px] px-2.5 py-0.5 tracking-wider uppercase shadow-md flex items-center gap-1">
                         <CheckCircle className="w-2.5 h-2.5" />
-                        Retained
+                        <span>RETAINED</span>
                       </span>
                     ) : (
-                      <span className="bg-emerald-500 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded-md shadow-md uppercase tracking-wider flex items-center gap-1">
+                      <span className="ipl-slant bg-emerald-500 text-slate-950 font-display font-black text-[10px] px-2.5 py-0.5 tracking-wider uppercase shadow-md flex items-center gap-1">
                         <Gavel className="w-2.5 h-2.5" />
-                        Bought
+                        <span>AUCTION BUY</span>
                       </span>
                     )}
                   </div>
 
-                  {/* Role Pill Overlay */}
-                  <div className="absolute top-2 right-2 z-10">
-                    <span className="bg-slate-950/80 border border-slate-700 text-amber-400 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">
+                  {/* Top-Right: Role Badge */}
+                  <div className="absolute top-2 right-2 z-20">
+                    <span className="bg-[#070D26]/90 border border-white/20 text-amber-400 font-display font-black text-[10px] px-2 py-0.5 rounded uppercase tracking-wider shadow">
                       {player.role}
-                    </span>
-                  </div>
-
-                  {/* Price Tag Overlay at bottom */}
-                  <div className="absolute bottom-2 right-2 z-10">
-                    <span className="bg-slate-950/90 border border-slate-800 text-emerald-400 font-black text-xs px-2 py-0.5 rounded-md shadow">
-                      {player.soldAmount ? formatIndianCurrency(player.soldAmount) : 'Retained'}
                     </span>
                   </div>
                 </div>
 
-                {/* Player Metadata Card Body */}
-                <div className="p-3.5 flex flex-col justify-between flex-1 gap-2">
+                {/* Bottom Crisp Nameplate */}
+                <div className="p-3.5 flex flex-col justify-between flex-1 gap-2 bg-[#050922]">
                   <div>
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <span
-                        className="w-2 h-2 rounded-full shrink-0"
-                        style={{ backgroundColor: franchise.primaryColor }}
-                      />
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        {franchise.name}
-                      </span>
-                    </div>
-
-                    <h3 className="text-sm font-black text-white group-hover:text-amber-400 transition truncate">
+                    {/* Player Name in bold Barlow Condensed */}
+                    <h3 className="font-display font-extrabold text-base md:text-lg text-white group-hover:text-amber-400 transition truncate uppercase tracking-tight leading-tight">
                       {player.name}
                     </h3>
 
-                    <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-0.5 font-sans">
                       <span>{player.country}</span>
                       {player.isOverseas && (
-                        <span className="text-[10px] text-blue-400 font-semibold flex items-center gap-0.5 ml-1">
-                          <Plane className="w-3 h-3" />
-                          <span>Overseas</span>
+                        <span className="ipl-slant bg-amber-400 text-slate-950 font-display font-black text-[9px] px-2 py-0.2 tracking-wider flex items-center gap-0.5 uppercase shadow-sm">
+                          <Plane className="w-2.5 h-2.5" />
+                          OVERSEAS
                         </span>
                       )}
-                    </p>
+                    </div>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-400">
-                    <span className="truncate">{player.statsSummary || 'Official Squad Member'}</span>
+                  {/* Bold Franchise-Colored Price Bar */}
+                  <div
+                    className="ipl-slant mt-1 px-3 py-1.5 flex items-center justify-between shadow-md"
+                    style={{
+                      background: theme.bannerGradient,
+                      color: theme.textColor,
+                    }}
+                  >
+                    <span className="font-display font-bold text-[10px] uppercase tracking-wider opacity-85">
+                      {player.isRetained ? 'RETAINED SLAB' : 'HAMMER PRICE'}
+                    </span>
+                    <span className="font-display font-black text-sm md:text-base tabular-nums tracking-tight">
+                      {player.soldAmount ? formatIndianCurrency(player.soldAmount) : '₹18.00 CR'}
+                    </span>
                   </div>
                 </div>
               </div>
