@@ -99,8 +99,16 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
             const map = new Map<string, SessionSummaryItem>();
             allSessions.forEach((s) => map.set(s.roomCode.toUpperCase(), s));
             localSaved.forEach((s) => {
-              if (s && s.roomCode && !map.has(s.roomCode.toUpperCase())) {
-                map.set(s.roomCode.toUpperCase(), s);
+              if (s && s.roomCode) {
+                const code = s.roomCode.toUpperCase();
+                const existing = map.get(code);
+                if (
+                  !existing ||
+                  (existing.status !== 'Completed' && s.status === 'Completed') ||
+                  ((s.soldCount || 0) > (existing.soldCount || 0))
+                ) {
+                  map.set(code, s);
+                }
               }
             });
             allSessions = Array.from(map.values()).sort((a, b) => b.updatedAt - a.updatedAt);
@@ -124,12 +132,35 @@ export const ConductedAuctionsReport: React.FC<ConductedAuctionsReportProps> = (
     setIsLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch(`/api/room/${code.trim().toUpperCase()}`, { cache: 'no-store' });
+      const cleanCode = code.trim().toUpperCase();
+      const res = await fetch(`/api/room/${cleanCode}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && data.room) {
         setRoomState(data.room);
-        setSelectedRoomCode(code.trim().toUpperCase());
+        setSelectedRoomCode(cleanCode);
       } else {
+        // Fallback: check localStorage for session details
+        if (typeof window !== 'undefined') {
+          const localSaved = JSON.parse(localStorage.getItem('ipl_conducted_sessions') || '[]');
+          const match = Array.isArray(localSaved)
+            ? localSaved.find((s: any) => s.roomCode?.toUpperCase() === cleanCode)
+            : null;
+          if (match) {
+            setRoomState({
+              roomCode: match.roomCode,
+              phase: 'COMPLETED',
+              soldHistory: match.soldPlayers || [],
+              unsoldHistory: match.unsoldPlayers || [],
+              teams: match.squads || {},
+              bidHistory: match.bidHistory || [],
+              lastActionMessage: match.lastActionMessage || 'Auction Concluded',
+              allPlayers: [],
+              users: {},
+            } as any);
+            setSelectedRoomCode(cleanCode);
+            return;
+          }
+        }
         throw new Error(data.error || `Could not find auction session for room ${code}`);
       }
     } catch (err: unknown) {

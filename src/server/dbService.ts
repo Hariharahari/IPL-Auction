@@ -9,70 +9,37 @@ import { saveConductedSession, getConductedSession } from './conductedStore';
  * Persists Room, Franchise Teams, and Member records to PostgreSQL
  */
 export async function persistRoomState(room: AuctionRoomState): Promise<void> {
-  await safeDbOperation(async (client) => {
-    const roomCode = room.roomCode || room.code || '';
-    if (!roomCode) return;
+  const roomCode = room.roomCode || room.code || '';
+  if (!roomCode) return;
 
-    // Check existing room in DB first to protect against data regression
-    const existing = await client.room.findUnique({
-      where: { code: roomCode },
-    });
+  const isRetainedStar = (p: { isRetained?: boolean; set?: string; id?: string }) =>
+    p.isRetained === true || p.set === 'Retained' || p.id?.startsWith('ret_');
 
-    let existingLiveState: any = {};
-    let existingConfig: any = {};
-    try {
-      existingLiveState = JSON.parse(existing?.liveStateJson || '{}');
-    } catch {}
-    try {
-      existingConfig = JSON.parse(existing?.configJson || '{}');
-    } catch {}
+  const cleanSold = (room.soldHistory || []).filter((p) => !isRetainedStar(p));
+  const finalUnsold = room.unsoldHistory || [];
+  const soldCount = cleanSold.length;
+  const unsoldCount = finalUnsold.length;
+  const totalSpentLakhs = cleanSold.reduce(
+    (sum: number, p: any) => sum + (p.soldAmount || p.price || 0),
+    0
+  );
 
-    // Never allow a COMPLETED room to be downgraded to LOBBY or ACTIVE
-    const isCompleted =
-      room.phase === 'COMPLETED' ||
-      existing?.status === 'COMPLETED' ||
-      existingConfig?.status === 'COMPLETED';
-    const status = isCompleted
-      ? 'COMPLETED'
-      : room.phase === 'LOBBY'
-      ? 'LOBBY'
-      : 'ACTIVE';
+  const isSolo =
+    roomCode.startsWith('SOLO') ||
+    room.hostId.startsWith('solo_') ||
+    (Object.keys(room.users).length <= 1 && !room.auctioneerId);
 
-    // Preserve non-zero sold history so an incidental stub never wipes out completed auction data
-    const isRetainedStar = (p: { isRetained?: boolean; set?: string; id?: string }) =>
-      p.isRetained === true || p.set === 'Retained' || p.id?.startsWith('ret_');
+  const isCompleted = room.phase === 'COMPLETED';
 
-    const cleanSold = (room.soldHistory || []).filter((p) => !isRetainedStar(p));
-    const existingSold = (existingLiveState.soldHistory || []).filter(
-      (p: any) => !isRetainedStar(p)
-    );
-    const finalSold = cleanSold.length > 0 ? cleanSold : existingSold;
+  const participatingTeams = Array.from(
+    new Set([
+      ...Object.keys(room.teams || {}),
+      ...cleanSold.map((p: any) => p.soldTo).filter(Boolean),
+    ])
+  );
 
-    const finalUnsold =
-      room.unsoldHistory && room.unsoldHistory.length > 0
-        ? room.unsoldHistory
-        : existingLiveState.unsoldHistory || [];
-
-    const soldCount = finalSold.length;
-    const unsoldCount = finalUnsold.length;
-    const totalSpentLakhs = finalSold.reduce(
-      (sum: number, p: any) => sum + (p.soldAmount || 0),
-      0
-    );
-
-    const isSolo =
-      roomCode.startsWith('SOLO') ||
-      room.hostId.startsWith('solo_') ||
-      (Object.keys(room.users).length <= 1 && !room.auctioneerId);
-
-    const participatingTeams = Array.from(
-      new Set([
-        ...Object.keys(room.teams || {}),
-        ...finalSold.map((p: any) => p.soldTo).filter(Boolean),
-      ])
-    );
-
-    // Always mirror to disk/memory conductedStore
+  // UNCONDITIONALLY mirror to disk & memory conductedStore first (100% resilient)
+  try {
     saveConductedSession({
       roomCode,
       mode: isSolo ? 'Solo Test' : 'Multiplayer',
@@ -95,37 +62,80 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
         minute: 'numeric',
         hour12: true,
       }).format(new Date()),
-      soldPlayers: finalSold,
+      soldPlayers: cleanSold,
       unsoldPlayers: finalUnsold,
       squads: room.teams,
       bidHistory: room.bidHistory || [],
     });
+  } catch (err) {
+    console.warn('[dbService] saveConductedSession mirror error:', err);
+  }
+
+  await safeDbOperation(async (client) => {
+    // Check existing room in DB first to protect against data regression
+    const existing = await client.room.findUnique({
+      where: { code: roomCode },
+    });
+
+    let existingLiveState: any = {};
+    let existingConfig: any = {};
+    try {
+      existingLiveState = JSON.parse(existing?.liveStateJson || '{}');
+    } catch {}
+    try {
+      existingConfig = JSON.parse(existing?.configJson || '{}');
+    } catch {}
+
+    // Never allow a COMPLETED room to be downgraded to LOBBY or ACTIVE
+    const isCompletedDb =
+      isCompleted ||
+      existing?.status === 'COMPLETED' ||
+      existingConfig?.status === 'COMPLETED';
+    const status = isCompletedDb
+      ? 'COMPLETED'
+      : room.phase === 'LOBBY'
+      ? 'LOBBY'
+      : 'ACTIVE';
+
+    const existingSold = (existingLiveState.soldHistory || []).filter(
+      (p: any) => !isRetainedStar(p)
+    );
+    const finalSoldDb = cleanSold.length > 0 ? cleanSold : existingSold;
+    const finalUnsoldDb =
+      finalUnsold.length > 0 ? finalUnsold : existingLiveState.unsoldHistory || [];
+
+    const dbSoldCount = finalSoldDb.length;
+    const dbUnoldCount = finalUnsoldDb.length;
+    const dbTotalSpentLakhs = finalSoldDb.reduce(
+      (sum: number, p: any) => sum + (p.soldAmount || 0),
+      0
+    );
 
     const mergedConfig = {
       ...existingConfig,
       ...room.settings,
       accessCodes: room.accessCodes,
-      soldCount,
-      unsoldCount,
-      totalSpentLakhs,
-      status: isCompleted ? 'COMPLETED' : status,
+      soldCount: dbSoldCount,
+      unsoldCount: dbUnoldCount,
+      totalSpentLakhs: dbTotalSpentLakhs,
+      status: isCompletedDb ? 'COMPLETED' : status,
     };
 
     const mergedLiveState = {
-      phase: isCompleted ? 'COMPLETED' : room.phase,
-      currentBid: isCompleted ? 0 : room.currentBid,
-      highestBidderTeam: isCompleted ? null : room.highestBidderTeam,
-      highestBidderUserId: isCompleted ? null : room.highestBidderUserId,
-      activePlayer: isCompleted ? null : room.activePlayer,
+      phase: isCompletedDb ? 'COMPLETED' : room.phase,
+      currentBid: isCompletedDb ? 0 : room.currentBid,
+      highestBidderTeam: isCompletedDb ? null : room.highestBidderTeam,
+      highestBidderUserId: isCompletedDb ? null : room.highestBidderUserId,
+      activePlayer: isCompletedDb ? null : room.activePlayer,
       lastActionMessage: room.lastActionMessage,
-      soldHistory: finalSold,
-      unsoldHistory: finalUnsold,
+      soldHistory: finalSoldDb,
+      unsoldHistory: finalUnsoldDb,
       bidHistory: room.bidHistory || existingLiveState.bidHistory || [],
-      isAuctionPaused: isCompleted ? false : room.isAuctionPaused || false,
+      isAuctionPaused: isCompletedDb ? false : room.isAuctionPaused || false,
       tempAuctioneerId: room.tempAuctioneerId || null,
-      soldCount,
-      unsoldCount,
-      totalSpentLakhs,
+      soldCount: dbSoldCount,
+      unsoldCount: dbUnoldCount,
+      totalSpentLakhs: dbTotalSpentLakhs,
     };
 
     // 1. Upsert Room record
@@ -245,9 +255,9 @@ export async function persistRoomState(room: AuctionRoomState): Promise<void> {
     await Promise.all(participantPromises);
 
     // 5. Ensure newly bought SquadPlayer rows are saved in DB
-    if (finalSold.length > 0) {
+    if (finalSoldDb.length > 0) {
       await client.squadPlayer.createMany({
-        data: finalSold.map((p: any) => ({
+        data: finalSoldDb.map((p: any) => ({
           roomId: dbRoom.id,
           franchiseCode: p.soldTo || 'CSK',
           name: p.name,

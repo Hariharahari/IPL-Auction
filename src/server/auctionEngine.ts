@@ -848,6 +848,52 @@ export class AuctionEngine {
     room.activePlayer = null;
     room.currentBid = 0;
     room.lastActionMessage = '🏆 LIVE AUCTION OFFICIALLY CONCLUDED! All franchises and final squad rosters are locked.';
+
+    // Directly guarantee persistence to conductedStore
+    const isRetainedStar = (p: { isRetained?: boolean; set?: string; id?: string }) =>
+      p.isRetained === true || p.set === 'Retained' || p.id?.startsWith('ret_');
+    const cleanSold = (room.soldHistory || []).filter((p) => !isRetainedStar(p));
+    const cleanUnsold = room.unsoldHistory || [];
+    const totalSpentLakhs = cleanSold.reduce((sum, p) => sum + (p.soldAmount || 0), 0);
+    const isSolo = roomCode.startsWith('SOLO') || room.hostId.startsWith('solo_') || Object.keys(room.users).length <= 1;
+
+    try {
+      saveConductedSession({
+        roomCode: roomCode.toUpperCase(),
+        mode: isSolo ? 'Solo Test' : 'Multiplayer',
+        status: 'Completed',
+        phase: 'COMPLETED',
+        soldCount: cleanSold.length,
+        unsoldCount: cleanUnsold.length,
+        totalAuctioned: cleanSold.length + cleanUnsold.length,
+        totalSpentLakhs,
+        totalPlayers: room.allPlayers?.length || 0,
+        participatingTeams: Array.from(
+          new Set([
+            ...Object.keys(room.teams || {}),
+            ...cleanSold.map((p: any) => p.soldTo).filter(Boolean),
+          ])
+        ),
+        lastActionMessage: room.lastActionMessage,
+        updatedAt: Date.now(),
+        createdAt: Date.now(),
+        formattedDate: new Intl.DateTimeFormat('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true,
+        }).format(new Date()),
+        soldPlayers: cleanSold,
+        unsoldPlayers: cleanUnsold,
+        squads: room.teams,
+        bidHistory: room.bidHistory || [],
+      });
+    } catch (storeErr) {
+      console.warn('[auctionEngine] saveConductedSession direct mirror error:', storeErr);
+    }
+
     persistRoomState(room).catch(console.warn);
 
     this.notify(roomCode, 'auction:ended', { message: room.lastActionMessage });

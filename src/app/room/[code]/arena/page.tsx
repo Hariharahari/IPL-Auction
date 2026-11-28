@@ -161,10 +161,54 @@ export default function AuctionArenaPage() {
       const totalSpentLakhs = finalSold.reduce((sum, p) => sum + (p.soldAmount || 0), 0);
       const isSolo = roomCode.startsWith('SOLO') || room?.hostId?.startsWith('solo_');
 
-      // Prevent floating mini auction widget from ever mounting
+      // Prevent floating mini auction widget from ever mounting & backup session locally
       if (typeof window !== 'undefined') {
         localStorage.removeItem('ipl_active_room_code');
         localStorage.setItem('ipl_auction_ended', roomCode);
+
+        try {
+          const existingRaw = localStorage.getItem('ipl_conducted_sessions') || '[]';
+          const existingList = JSON.parse(existingRaw);
+          const participatingTeams = Array.from(
+            new Set([
+              ...Object.keys(room?.teams || {}),
+              ...finalSold.map((p) => p.soldTo).filter(Boolean),
+            ])
+          );
+          const sessionSummary = {
+            roomCode: roomCode.toUpperCase(),
+            mode: isSolo ? 'Solo Test' : 'Multiplayer',
+            status: 'Completed',
+            phase: 'COMPLETED',
+            soldCount: finalSold.length,
+            unsoldCount: finalUnsold.length,
+            totalAuctioned: finalSold.length + finalUnsold.length,
+            totalSpentLakhs,
+            totalPlayers: (room?.allPlayers?.length || 0),
+            participatingTeams: participatingTeams.length > 0 ? participatingTeams : ['CSK', 'MI', 'RCB', 'KKR', 'SRH'],
+            lastActionMessage: '🏆 LIVE AUCTION OFFICIALLY CONCLUDED! All franchises and final squad rosters are locked.',
+            updatedAt: Date.now(),
+            createdAt: Date.now(),
+            formattedDate: new Intl.DateTimeFormat('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true,
+            }).format(new Date()),
+            soldPlayers: finalSold,
+            unsoldPlayers: finalUnsold,
+            squads: room?.teams || {},
+            bidHistory: room?.bidHistory || [],
+            hostEmail: user.userEmail || null,
+            hostName: user.userName || userName || 'Auctioneer',
+          };
+          const updatedList = [sessionSummary, ...existingList.filter((s: any) => s.roomCode !== roomCode.toUpperCase())];
+          localStorage.setItem('ipl_conducted_sessions', JSON.stringify(updatedList));
+        } catch (storageErr) {
+          console.warn('LocalStorage backup warning:', storageErr);
+        }
       }
 
       // Strictly await the dedicated HTTP persistence endpoint

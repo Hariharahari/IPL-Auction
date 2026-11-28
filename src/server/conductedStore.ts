@@ -76,11 +76,73 @@ diskMap.forEach((v, k) => {
 
 export function saveConductedSession(record: ConductedSessionRecord): void {
   const code = record.roomCode.trim().toUpperCase();
+  const disk = loadFromDisk();
+  const existing = g.__ipl_conducted_sessions!.get(code) || disk.get(code);
+
+  const isCompleted =
+    record.status === 'Completed' ||
+    record.phase === 'COMPLETED' ||
+    existing?.status === 'Completed';
+
+  // Safeguard: never overwrite non-zero sold history with an empty array
+  const soldPlayers =
+    record.soldPlayers && record.soldPlayers.length > 0
+      ? record.soldPlayers
+      : existing?.soldPlayers || [];
+
+  const unsoldPlayers =
+    record.unsoldPlayers && record.unsoldPlayers.length > 0
+      ? record.unsoldPlayers
+      : existing?.unsoldPlayers || [];
+
+  const squads =
+    record.squads && Object.keys(record.squads).length > 0
+      ? record.squads
+      : existing?.squads || {};
+
+  const soldCount = Math.max(record.soldCount || 0, soldPlayers.length, existing?.soldCount || 0);
+  const unsoldCount = Math.max(record.unsoldCount || 0, unsoldPlayers.length, existing?.unsoldCount || 0);
+  const totalSpentLakhs = Math.max(
+    record.totalSpentLakhs || 0,
+    soldPlayers.reduce((sum, p) => sum + (p.soldAmount || p.price || 0), 0),
+    existing?.totalSpentLakhs || 0
+  );
+
+  const participatingTeams = Array.from(
+    new Set([
+      ...(record.participatingTeams || []),
+      ...(existing?.participatingTeams || []),
+      ...Object.keys(squads),
+      ...soldPlayers.map((p) => p.soldTo).filter(Boolean),
+    ])
+  );
+
   const normalized: ConductedSessionRecord = {
+    ...existing,
     ...record,
     roomCode: code,
+    status: isCompleted ? 'Completed' : 'In Progress',
+    phase: isCompleted ? 'COMPLETED' : record.phase,
+    soldCount,
+    unsoldCount,
+    totalAuctioned: soldCount + unsoldCount,
+    totalSpentLakhs,
+    totalPlayers: Math.max(record.totalPlayers || 0, soldCount + unsoldCount, existing?.totalPlayers || 0),
+    participatingTeams: participatingTeams.length > 0 ? participatingTeams : ['CSK', 'MI', 'RCB', 'KKR', 'SRH'],
+    soldPlayers,
+    unsoldPlayers,
+    squads,
+    bidHistory: record.bidHistory && record.bidHistory.length > 0 ? record.bidHistory : existing?.bidHistory || [],
     updatedAt: record.updatedAt || Date.now(),
-    createdAt: record.createdAt || Date.now(),
+    createdAt: existing?.createdAt || record.createdAt || Date.now(),
+    formattedDate: record.formattedDate || existing?.formattedDate || new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    }).format(new Date()),
   };
 
   g.__ipl_conducted_sessions!.set(code, normalized);

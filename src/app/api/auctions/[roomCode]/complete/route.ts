@@ -89,9 +89,49 @@ export async function POST(
     const effectiveHostEmail = hostEmail || null;
     const effectiveHostName = hostName || 'Auctioneer';
 
-    // Execute single, strictly awaited PostgreSQL transaction
+    // 1. Immediately mirror to disk/memory conductedStore (100% resilient before DB)
+    const participatingTeamsList = Array.from(
+      new Set([
+        ...Object.keys(finalSquads || {}),
+        ...cleanSoldHistory.map((p: any) => p.soldTo).filter(Boolean),
+      ])
+    );
+
+    saveConductedSession({
+      roomCode,
+      mode: isSolo ? 'Solo Test' : 'Multiplayer',
+      status: 'Completed',
+      phase: 'COMPLETED',
+      soldCount: finalSoldCount,
+      unsoldCount: finalUnsoldCount,
+      totalAuctioned: finalSoldCount + finalUnsoldCount,
+      totalSpentLakhs: finalTotalSpentLakhs,
+      totalPlayers: finalSoldCount + finalUnsoldCount,
+      participatingTeams:
+        participatingTeamsList.length > 0 ? participatingTeamsList : ['CSK', 'MI', 'RCB', 'KKR', 'SRH'],
+      lastActionMessage: actionMessage,
+      updatedAt: Date.now(),
+      createdAt: Date.now(),
+      formattedDate: new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      }).format(new Date()),
+      soldPlayers: cleanSoldHistory,
+      unsoldPlayers: cleanUnsoldHistory,
+      squads: finalSquads,
+      bidHistory: cleanBidHistory,
+      hostEmail: effectiveHostEmail,
+      hostName: effectiveHostName,
+    });
+
+    // 2. Execute single, strictly awaited PostgreSQL transaction if DATABASE_URL configured
     if (process.env.DATABASE_URL) {
-      await prisma.$transaction(async (tx) => {
+      try {
+        await prisma.$transaction(async (tx) => {
         // 1. Find or create Room record
         let dbRoom = await tx.room.findUnique({
           where: { code: roomCode },
@@ -357,10 +397,13 @@ export async function POST(
           });
         }
       });
+      } catch (dbErr) {
+        console.warn('[Complete API] PostgreSQL transaction warning (persisted to disk store):', dbErr);
+      }
     }
 
     // Always persist to conductedStore (disk + memory backup, safe without Postgres)
-    const participatingTeamsList = Array.from(
+    const participatingTeamsListFinal = Array.from(
       new Set([
         ...Object.keys(finalSquads || {}),
         ...cleanSoldHistory.map((p: any) => p.soldTo).filter(Boolean),
@@ -378,7 +421,7 @@ export async function POST(
       totalSpentLakhs: finalTotalSpentLakhs,
       totalPlayers: finalSoldCount + finalUnsoldCount,
       participatingTeams:
-        participatingTeamsList.length > 0 ? participatingTeamsList : ['CSK', 'MI', 'RCB', 'KKR', 'SRH'],
+        participatingTeamsListFinal.length > 0 ? participatingTeamsListFinal : ['CSK', 'MI', 'RCB', 'KKR', 'SRH'],
       lastActionMessage: actionMessage,
       updatedAt: Date.now(),
       createdAt: Date.now(),
