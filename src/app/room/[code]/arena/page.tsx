@@ -19,6 +19,8 @@ import {
   LogOut,
   Loader2,
   Trophy,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { useAuctionStore } from '@/store/auctionStore';
 import { VideoCallStrip } from '@/components/arena/VideoCallStrip';
@@ -30,7 +32,6 @@ import { HuddleDrawer } from '@/components/arena/HuddleDrawer';
 import { CatalogModal } from '@/components/arena/CatalogModal';
 import { CustomPlayerModal } from '@/components/arena/CustomPlayerModal';
 import { AuctioneerAwardModal } from '@/components/arena/AuctioneerAwardModal';
-import { SoldPlayerCelebrationModal } from '@/components/arena/SoldPlayerCelebrationModal';
 import { ShareTeamCodesModal } from '@/components/arena/ShareTeamCodesModal';
 import { TempAuctioneerModal } from '@/components/arena/TempAuctioneerModal';
 import { AuctionCompletionModal } from '@/components/arena/AuctionCompletionModal';
@@ -39,6 +40,7 @@ import { FranchiseCode } from '@/types/auction';
 import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 import { livekitClient } from '@/lib/livekitClient';
 import { getStoredUser } from '@/lib/utils';
+import { isSfxMuted, toggleSfxMuted } from '@/lib/auctionSounds';
 
 export default function AuctionArenaPage() {
   const params = useParams();
@@ -82,7 +84,18 @@ export default function AuctionArenaPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [isConcluding, setIsConcluding] = useState(false);
   const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+  const [sfxMuted, setSfxMutedState] = useState(false);
   const [chatToast, setChatToast] = useState<{ senderName: string; text: string; channel: string } | null>(null);
+
+  useEffect(() => {
+    setSfxMutedState(isSfxMuted());
+    const handleMuteChange = (e: Event) => {
+      const custom = e as CustomEvent<boolean>;
+      setSfxMutedState(custom.detail);
+    };
+    window.addEventListener('ipl_sfx_mute_changed', handleMuteChange);
+    return () => window.removeEventListener('ipl_sfx_mute_changed', handleMuteChange);
+  }, []);
 
   const latestIncomingMessage = useAuctionStore((s) => s.latestIncomingMessage);
   const clearLatestIncomingMessage = useAuctionStore((s) => s.clearLatestIncomingMessage);
@@ -461,6 +474,28 @@ export default function AuctionArenaPage() {
             </span>
           </div>
 
+          {/* Audio SFX Mute/Unmute Toggle */}
+          <button
+            type="button"
+            onClick={() => {
+              const next = toggleSfxMuted();
+              setSfxMutedState(next);
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-display font-bold border transition cursor-pointer uppercase tracking-wider ${
+              sfxMuted
+                ? 'bg-slate-900/80 text-slate-400 border-slate-700 hover:bg-slate-800'
+                : 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30 shadow'
+            }`}
+            title={sfxMuted ? 'Auction SFX Muted (Click to Unmute)' : 'Auction SFX Active (Click to Mute)'}
+          >
+            {sfxMuted ? (
+              <VolumeX className="w-3.5 h-3.5 text-slate-400" />
+            ) : (
+              <Volume2 className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+            )}
+            <span className="hidden md:inline">{sfxMuted ? 'SFX OFF' : 'SFX'}</span>
+          </button>
+
           {/* Leave Auction Button (All participants) */}
           <button
             type="button"
@@ -563,9 +598,6 @@ export default function AuctionArenaPage() {
         isOpen={isCustomOpen}
         onClose={() => setIsCustomOpen(false)}
       />
-
-      {/* Celebratory Sold Player Popup Modal */}
-      <SoldPlayerCelebrationModal />
 
       {/* Mid-Auction Franchise Table Selector Modal */}
       {showFranchiseModal && (

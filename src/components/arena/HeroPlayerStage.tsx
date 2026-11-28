@@ -20,6 +20,12 @@ import { formatIndianCurrency } from '@/lib/utils';
 import { PlayerSet } from '@/types/auction';
 import { FranchiseLogo } from '@/components/common/FranchiseLogo';
 import { getFranchiseTheme, BroadcastCricketSilhouette } from '@/lib/franchiseThemes';
+import {
+  playBidChime,
+  playFinalTick,
+  playGavelSold,
+  playUnsoldThud,
+} from '@/lib/auctionSounds';
 
 interface HeroPlayerStageProps {
   onOpenCatalog?: () => void;
@@ -59,10 +65,63 @@ export const HeroPlayerStage: React.FC<HeroPlayerStageProps> = ({
     }
     setTimeLeft(15);
     const interval = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      setTimeLeft((prev) => {
+        const next = prev > 0 ? prev - 1 : 0;
+        if (next === 3 || next === 2 || next === 1) {
+          playFinalTick();
+        }
+        return next;
+      });
     }, 1000);
     return () => clearInterval(interval);
   }, [activePlayer?.id, room?.currentBid]);
+
+  // Audio: play bid chime when bid increases on current active player
+  const prevBidRef = React.useRef<number | undefined>(room?.currentBid);
+  const prevPlayerIdRef = React.useRef<string | undefined>(activePlayer?.id);
+
+  useEffect(() => {
+    if (
+      activePlayer &&
+      prevPlayerIdRef.current === activePlayer.id &&
+      typeof room?.currentBid === 'number' &&
+      typeof prevBidRef.current === 'number' &&
+      room.currentBid > prevBidRef.current
+    ) {
+      playBidChime();
+    }
+    prevBidRef.current = room?.currentBid;
+    prevPlayerIdRef.current = activePlayer?.id;
+  }, [room?.currentBid, activePlayer?.id]);
+
+  // Check if player was just hammered
+  const lastAction = room?.lastActionMessage || '';
+  const isJustSold =
+    room?.phase === 'SOLD' ||
+    (lastAction.includes('SOLD to') && lastAction.includes(activePlayer?.name || '---'));
+  const isJustUnsold =
+    room?.phase === 'UNSOLD' ||
+    (lastAction.includes('UNSOLD') && lastAction.includes(activePlayer?.name || '---'));
+
+  // Audio: play gavel sold or unsold thud when hammered
+  const hasHammeredRef = React.useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!activePlayer) return;
+    const hammerKey = `${activePlayer.id}-${isJustSold ? 'SOLD' : isJustUnsold ? 'UNSOLD' : 'NONE'}`;
+    if (isJustSold && hasHammeredRef.current !== hammerKey) {
+      hasHammeredRef.current = hammerKey;
+      playGavelSold();
+    } else if (isJustUnsold && hasHammeredRef.current !== hammerKey) {
+      hasHammeredRef.current = hammerKey;
+      playUnsoldThud();
+    }
+  }, [isJustSold, isJustUnsold, activePlayer?.id]);
+
+  // Paddle-Raise Feed: Last 4 bids for active player
+  const recentBids = (room?.bidHistory || [])
+    .filter((b) => !b.playerId || b.playerId === activePlayer?.id)
+    .slice(0, 4);
 
   const handleDrawNext = async () => {
     setIsDrawing(true);
@@ -107,20 +166,11 @@ export const HeroPlayerStage: React.FC<HeroPlayerStageProps> = ({
     }
   };
 
-  // Check if player was just hammered
-  const lastAction = room?.lastActionMessage || '';
-  const isJustSold =
-    room?.phase === 'SOLD' ||
-    (lastAction.includes('SOLD to') && lastAction.includes(activePlayer?.name || '---'));
-  const isJustUnsold =
-    room?.phase === 'UNSOLD' ||
-    (lastAction.includes('UNSOLD') && lastAction.includes(activePlayer?.name || '---'));
-
   return (
     <div className="flex-1 min-h-0 w-full relative flex items-center justify-center p-2">
       {activePlayer ? (
         /* HERO ACTIVE PLAYER TV LOWER-THIRD CARD */
-        <div className="relative w-full max-w-5xl h-full max-h-[500px] bg-[#0A1138]/90 border border-amber-500/30 rounded-3xl p-5 md:p-6 shadow-2xl flex flex-col justify-between overflow-hidden backdrop-blur-xl">
+        <div className="relative w-full max-w-5xl bg-[#0A1138]/90 border border-amber-500/30 rounded-3xl p-4 sm:p-5 md:p-6 shadow-2xl flex flex-col justify-between overflow-hidden backdrop-blur-xl gap-2">
           {/* Dynamic Radial Ambient Spotlight */}
           <div
             className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-72 rounded-full blur-3xl pointer-events-none opacity-30 transition-all duration-700"
@@ -291,23 +341,100 @@ export const HeroPlayerStage: React.FC<HeroPlayerStageProps> = ({
                   </div>
                 </div>
 
-                {/* TV Shot-Clock Timer Ring / Bar */}
-                <div
-                  className={`ipl-slant shrink-0 px-4 py-2 flex flex-col items-center justify-center transition-colors duration-300 ${
-                    timeLeft <= 5
-                      ? 'bg-rose-950/90 text-rose-300 border-2 border-rose-500 animate-pulse'
-                      : 'bg-slate-900/90 text-amber-400 border border-amber-500/40'
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span className="font-display font-black text-2xl tabular-nums">
-                      {timeLeft}s
+                {/* TV Shot-Clock Timer Block + Cadence Tag */}
+                <div className="flex flex-col items-center justify-center shrink-0 gap-1">
+                  {/* "Going Once... Going Twice..." Shot-Clock Cadence Tag */}
+                  {timeLeft <= 0 ? (
+                    <div className="ipl-slant px-2.5 py-0.5 bg-rose-950 text-rose-300 border border-rose-600 text-[10px] font-display font-black tracking-wider uppercase flex items-center gap-1 shadow">
+                      <Clock className="w-3 h-3 text-rose-400" />
+                      <span>HAMMER DUE</span>
+                    </div>
+                  ) : timeLeft <= 2 ? (
+                    <div className="ipl-slant px-2.5 py-0.5 bg-rose-950/95 text-rose-200 border-2 border-rose-500 animate-pulse text-[10px] font-display font-black tracking-widest uppercase flex items-center gap-1 shadow-[0_0_15px_rgba(244,63,94,0.6)]">
+                      <Flame className="w-3 h-3 text-rose-400 animate-bounce" />
+                      <span>GOING TWICE — FINAL CALL!</span>
+                    </div>
+                  ) : timeLeft <= 5 ? (
+                    <div className="ipl-slant px-2.5 py-0.5 bg-amber-950/95 text-amber-300 border-2 border-amber-500 animate-pulse text-[10px] font-display font-black tracking-widest uppercase flex items-center gap-1 shadow-md">
+                      <Gavel className="w-3 h-3 text-amber-400 animate-bounce" />
+                      <span>GOING ONCE...</span>
+                    </div>
+                  ) : (
+                    <div className="ipl-slant px-2.5 py-0.5 bg-emerald-950/80 text-emerald-400 border border-emerald-500/50 text-[10px] font-display font-extrabold tracking-wider uppercase flex items-center gap-1 shadow">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+                      <span>BIDDING LIVE</span>
+                    </div>
+                  )}
+
+                  {/* Shot-Clock Timer Display */}
+                  <div
+                    className={`ipl-slant w-full px-4 py-1.5 flex flex-col items-center justify-center transition-all duration-300 ${
+                      timeLeft <= 2
+                        ? 'bg-rose-950/90 text-rose-200 border-2 border-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.5)] animate-pulse'
+                        : timeLeft <= 5
+                        ? 'bg-amber-950/90 text-amber-300 border-2 border-amber-500 animate-pulse'
+                        : 'bg-slate-900/90 text-amber-400 border border-amber-500/40'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span className="font-display font-black text-2xl tabular-nums leading-none">
+                        {timeLeft}s
+                      </span>
+                    </div>
+                    <span className="text-[8px] font-display font-bold uppercase tracking-widest text-slate-400 mt-0.5">
+                      SHOT-CLOCK
                     </span>
                   </div>
-                  <span className="text-[8px] font-display font-bold uppercase tracking-widest text-slate-400">
-                    HAMMER TIMER
-                  </span>
+                </div>
+              </div>
+
+              {/* Row 4: Live Paddle-Raise Bid History Strip (Last 4 Bids) */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-white/10 mt-1">
+                <div className="flex items-center gap-1.5 shrink-0 text-[10px] font-display font-black text-amber-400 uppercase tracking-widest">
+                  <Gavel className="w-3 h-3 text-amber-400" />
+                  <span>PADDLE FEED:</span>
+                </div>
+
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 flex-1 max-w-full">
+                  {recentBids.length > 0 ? (
+                    recentBids.map((bid, idx) => {
+                      const teamTheme = getFranchiseTheme(bid.teamCode);
+                      const isLatest = idx === 0;
+
+                      return (
+                        <div
+                          key={bid.id || `${bid.teamCode}-${bid.amount}-${idx}`}
+                          className={`ipl-slant flex items-center gap-2 px-2.5 py-1 shrink-0 transition-all ${
+                            isLatest
+                              ? 'border-2 border-amber-400 shadow-lg ring-1 ring-amber-400/50 scale-[1.02]'
+                              : 'border border-white/20 opacity-80'
+                          }`}
+                          style={{
+                            background: teamTheme.bannerGradient,
+                            color: teamTheme.textColor,
+                          }}
+                        >
+                          <FranchiseLogo code={bid.teamCode} size="xs" />
+                          <span className="font-display font-black text-xs uppercase tracking-wider">
+                            {bid.teamCode}
+                          </span>
+                          <span className="font-display font-extrabold text-xs tabular-nums">
+                            {formatIndianCurrency(bid.amount)}
+                          </span>
+                          {isLatest && (
+                            <span className="bg-amber-400 text-slate-950 font-display font-black text-[9px] px-1.5 py-0.2 rounded uppercase tracking-tight">
+                              LATEST
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <span className="text-[11px] font-display font-medium text-slate-400 italic">
+                      Awaiting opening franchise bid raise ({formatIndianCurrency(activePlayer.basePrice)})
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
